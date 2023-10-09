@@ -42,11 +42,11 @@ function New-RepoFromModule {
             $manifestPath = $repoPath | Join-Path -ChildPath *.psd1 | Get-Item
 
             if($manifestPath.Count -eq 0 ){
-                throw "No module found. Please move to a folder with a powershell module on it to import to GitHub"
+                throw "No module found. Use the -Description parameter to specify the description"
             }
 
             if ($manifestPath.Count -ne 1) {
-                throw "More than one module manifest found."
+                throw "More than one module manifest found. Use the -Description parameter to specify the description"
             }
 
             $repoDescription = (Import-PowerShellDataFile -Path $manifestPath).Description
