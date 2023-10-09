@@ -39,3 +39,26 @@ function RepoHelperTest_Create_Repo_Local{
 
     Assert-Contains -Expected $expectedCommand -presented $infoVar -Comment "Command not as expected"
 }
+
+function RepoHelperTest_Create_Repo_Local_Folder{
+
+    $repoName = 'testModule_{0}' -f $((New-guid).Guid.Substring(0,8))
+
+    $repoDescription = 'A demo for testing'
+
+    New-TestingFolder -Path $repoName
+
+    $repoPath = $repoName | Convert-Path
+
+    $expectedCommand = 'gh repo create --public -d {description} -s {path} --disable-wiki --push'
+    $expectedCommand = $expectedCommand -replace "{description}", "`"$($repoDescription)`""
+    $expectedCommand = $expectedCommand -replace "{path}", "`"$($repoPath)`""
+
+    Set-Location $repoName
+
+    git init
+
+    New-RepoFromModule -Description $repoDescription -whatif @InfoParameters
+
+    Assert-Contains -Expected $expectedCommand -presented $infoVar -Comment "Command not as expected"
+}
