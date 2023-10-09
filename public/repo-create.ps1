@@ -21,7 +21,9 @@ function New-RepoFromModule {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingInvokeExpression', '', Scope='Function')]
     param(
         # path parameter
-        [Parameter(ValueFromPipelineByPropertyName)] [string] $Path
+        [Parameter(ValueFromPipelineByPropertyName)] [string] $Path,
+        #description
+        [Parameter()] [string] $Description
     )
 
     process {
@@ -34,21 +36,25 @@ function New-RepoFromModule {
 
         $repoPath = $repoPath | Convert-Path
 
-        $manifestPath = $repoPath | Join-Path -ChildPath *.psd1 | Get-Item
+        if($Description){
+            $repoDescription = $Description
+        } else {
+            $manifestPath = $repoPath | Join-Path -ChildPath *.psd1 | Get-Item
 
-        if($manifestPath.Count -eq 0 ){
-            throw "No module found. Please move to a folder with a powershell module on it to import to GitHub"
+            if($manifestPath.Count -eq 0 ){
+                throw "No module found. Please move to a folder with a powershell module on it to import to GitHub"
+            }
+
+            if ($manifestPath.Count -ne 1) {
+                throw "More than one module manifest found."
+            }
+
+            $repoDescription = (Import-PowerShellDataFile -Path $manifestPath).Description
         }
-
-        if ($manifestPath.Count -ne 1) {
-            throw "More than one module manifest found."
-        }
-
-        $description = (Import-PowerShellDataFile -Path $manifestPath).Description
 
         $command = 'gh repo create --public -d {description} -s {path} --disable-wiki --push'
 
-        $command = $command -replace "{description}", "`"$($description)`""
+        $command = $command -replace "{description}", "`"$($repoDescription)`""
         $command = $command -replace "{path}", "`"$($repoPath)`""
 
         if ($PSCmdlet.ShouldProcess("Repo", $command)) {
