@@ -1,4 +1,4 @@
-Write-Information -Message ("Loading {0} ..." -f ($PSCommandPath | Split-Path -LeafBase)) -InformationAction continue
+Write-Information -Message ("Loading {0} ..." -f ($PSCommandPath | Split-Path -LeafBase))
 
 #Module path is where resides the RootModule file. This file. :)
 $MODULE_PATH = $PSScriptRoot
