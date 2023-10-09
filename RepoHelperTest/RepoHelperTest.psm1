@@ -1,4 +1,3 @@
-Write-Information -Message ("Loading {0} ..." -f ($PSCommandPath | Split-Path -LeafBase)) -InformationAction continue
 
 #Module path is where resides the RootModule file. This file. :)
 $MODULE_PATH = $PSScriptRoot
@@ -24,4 +23,6 @@ Foreach($import in @($Public + $Private))
 # Read in or create an initial config file and variable
 # Export Public functions ($Public.BaseName) for WIP modules
 # Set variables visible to the module and its functions only
+
+Export-ModuleMember -Function RepoHelperTest_*
 

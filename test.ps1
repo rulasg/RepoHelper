@@ -25,13 +25,13 @@ function Import-TestingHelper{
         [Parameter()][switch]$AllowPrerelease,
         [Parameter()][switch]$PassThru
     )
-    
+
     if ($Version) {
         $V = $Version.Split('-')
         $semVer = $V[0]
         $AllowPrerelease = ($AllowPrerelease -or ($null -ne $V[1]))
     }
-    
+
     $module = Import-Module TestingHelper -PassThru -ErrorAction SilentlyContinue -RequiredVersion:$semVer
 
     if ($null -eq $module) {
