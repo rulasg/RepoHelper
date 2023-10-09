@@ -1,0 +1,20 @@
+TOPIC
+    about_RepoHelper
+
+AUTHOR
+    rulasg
+
+COPYRIGHT
+    (c) rulasg. All rights reserved.
+
+SHORT DESCRIPTION
+    Powershell module to help manage GitHub Repositories
+
+LONG DESCRIPTION
+    Powershell module to help manage GitHub Repositories
+
+KEYWORDS
+    Powershell Testing UnitTest Module TestingHelper
+
+SEE ALSO
+    https://github.com/rulasg/TestingHelper/
