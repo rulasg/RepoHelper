@@ -1,4 +1,22 @@
 
+<#
+.SYNOPSIS
+Searches for a repository by name.
+
+.DESCRIPTION
+The Find-RepoByName function searches for a repository by name in GitHub.
+
+.PARAMETER Name
+The name words that have to be part of the repo name.
+
+.PARAMETER Owner
+Scope the search for repos of a specific owner.
+
+.EXAMPLE
+Find-RepoByName -Name "MyRepo" -Owner "MyOwner"
+
+This example searches for a repository ownered by "MyOwner" that have "MyRepo" in the name.
+#>
 function Find-RepoByName{
     [CmdletBinding(SupportsShouldProcess)]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingInvokeExpression', '', Scope='Function')]
