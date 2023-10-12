@@ -19,7 +19,6 @@ This example searches for a repository ownered by "MyOwner" that have "MyRepo" i
 #>
 function Find-RepoByName{
     [CmdletBinding(SupportsShouldProcess)]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingInvokeExpression', '', Scope='Function')]
     param(
         [Parameter()][string]$Name,
         [Parameter()][string]$Owner
@@ -46,3 +45,22 @@ function Find-RepoByName{
 
     return $ret
 } Export-ModuleMember -Function Find-RepoByName
+
+function Get-RepoAdmins{
+    [CmdletBinding(SupportsShouldProcess)]
+    param(
+        [Parameter()][string]$RepoName
+    )
+
+    $command = 'gh api repos/{repoName}/collaborators '
+    $command = $command -replace "{repoName}", "$($RepoName)"
+    $command = $command -replace "{attributes}", "$($attributes)"
+
+    $collaborators = Invoke-GhExpression $command
+
+    $admin = $collaborators | Where-Object {$_.role_name -eq 'admin'}
+
+    $ret = $admin.login
+
+    return $ret
+} Export-ModuleMember -Function Get-RepoAdmins

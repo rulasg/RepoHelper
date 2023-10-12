@@ -20,3 +20,10 @@ function RepoHelperTest_Search_Repo_NameWithOwner{
     Assert-Contains -Expected $expectedcommand -presented $infoVar -Comment "Command not as expected"
 
 }
+
+function RepoHelperTest_RepoAdmins_Get{
+
+    $result = Get-RepoAdmins -RepoName 'bit21/bitkeeper'
+
+    Assert-NotImplemented
+}
