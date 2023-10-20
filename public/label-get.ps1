@@ -23,3 +23,20 @@ function Get-RepoLabels{
         return $result
     }
 } Export-ModuleMember -Function Get-RepoLabels
+
+function Export-RepoLabels{
+    [CmdletBinding(SupportsShouldProcess)]
+    param(
+        [Parameter(ValueFromPipelineByPropertyName, Position=0)][string]$Repo,
+        [Parameter(ValueFromPipelineByPropertyName, Position=1)][string]$Path
+    )
+
+    process {
+
+        $result = Get-RepoLabels -Repo $Repo 
+
+        $result | ConvertTo-Json | Out-File $Path
+
+    }
+} Export-ModuleMember -Function Export-RepoLabels
+
