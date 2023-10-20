@@ -18,3 +18,33 @@ KEYWORDS
 
 SEE ALSO
     https://github.com/rulasg/TestingHelper/
+
+UPLOAD LOCAL GIT REPOSITORY FOLDER TO GITHUB
+    New-RepoFromFolder -Description "This is the description of the folder repo"
+
+UPLOAD LOCAL POWERSHELL MODULE TO GITHUB
+    New-RepoFromModule
+
+FIND A REPO BY NAME IN GITHUB
+    List the repositories that has the word test in their name.
+    
+    Find-RepoByName -Name "test"
+
+LIST ALL LABELS OF THE LOCAL REPOSITORY
+    
+    Get-RepoLabels
+    Get-RepoLabels -Repo rulasg/testpublicrepo
+
+SAVE REPO LABELS TO FILE
+    Export-RepoLabels -Path C:\temp\labels.json
+
+IMPORT REPO LABELS FROM FILE
+    Import-RepoLabels -Path C:\temp\labels.json
+
+CLEAR ALL LABELS FROM A REPOSITORY
+    Clear all labels of a Repositories
+    Get-RepoLabels | Remove-RepoLabel
+
+REMOVE LABELS BY NAME
+    Remove the labels that start with "bug"
+    Get-RepoLabels | Where {$_.Name -like "bug*"} | Remove-RepoLabel
