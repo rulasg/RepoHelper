@@ -12,7 +12,7 @@ function Add-RepoLabel{
     
     process {
 
-        $command = 'gh label create {name}'
+        $command = 'gh label create "{name}"'
         $command = $command -replace '{name}', $Name
 
         # add description if it exists
@@ -33,3 +33,24 @@ function Add-RepoLabel{
 
     }
 } Export-ModuleMember -Function Add-RepoLabel
+
+function Import-RepoLabels{
+    [CmdletBinding(SupportsShouldProcess)]
+    param(
+        [Parameter(Mandatory,Position=0)][string]$Path,
+        [Parameter(Mandatory,Position=1)][string]$Repo,
+        [Parameter()][switch]$Force
+    )
+
+    process {
+        "Importing labels to $repo from $Path" | Write-Verbose
+
+        $labels = Get-Content $Path | ConvertFrom-Json
+
+        foreach ($label in $labels) {
+            "Importing label $label" | Write-Verbose
+            $null = $label | Add-RepoLabel -Repo $repo -WhatIf:$WhatIfPreference -Force:$Force
+        }
+
+    }
+} Export-ModuleMember -Function Import-RepoLabels
