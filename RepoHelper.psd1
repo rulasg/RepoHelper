@@ -51,7 +51,7 @@ Description = 'Powershell module to help manage GitHub Repositories'
 # ProcessorArchitecture = ''
 
 # Modules that must be imported into the global environment prior to importing this module
-# RequiredModules = @()
+RequiredModules = @('InvokeHelper')
 
 # Assemblies that must be loaded prior to importing this module
 # RequiredAssemblies = @()
