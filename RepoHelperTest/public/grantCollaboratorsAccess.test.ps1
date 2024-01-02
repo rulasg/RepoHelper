@@ -4,7 +4,7 @@ function RepoHelperTest_GrantRepoAccess_SUCCESS{
     $repo = 'bit21'
     $user = 'raulgeu'
     $role = 'triage'
-    Set-InvokeCommandAlias -Alias 'gh api repos/solidifycustomers/bit21/collaborators/raulgeu -X PUT -f permission="triage"' -Command 'return $null'
+    Set-InvokeCommandAlias -Alias 'gh api repos/solidifycustomers/bit21/collaborators/raulgeu -X PUT -f permission="triage"' -Command 'return "null"'
 
     $result = Grant-RepoAccess -owner $owner -repo $repo -user $user -role $role
 
