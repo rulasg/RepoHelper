@@ -58,9 +58,35 @@ function Invoke-DeployModuleToPSGallery{
     # Deploy the module with ShouldProcess (-whatif, -confirm)
     if ($PSCmdlet.ShouldProcess($psdPath, "Invoke-DeployModule")) {
         "Deploying {0} {1} {2} to PSGallery ..." -f $($psd1.RootModule), $($psd1.ModuleVersion), $($psd1.PrivateData.pSData.Prerelease) | Write-Information
-        # During testing we should use -WhatIf paarmetre when calling for deploy.
+        # During testing we should use -WhatIf paarmetre when calling for deploy. 
         # Just reach this point when testing call failure
+
+        ## Install delendecies as Publish-Module 
+        # will check if dependecies are installed locally due to a bug
+        # in Test-ModuleManifest
+        Install-Dependencies -ModuleManifestPath $psdPath
+
         Invoke-DeployModule -Name $psdPath -NuGetApiKey $NuGetApiKey -Force:$ForceDeploy
+    }
+}
+
+function Install-Dependencies{
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)] [string]$ModuleManifestPath
+    )
+
+    $requiredModules = $ModuleManifestPath | Get-Item | Import-PowerShellDataFile | Select-Object -ExpandProperty requiredModules
+
+    foreach ($requiredModule in $requiredModules) {
+        $module = Import-Module -Name $requiredModule -PassThru -ErrorAction SilentlyContinue
+
+        if ($null -eq $module) {
+            "Installing module $requiredModule" | Write-Host -ForegroundColor DarkGray
+            Install-Module -Name $requiredModule -Force -AllowPrerelease
+            $module = Import-Module -Name $requiredModule -PassThru
+            "Loaded module Name[$($module.Name)] Version[$($module.Version)]" | Write-Host -ForegroundColor DarkGray
+        }
     }
 }
 
