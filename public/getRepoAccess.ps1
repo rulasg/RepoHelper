@@ -3,6 +3,7 @@ Set-InvokeCommandAlias -Alias 'GetUserAccessAll' -Command 'gh api repos/{owner}/
 Set-InvokeCommandAlias -Alias 'GetUserAccess'    -Command 'gh api repos/{owner}/{repo}/collaborators/{user}/permission'
 Set-InvokeCommandAlias -Alias 'TestUserAccess'   -Command 'gh api repos/{owner}/{repo}/collaborators/{user}'
 
+
 function Get-RepoAccessAll{
     [CmdletBinding()]
     param(
@@ -47,3 +48,25 @@ function Get-RepoAccess{
     return $result.permission
 
 } Export-ModuleMember -Function Get-RepoAccess
+
+function Test-RepoAccess{
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)] [string]$Owner,
+        [Parameter(Mandatory)] [string]$Repo,
+        [Parameter(Mandatory)] [string]$User
+    )
+    
+    $param = @{
+        owner = $Owner
+        repo = $Repo
+        user = $User
+    }
+
+    $result = Invoke-MyCommandJson -Command TestUserAccess -Parameters $param 2> $null
+
+    $ret = $null -eq $result
+
+    return $ret
+
+} Export-ModuleMember -Function Test-RepoAccess

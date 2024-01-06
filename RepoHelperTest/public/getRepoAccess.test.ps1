@@ -25,3 +25,28 @@ function RepoHelperTest_GetRepoAccess_Success{
 
     Assert-AreEqual -Expected 'write' -Presented $result
 }
+
+function RepoHelperTest_TestRepoAccess_Success_True{
+
+    $owner = 'solidifycustomers' ; $repo = 'bit21' ; $user = 'raulgeu'
+
+    Set-InvokeCommandAlias -Alias  "gh api repos/$owner/$Repo/collaborators/$user" -Command 'echo null'
+
+    $result = Test-RepoAccess -Owner 'solidifycustomers' -Repo 'bit21' -User 'raulgeu' 
+
+    Assert-IsTrue -Condition $result
+}
+
+function RepoHelperTest_TestRepoAccess_Success_False{
+
+    $testnotfound = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'testRepoAccessNotFound.json'
+    
+    $owner = 'solidifycustomers' ; $repo = 'bit21' ; $user = 'raulgeu'
+
+    Set-InvokeCommandAlias -Alias  "gh api repos/$owner/$Repo/collaborators/$user" -Command "Get-Content -Path $(($testnotfound | Get-Item).FullName)"
+
+    $result = Test-RepoAccess -Owner $owner -Repo $repo -User $user
+
+    Assert-IsFalse -Condition $result
+
+}
