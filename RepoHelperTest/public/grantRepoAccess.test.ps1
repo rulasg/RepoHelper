@@ -41,6 +41,34 @@ function RepoHelperTest_GrantRepoAccess_fail_wrong_user_repo_owner{
     Assert-AreEqual -Expected $result.$user -Presented 'Not Found'
 }
 
-function RepoHelperTest_GrantRepoAccessAll_Success{
-    Assert-NotImplemented
+function RepoHelperTest_SyncRepoAccessAll_Success{
+    $owner = 'solidifycustomers' ; $repo = 'bit21'
+
+    # Avoid calls to single user check
+    Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/collaborators/rulasg/permission" -Command "throw"
+
+    # All users
+    $GetAccessAllSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessAllSuccess.json'
+    Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/collaborators" -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
+
+    # Grant access
+    $grantAccessRulasg = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'grantAccessSuccessRulasg.json'
+    Set-InvokeCommandAlias -Alias 'gh api repos/solidifycustomers/bit21/collaborators/rulasg -X PUT -f permission="write"' -Command "Get-Content -Path $(($grantAccessRulasg | Get-Item).FullName)"
+
+    # Remove MagnusTim
+    Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/collaborators/MagnusTim -X DELETE" -Command "echo null"
+
+    $userList = @"
+raulgeu
+rulasg
+"@
+
+    New-TestingFile -Name "contributors" -Content $userList
+
+    $result = Sync-RepoAccess -owner $owner -repo $repo -FilePath "contributors" -role 'write'
+
+    Assert-AreEqual -Expected '+' -Presented $result.rulasg
+    Assert-AreEqual -Expected '=' -Presented $result.raulgeu
+    Assert-AreEqual -Expected '-' -Presented $result.MagnusTim
+    
 }

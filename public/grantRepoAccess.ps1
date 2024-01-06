@@ -9,16 +9,16 @@ function Grant-RepoAccess{
         [Parameter(Mandatory)] [string]$repo,
         [Parameter(Mandatory)] [string]$user,
         [Parameter(Mandatory)]
-        [ValidateSet("read", "triage", "write", "maintain", "admin")] [string]$role
+        [ValidateSet("read", "triage", "write", "maintain", "admin")] [string]$role,
+        [Parameter()][switch]$force
     )
-    
-    # gh api repos/solidifycustomers/bit21/collaborators/raulgeu -X PUT -f permission='triage'
 
-    $permission = Get-RepoAccess -Owner $owner -Repo $repo -User $user
+    if(!$force){
 
-    if($permission -eq $role){
-        return @{
-            $user = $permission
+        $permission = Get-RepoAccess -Owner $owner -Repo $repo -User $user
+        
+        if($permission -eq $role){
+            return @{ $user = $permission }
         }
     }
 
@@ -60,3 +60,57 @@ function Remove-RepoAccess{
     return $result
 
 } Export-ModuleMember -Function Remove-RepoAccess
+
+function Sync-RepoAccess{
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)] [string]$FilePath,
+        [Parameter(Mandatory)] [string]$owner,
+        [Parameter(Mandatory)] [string]$repo,
+        [Parameter(Mandatory)]
+        [ValidateSet("read", "triage", "write", "maintain", "admin")] [string]$role
+    )
+
+    $ret = @{}
+
+    $users = Get-Content -Path $FilePath
+
+    $permissions = Get-RepoAccessAll -Owner $owner -Repo $repo
+
+    # Update or add existing users
+    foreach($user in $users){
+
+        if($permissions.$user -eq $role){
+            $ret.$user = "="
+
+        } else {
+
+            # Force to avoid the call to check if the access is already set
+            $result = Grant-RepoAccess -Owner $owner -Repo $repo -User $user -Role $role -Force
+
+            if($result.$user -eq $role){
+                $ret.$user = "+"
+            } else {
+                $ret.$user = "X"
+            }
+        }
+    }
+
+    # Delete non existing users
+
+    $usersToDelete = $Permissions.Keys | Where-Object { $users -notcontains $_ }
+
+    foreach($userToDelete in $usersToDelete){
+        
+        $result = Remove-RepoAccess -Owner $owner -Repo $repo -User $userToDelete
+        
+        if($null -eq $result){
+            $ret.$userToDelete += '-'
+        } else {
+            $ret.$userToDelete += 'X'
+        }
+    }
+
+        return $ret
+
+} Export-ModuleMember -Function Sync-RepoAccess
