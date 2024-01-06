@@ -17,8 +17,9 @@ function Grant-RepoAccess{
     $permission = Get-RepoAccess -Owner $owner -Repo $repo -User $user
 
     if($permission -eq $role){
-        Write-Warning "User $user already has $role access to $owner/$repo"
-        return
+        return @{
+            $user = $permission
+        }
     }
 
     $param = @{
@@ -30,7 +31,11 @@ function Grant-RepoAccess{
 
     $result = Invoke-MyCommandJson -Command GrantUserAccess -Parameters $param
 
-    $ret = $result.permission
+    if($result.message -eq "Not Found"){
+        $ret = @{ $user = $result.message }
+    } else {
+        $ret = @{ $result.invitee.login = $result.permissions }
+    }
 
     return $ret
 
