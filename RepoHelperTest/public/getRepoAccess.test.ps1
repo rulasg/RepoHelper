@@ -1,27 +1,3 @@
-function RepoHelperTest_GrantRepoAccess_SUCCESS{
-
-    $owner = 'solidifycustomers'
-    $repo = 'bit21'
-    $user = 'raulgeu'
-    $role = 'triage'
-    Set-InvokeCommandAlias -Alias 'gh api repos/solidifycustomers/bit21/collaborators/raulgeu -X PUT -f permission="triage"' -Command 'return "null"'
-
-    $result = Grant-RepoAccess -owner $owner -repo $repo -user $user -role $role
-
-    Assert-IsNull -Object $result
-}
-
-function RepoHelperTest_GrantRepoAccess_fail_wrong_user_repo_owner{
-    $GrantAccessError = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'grantAccessError.json'
-
-    $owner = 'solidifycustomers' ; $repo = 'bit21' ; $user = 'wrongUser' ; $role = 'triage'
-
-    Set-InvokeCommandAlias -Alias 'gh api repos/solidifycustomers/bit21/collaborators/wrongUser -X PUT -f permission="triage"' -Command "Get-Content -Path $(($GrantAccessError | Get-Item).FullName)"
-
-    $result = Grant-RepoAccess -owner $owner -repo $repo -user $user -role $role
-
-    Assert-AreEqual -expected 'Not Found' -Presented $result.message
-}
 
 function RepoHelperTest_GetRepoAccessAll_SUCCESS{
 
@@ -48,4 +24,29 @@ function RepoHelperTest_GetRepoAccess_Success{
     $result = Get-RepoAccess -Owner $owner -Repo $repo -User $user
 
     Assert-AreEqual -Expected 'write' -Presented $result
+}
+
+function RepoHelperTest_TestRepoAccess_Success_True{
+
+    $owner = 'solidifycustomers' ; $repo = 'bit21' ; $user = 'raulgeu'
+
+    Set-InvokeCommandAlias -Alias  "gh api repos/$owner/$Repo/collaborators/$user" -Command 'echo null'
+
+    $result = Test-RepoAccess -Owner 'solidifycustomers' -Repo 'bit21' -User 'raulgeu' 
+
+    Assert-IsTrue -Condition $result
+}
+
+function RepoHelperTest_TestRepoAccess_Success_False{
+
+    $testnotfound = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'testRepoAccessNotFound.json'
+    
+    $owner = 'solidifycustomers' ; $repo = 'bit21' ; $user = 'raulgeu'
+    
+    Set-InvokeCommandAlias -Alias  "gh api repos/$owner/$Repo/collaborators/$user" -Command "Get-Content -Path $(($testnotfound | Get-Item).FullName)"
+    
+    $result = Test-RepoAccess -Owner $owner -Repo $repo -User $user
+    
+    Assert-IsFalse -Condition $result
+    
 }
