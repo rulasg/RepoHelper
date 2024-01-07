@@ -110,7 +110,7 @@ function Sync-RepoAccess{
             # Force to avoid the call to check if the access is already set
             $result = Grant-RepoAccess -Owner $owner -Repo $repo -User $user -Role $role -Force
 
-            if($result.$user -eq $role){
+            if($result.$user -eq $role.ToLower()){
                 $ret.$user = $status
             } else {
                 $ret.$user = "X $status"
