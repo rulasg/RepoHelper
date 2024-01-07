@@ -101,13 +101,19 @@ function Sync-RepoAccess{
 
         } else {
 
+            if($permissions.Keys.Contains($user)){
+                $status = "+ ($($permissions.$user))"
+            } else {
+                $status = "+"
+            }
+
             # Force to avoid the call to check if the access is already set
             $result = Grant-RepoAccess -Owner $owner -Repo $repo -User $user -Role $role -Force
 
             if($result.$user -eq $role){
-                $ret.$user = "+"
+                $ret.$user = $status
             } else {
-                $ret.$user = "X"
+                $ret.$user = "X $status"
             }
         }
     }
@@ -116,14 +122,17 @@ function Sync-RepoAccess{
 
     $usersToDelete = $Permissions.Keys | Where-Object { $users -notcontains $_ }
 
+    # Just remove the users that where set to $role
+    $usersToDelete = $usersToDelete | Where-Object { $Permissions.$_ -eq $role}
+
     foreach($userToDelete in $usersToDelete){
         
         $result = Remove-RepoAccess -Owner $owner -Repo $repo -User $userToDelete
         
         if($null -eq $result){
-            $ret.$userToDelete += '-'
+            $ret.$userToDelete += "-"
         } else {
-            $ret.$userToDelete += 'X'
+            $ret.$userToDelete += 'X -'
         }
     }
 

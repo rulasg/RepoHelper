@@ -55,8 +55,8 @@ function RepoHelperTest_SyncRepoAccessAll_Success{
     $grantAccessRulasg = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'grantAccessSuccessRulasg.json'
     Set-InvokeCommandAlias -Alias 'gh api repos/solidifycustomers/bit21/collaborators/rulasg -X PUT -f permission="write"' -Command "Get-Content -Path $(($grantAccessRulasg | Get-Item).FullName)"
 
-    # Remove MagnusTim
-    Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/collaborators/MagnusTim -X DELETE" -Command "echo null"
+    # Remove raulgeukk
+    Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/collaborators/raulgeukk -X DELETE" -Command "echo null"
 
     $userList = @"
 raulgeu
@@ -67,8 +67,13 @@ rulasg
 
     $result = Sync-RepoAccess -owner $owner -repo $repo -FilePath "contributors" -role 'write'
 
-    Assert-AreEqual -Expected '+' -Presented $result.rulasg
+    # As admin Mangnus should not be removed from the repo even if not in the write list
+    Assert-NotContains -Expected 'MagnusTim' -Presented $result.Keys
+    
     Assert-AreEqual -Expected '=' -Presented $result.raulgeu
-    Assert-AreEqual -Expected '-' -Presented $result.MagnusTim
+
+    Assert-AreEqual -Expected '+ (admin)' -Presented $result.rulasg
+
+    Assert-AreEqual -Expected '-' -Presented $result.raulgeukk
     
 }
