@@ -3,9 +3,13 @@ Set-InvokeCommandAlias -Alias 'GetUserAccessAll' -Command 'gh api repos/{owner}/
 Set-InvokeCommandAlias -Alias 'GetUserAccess'    -Command 'gh api repos/{owner}/{repo}/collaborators/{user}/permission'
 Set-InvokeCommandAlias -Alias 'TestUserAccess'   -Command 'gh api repos/{owner}/{repo}/collaborators/{user}'
 
-
+<#
+.SYNOPSIS
+    Get the list of all contributors of a repository.
+#>
 function Get-RepoAccessAll{
     [CmdletBinding()]
+    [OutputType([hashtable])]
     param(
         [Parameter(Mandatory)] [string]$Owner,
         [Parameter(Mandatory)] [string]$Repo
@@ -29,6 +33,10 @@ function Get-RepoAccessAll{
     return $ret
 } Export-ModuleMember -Function Get-RepoAccessAll
 
+<#
+.SYNOPSIS
+    Get the access level of a user on a repository.
+#>
 function Get-RepoAccess{
     [CmdletBinding()]
     param(
@@ -49,6 +57,10 @@ function Get-RepoAccess{
 
 } Export-ModuleMember -Function Get-RepoAccess
 
+<#
+.SYNOPSIS
+    Test if a user has access to a repository.
+#>
 function Test-RepoAccess{
     [CmdletBinding()]
     param(

@@ -1,7 +1,12 @@
 Set-InvokeCommandAlias -Alias 'GetUserAccessInvitations'   -Command 'gh api repos/{owner}/{repo}/invitations'
 
+<#
+.SYNOPSIS
+    Get the actual invitations list of a repository.
+#>
 function Get-RepoAccessInvitations{
     [CmdletBinding()]
+    [OutputType([hashtable])]
     param(
         [Parameter(Mandatory)] [string]$Owner,
         [Parameter(Mandatory)] [string]$Repo

@@ -2,8 +2,13 @@
 Set-InvokeCommandAlias -Alias 'GrantUserAccess'  -Command 'gh api repos/{owner}/{repo}/collaborators/{user} -X PUT -f permission="{role}"'
 Set-InvokeCommandAlias -Alias 'RemoveUserAccess'  -Command 'gh api repos/{owner}/{repo}/collaborators/{user} -X DELETE'
 
+<#
+.SYNOPSIS
+    Grant a user access to a repository.
+#>
 function Grant-RepoAccess{
     [CmdletBinding()]
+    [OutputType([hashtable])]
     param(
         [Parameter(Mandatory)] [string]$owner,
         [Parameter(Mandatory)] [string]$repo,
@@ -41,8 +46,12 @@ function Grant-RepoAccess{
 
 } Export-ModuleMember -Function Grant-RepoAccess
 
+<#
+.SYNOPSIS
+    Remove a user access to a repository.
+#>
 function Remove-RepoAccess{
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param(
         [Parameter(Mandatory)] [string]$owner,
         [Parameter(Mandatory)] [string]$repo,
@@ -55,14 +64,21 @@ function Remove-RepoAccess{
         user = $user
     }
 
-    $result = Invoke-MyCommandJson -Command RemoveUserAccess -Parameters $param
+    if ($PSCmdlet.ShouldProcess("User on RepoAccess List", "RemoveUserAccess")) {
+        $result = Invoke-MyCommandJson -Command RemoveUserAccess -Parameters $param
+    }
 
     return $result
 
 } Export-ModuleMember -Function Remove-RepoAccess
 
+<#
+.SYNOPSIS
+    Synchronize the access of a list of users to a repository.
+#>
 function Sync-RepoAccess{
     [CmdletBinding()]
+    [OutputType([hashtable])]
     param(
         [Parameter(Mandatory)] [string]$FilePath,
         [Parameter(Mandatory)] [string]$owner,
