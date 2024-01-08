@@ -64,11 +64,18 @@ function Remove-RepoAccess{
         user = $user
     }
 
+    $ret = $null
+
     if ($PSCmdlet.ShouldProcess("User on RepoAccess List", "RemoveUserAccess")) {
-        $result = Invoke-MyCommandJson -Command RemoveUserAccess -Parameters $param
+
+        $result1 = Invoke-MyCommandJson -Command RemoveUserAccess -Parameters $param
+
+        $result2 = Remove-RepoAccessInvitation -Owner $owner -Repo $repo -User $user
+        
+        $ret = $result1 + $result2
     }
 
-    return $result
+    return $ret
 
 } Export-ModuleMember -Function Remove-RepoAccess
 
@@ -92,34 +99,43 @@ function Sync-RepoAccess{
     $users = Get-Content -Path $FilePath
 
     $permissions = Get-RepoAccessAll -Owner $owner -Repo $repo
+    $invitations = Get-RepoAccessInvitations -Owner $owner -Repo $repo
 
     # Update or add existing users
     foreach($user in $users){
 
+        # Already invited to this role
+        if($invitations.$user -eq $role){
+            $ret.$user = "?"
+            continue
+        }
+        
+        # Already granted to this role
         if($permissions.$user -eq $role){
             $ret.$user = "="
+            continue
+        }
 
+        # Check if it has granted a different role
+        if($permissions.Keys.Contains($user)){
+            $status = "+ ($($permissions.$user))"
         } else {
+            $status = "+"
+        }
 
-            if($permissions.Keys.Contains($user)){
-                $status = "+ ($($permissions.$user))"
-            } else {
-                $status = "+"
-            }
-
-            # Force to avoid the call to check if the access is already set
-            if ($PSCmdlet.ShouldProcess("Target", "Operation")) {
-                $result = Grant-RepoAccess -Owner $owner -Repo $repo -User $user -Role $role -Force
-                
-                if($result.$user -eq $role.ToLower()){
-                    $ret.$user = $status
-                } else {
-                    $ret.$user = $status
-                }
+        # Force to avoid the call to check if the access is already set
+        if ($PSCmdlet.ShouldProcess("Target", "Operation")) {
+            $result = Grant-RepoAccess -Owner $owner -Repo $repo -User $user -Role $role -Force
+            
+            if($result.$user -eq $role.ToLower()){
+                $ret.$user = $status
             } else {
                 $ret.$user = $status
             }
+        } else {
+            $ret.$user = $status
         }
+    
     }
 
     # Delete non existing users
