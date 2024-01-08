@@ -77,7 +77,7 @@ function Remove-RepoAccess{
     Synchronize the access of a list of users to a repository.
 #>
 function Sync-RepoAccess{
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     [OutputType([hashtable])]
     param(
         [Parameter(Mandatory)] [string]$FilePath,
@@ -108,12 +108,16 @@ function Sync-RepoAccess{
             }
 
             # Force to avoid the call to check if the access is already set
-            $result = Grant-RepoAccess -Owner $owner -Repo $repo -User $user -Role $role -Force
-
-            if($result.$user -eq $role.ToLower()){
-                $ret.$user = $status
+            if ($PSCmdlet.ShouldProcess("Target", "Operation")) {
+                $result = Grant-RepoAccess -Owner $owner -Repo $repo -User $user -Role $role -Force
+                
+                if($result.$user -eq $role.ToLower()){
+                    $ret.$user = $status
+                } else {
+                    $ret.$user = $status
+                }
             } else {
-                $ret.$user = "X $status"
+                $ret.$user = $status
             }
         }
     }
@@ -127,12 +131,16 @@ function Sync-RepoAccess{
 
     foreach($userToDelete in $usersToDelete){
         
-        $result = Remove-RepoAccess -Owner $owner -Repo $repo -User $userToDelete
-        
-        if($null -eq $result){
-            $ret.$userToDelete += "-"
+        if ($PSCmdlet.ShouldProcess("Target", "Operation")) {
+            $result = Remove-RepoAccess -Owner $owner -Repo $repo -User $userToDelete
+
+            if($null -eq $result){
+                $ret.$userToDelete += "-"
+            } else {
+                $ret.$userToDelete += 'X -'
+            }
         } else {
-            $ret.$userToDelete += 'X -'
+            $ret.$userToDelete += "-"
         }
     }
 

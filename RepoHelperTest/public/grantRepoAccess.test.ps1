@@ -113,3 +113,38 @@ rulasg
     Assert-AreEqual -Expected '-' -Presented $result.MagnusTim
     
 }
+
+function RepoHelperTest_SyncRepoAccessAll_Success_Admin_WhatIf{
+    $owner = 'solidifycustomers' ; $repo = 'bit21'
+
+    # Avoid calls to single user check
+    Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/collaborators/rulasg/permission" -Command "throw"
+
+    # All users
+    $GetAccessAllSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessAllSuccess.json'
+    Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/collaborators" -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
+
+    # Grant access
+    Set-InvokeCommandAlias -Alias 'gh api repos/solidifycustomers/bit21/collaborators/raulgeu -X PUT -f permission="admin"' -Command "throw"
+
+    # Remove MagnusTim
+    Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/collaborators/MagnusTim -X DELETE" -Command "throw"
+
+    $userList = @"
+raulgeu
+rulasg
+"@
+
+    New-TestingFile -Name "contributors" -Content $userList
+
+    $result = Sync-RepoAccess -owner $owner -repo $repo -FilePath "contributors" -role 'admin' -WhatIf
+
+    # As admin Mangnus should not be removed from the repo even if not in the write list
+
+    Assert-AreEqual -Expected '=' -Presented $result.rulasg
+
+    Assert-AreEqual -Expected '+ (write)' -Presented $result.raulgeu
+
+    Assert-AreEqual -Expected '-' -Presented $result.MagnusTim
+
+}
