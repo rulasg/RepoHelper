@@ -1,13 +1,12 @@
 
 Set-InvokeCommandAlias -Alias 'GetUserAccessAll' -Command 'gh api repos/{owner}/{repo}/collaborators'
-Set-InvokeCommandAlias -Alias 'GetUserAccess'    -Command 'gh api repos/{owner}/{repo}/collaborators/{user}/permission'
 Set-InvokeCommandAlias -Alias 'TestUserAccess'   -Command 'gh api repos/{owner}/{repo}/collaborators/{user}'
 
 <#
 .SYNOPSIS
     Get the list of all contributors of a repository.
 #>
-function Get-RepoAccessAll{
+function Get-RepoAccess{
     [CmdletBinding()]
     [OutputType([hashtable])]
     param(
@@ -15,47 +14,42 @@ function Get-RepoAccessAll{
         [Parameter(Mandatory)] [string]$Repo
     )
     
-    $param = @{
-        owner = $Owner
-        repo = $Repo
-    }
+    $access = Get-UserAccess -Owner $owner -Repo $repo
 
-    $ret = @{}
+    $invitations = Get-RepoAccessInvitations -Owner $owner -Repo $repo
 
-    $result = Invoke-MyCommandJson -Command GetUserAccessAll -Parameters $param
-
-    foreach ($item in $result) {
-        $ret += @{
-            $item.login = $item.role_name
-        }
-    }
+    $ret = $access + $invitations
 
     return $ret
-} Export-ModuleMember -Function Get-RepoAccessAll
+} Export-ModuleMember -Function Get-RepoAccess
 
 <#
 .SYNOPSIS
-    Get the access level of a user on a repository.
+    Get the Access level of a given user
 #>
-function Get-RepoAccess{
+function Get-RepoAccessUser{
     [CmdletBinding()]
+    [OutputType([hashtable])]
     param(
         [Parameter(Mandatory)] [string]$Owner,
         [Parameter(Mandatory)] [string]$Repo,
         [Parameter(Mandatory)] [string]$User
     )
     
-    $param = @{
-        owner = $Owner
-        repo = $Repo
-        user = $User
+    $permissions = Get-UserAccess -Owner $owner -Repo $repo
+        
+    if($permissions.$user -eq $role){
+        return $permissions.$user
     }
 
-    $result = Invoke-MyCommandJson -Command GetUserAccess -Parameters $param
+    $invitations = Get-RepoAccessInvitations -Owner $owner -Repo $repo
 
-    return $result.permission
+    if($invitations.$user -eq $role){
+        return $invitations.$user
+    }
 
-} Export-ModuleMember -Function Get-RepoAccess
+    return $null
+}
 
 <#
 .SYNOPSIS
@@ -69,11 +63,7 @@ function Test-RepoAccess{
         [Parameter(Mandatory)] [string]$User
     )
     
-    $param = @{
-        owner = $Owner
-        repo = $Repo
-        user = $User
-    }
+    $param = @{ owner = $Owner ; repo = $Repo ; user = $User }
 
     $result = Invoke-MyCommandJson -Command TestUserAccess -Parameters $param 2> $null
 
