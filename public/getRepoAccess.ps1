@@ -14,17 +14,11 @@ function Get-RepoAccess{
         [Parameter(Mandatory)] [string]$Repo
     )
     
-    $param = @{ owner = $Owner ; repo = $Repo }
+    $access = Get-UserAccess -Owner $owner -Repo $repo
 
-    $ret = @{}
+    $invitations = Get-RepoAccessInvitations -Owner $owner -Repo $repo
 
-    $result = Invoke-MyCommandJson -Command GetUserAccessAll -Parameters $param
-
-    foreach ($item in $result) {
-        $ret += @{
-            $item.login = $item.role_name
-        }
-    }
+    $ret = $access + $invitations
 
     return $ret
 } Export-ModuleMember -Function Get-RepoAccess
@@ -42,7 +36,7 @@ function Get-RepoAccessUser{
         [Parameter(Mandatory)] [string]$User
     )
     
-    $permissions = Get-RepoAccess -Owner $owner -Repo $repo
+    $permissions = Get-UserAccess -Owner $owner -Repo $repo
         
     if($permissions.$user -eq $role){
         return $permissions.$user

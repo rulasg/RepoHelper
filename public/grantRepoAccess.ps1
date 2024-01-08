@@ -1,6 +1,4 @@
 
-Set-InvokeCommandAlias -Alias 'GrantUserAccess'  -Command 'gh api repos/{owner}/{repo}/collaborators/{user} -X PUT -f permission="{role}"'
-Set-InvokeCommandAlias -Alias 'RemoveUserAccess'  -Command 'gh api repos/{owner}/{repo}/collaborators/{user} -X DELETE'
 
 <#
 .SYNOPSIS
@@ -27,17 +25,16 @@ function Grant-RepoAccess{
         }
     }
 
-    $param = @{ owner = $owner ; repo = $repo ; user = $user ; role = $role }
-
-    $result = Invoke-MyCommandJson -Command GrantUserAccess -Parameters $param
-
-    if($result.message -eq "Not Found"){
-        $ret = @{ $user = $result.message }
-    } else {
-        $ret = @{ $result.invitee.login = $result.permissions }
+    # Remove preivouse access
+    $result = Remove-RepoAccess -Owner $owner -Repo $repo -User $user
+    if($null -ne $result){
+        "Issues removing access for user" | Write-Warning
     }
 
-    return $ret
+    # Grant access
+    $result = Grant-UserAccess -Owner $owner -Repo $repo -User $user -Role $role
+
+    return $result
 
 } Export-ModuleMember -Function Grant-RepoAccess
 
@@ -53,13 +50,11 @@ function Remove-RepoAccess{
         [Parameter(Mandatory)] [string]$user
     )
 
-    $param = @{ owner = $owner ; repo = $repo ; user = $user }
-
     $ret = $null
 
     if ($PSCmdlet.ShouldProcess("User on RepoAccess List", "RemoveUserAccess")) {
 
-        $result1 = Invoke-MyCommandJson -Command RemoveUserAccess -Parameters $param
+        $result1 = Remove-UserAccess -Owner $owner -Repo $repo -User $user
 
         $result2 = Remove-RepoAccessInvitation -Owner $owner -Repo $repo -User $user
         

@@ -1,16 +1,20 @@
 
 function RepoHelperTest_GetRepoAccessAll_SUCCESS{
 
-    $GetAccessAllSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessAllSuccess.json'
-
     $owner = 'solidifycustomers' ; $repo = 'bit21' 
-
+    
+    $GetAccessAllSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessAllSuccess.json'
     Set-InvokeCommandAlias -Alias 'gh api repos/solidifycustomers/bit21/collaborators' -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
+
+    $GetInvitations = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessInvitationsSuccess.json'
+    Set-InvokeCommandAlias -Alias 'gh api repos/solidifycustomers/bit21/invitations' -Command "Get-Content -Path $(($GetInvitations | Get-Item).FullName)"
 
     $result = Get-RepoAccess -owner $owner -repo $repo
 
     Assert-AreEqual -Expected $result.raulgeu -Presented 'write'
+    Assert-AreEqual -Expected $result.MagnusTim -Presented 'admin'
     Assert-AreEqual -Expected $result.rulasg -Presented 'admin'
+    Assert-AreEqual -Expected $result.raulgeukk -Presented 'write'
 }
 
 function RepoHelperTest_GetRepoAccess_Success{

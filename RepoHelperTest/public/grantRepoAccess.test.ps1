@@ -39,17 +39,22 @@ function RepoHelperTest_GrantRepoAccess_SUCCESS_Cached{
 function RepoHelperTest_GrantRepoAccess_fail_wrong_user_repo_owner{
     $owner = 'solidifycustomers' ; $repo = 'bit21' ; $user = 'wrongUser' ; $role = 'triage'
 
-    # $GetAccessSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessNone.json'
-    # Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/collaborators/$user/permission" -Command "Get-Content -Path $(($GetAccessSuccess | Get-Item).FullName)"
-    
+    # Checks for user
     $GetAccessAllSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessAllSuccess.json'
     Set-InvokeCommandAlias -Alias 'gh api repos/solidifycustomers/bit21/collaborators' -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
-
     $getInvitations = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessInvitationsSuccess.json'
     Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/invitations" -Command "Get-Content -Path $(($getInvitations | Get-Item).FullName)"
 
+    # Remove user
+    Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/collaborators/$user -X DELETE" -Command "echo null"
+    # Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/invitations/$invitation_id -X DELETE" -Command "echo null"
+    
+
+    # Grant access
     $GrantAccessError = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'grantAccessError.json'
     Set-InvokeCommandAlias -Alias 'gh api repos/solidifycustomers/bit21/collaborators/wrongUser -X PUT -f permission="triage"' -Command "Get-Content -Path $(($GrantAccessError | Get-Item).FullName)"
+
+
 
     $result = Grant-RepoAccess -owner $owner -repo $repo -user $user -role $role 
 
@@ -76,6 +81,9 @@ function RepoHelperTest_SyncRepoAccessAll_Success_Write{
 
     # Remove raulgeukk
     Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/collaborators/raulgeukk -X DELETE" -Command "echo null"
+    
+    # Remove rulasg
+    Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/collaborators/rulasg -X DELETE" -Command "echo null"
 
     $userList = @"
 raulgeu
@@ -116,6 +124,11 @@ function RepoHelperTest_SyncRepoAccessAll_Success_Admin{
 
     # Remove MagnusTim
     Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/collaborators/MagnusTim -X DELETE" -Command "echo null"
+
+
+    # Remove raulgeu
+    Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/collaborators/raulgeu -X DELETE" -Command "echo null"
+    Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/invitations/$invitation_id -X DELETE" -Command "echo null"
 
     $userList = @"
 raulgeu

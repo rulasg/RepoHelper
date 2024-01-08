@@ -36,7 +36,7 @@ function Sync-RepoAccess{
         }
 
         # Check if it has granted a different role
-        if($permissions.Keys.Contains($user)){
+        if($permissions.ContainsKey($user)){
             $status = "+ ($($permissions.$user))"
         } else {
             $status = "+"
