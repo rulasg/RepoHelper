@@ -20,10 +20,10 @@ function Grant-RepoAccess{
 
     if(!$force){
 
-        $permission = Get-RepoAccess -Owner $owner -Repo $repo -User $user
+        $permissions = Get-RepoAccess -Owner $owner -Repo $repo
         
-        if($permission -eq $role){
-            return @{ $user = $permission }
+        if($permissions.$user -eq $role){
+            return @{ $user = $permissions.$user }
         }
     }
 
