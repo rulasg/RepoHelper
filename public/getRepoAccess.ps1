@@ -31,6 +31,34 @@ function Get-RepoAccess{
 
 <#
 .SYNOPSIS
+    Get the Access level of a given user
+#>
+function Get-RepoAccessUser{
+    [CmdletBinding()]
+    [OutputType([hashtable])]
+    param(
+        [Parameter(Mandatory)] [string]$Owner,
+        [Parameter(Mandatory)] [string]$Repo,
+        [Parameter(Mandatory)] [string]$User
+    )
+    
+    $permissions = Get-RepoAccess -Owner $owner -Repo $repo
+        
+    if($permissions.$user -eq $role){
+        return $permissions.$user
+    }
+
+    $invitations = Get-RepoAccessInvitations -Owner $owner -Repo $repo
+
+    if($invitations.$user -eq $role){
+        return $invitations.$user
+    }
+
+    return $null
+}
+
+<#
+.SYNOPSIS
     Test if a user has access to a repository.
 #>
 function Test-RepoAccess{

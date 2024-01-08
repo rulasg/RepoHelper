@@ -20,8 +20,14 @@ function RepoHelperTest_GrantRepoAccess_SUCCESS_Cached{
     
     $owner = 'solidifycustomers' ; $repo = 'bit21' ; $user = 'raulgeu' ; $role = 'write'
 
-    $GetAccessSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessSuccess.json'
-    Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/collaborators/$user/permission" -Command "Get-Content -Path $(($GetAccessSuccess | Get-Item).FullName)"
+    # $GetAccessSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessSuccess.json'
+    # Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/collaborators/$user/permission" -Command "Get-Content -Path $(($GetAccessSuccess | Get-Item).FullName)"
+
+    $GetAccessAllSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessAllSuccess.json'
+    Set-InvokeCommandAlias -Alias 'gh api repos/solidifycustomers/bit21/collaborators' -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
+
+    $getInvitations = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessInvitationsSuccess.json'
+    Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/invitations" -Command "Get-Content -Path $(($getInvitations | Get-Item).FullName)"
 
     Set-InvokeCommandAlias -Alias 'gh api repos/solidifycustomers/bit21/collaborators/raulgeu -X PUT -f permission="write"' -Command "throw"
 
@@ -33,13 +39,19 @@ function RepoHelperTest_GrantRepoAccess_SUCCESS_Cached{
 function RepoHelperTest_GrantRepoAccess_fail_wrong_user_repo_owner{
     $owner = 'solidifycustomers' ; $repo = 'bit21' ; $user = 'wrongUser' ; $role = 'triage'
 
-    $GetAccessSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessNone.json'
-    Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/collaborators/$user/permission" -Command "Get-Content -Path $(($GetAccessSuccess | Get-Item).FullName)"
+    # $GetAccessSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessNone.json'
+    # Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/collaborators/$user/permission" -Command "Get-Content -Path $(($GetAccessSuccess | Get-Item).FullName)"
+    
+    $GetAccessAllSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessAllSuccess.json'
+    Set-InvokeCommandAlias -Alias 'gh api repos/solidifycustomers/bit21/collaborators' -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
+
+    $getInvitations = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessInvitationsSuccess.json'
+    Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/invitations" -Command "Get-Content -Path $(($getInvitations | Get-Item).FullName)"
 
     $GrantAccessError = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'grantAccessError.json'
     Set-InvokeCommandAlias -Alias 'gh api repos/solidifycustomers/bit21/collaborators/wrongUser -X PUT -f permission="triage"' -Command "Get-Content -Path $(($GrantAccessError | Get-Item).FullName)"
 
-    $result = Grant-RepoAccess -owner $owner -repo $repo -user $user -role $role
+    $result = Grant-RepoAccess -owner $owner -repo $repo -user $user -role $role 
 
     Assert-AreEqual -Expected $result.$user -Presented 'Not Found'
 }
@@ -48,11 +60,13 @@ function RepoHelperTest_SyncRepoAccessAll_Success_Write{
     $owner = 'solidifycustomers' ; $repo = 'bit21'
 
     # Avoid calls to single user check
-    Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/collaborators/rulasg/permission" -Command "throw"
+    Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/collaborators" -Command "throw"
+    Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/invitations" -Command "throw"
 
     # All users
     $GetAccessAllSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessAllSuccess.json'
     Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/collaborators" -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
+
     $getInvitations = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessInvitationsSuccess.json'
     Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/invitations" -Command "Get-Content -Path $(($getInvitations | Get-Item).FullName)"
 
@@ -87,7 +101,8 @@ function RepoHelperTest_SyncRepoAccessAll_Success_Admin{
     $owner = 'solidifycustomers' ; $repo = 'bit21'
 
     # Avoid calls to single user check
-    Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/collaborators/rulasg/permission" -Command "throw"
+    Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/collaborators" -Command "throw"
+    Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/invitations" -Command "throw"
 
     # All users
     $GetAccessAllSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessAllSuccess.json'
@@ -125,7 +140,8 @@ function RepoHelperTest_SyncRepoAccessAll_Success_Admin_WhatIf{
     $owner = 'solidifycustomers' ; $repo = 'bit21'
 
     # Avoid calls to single user check
-    Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/collaborators/rulasg/permission" -Command "throw"
+    Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/collaborators" -Command "throw"
+    Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/invitations" -Command "throw"
 
     # All users
     $GetAccessAllSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessAllSuccess.json'
