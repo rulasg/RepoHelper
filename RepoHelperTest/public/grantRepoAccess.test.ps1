@@ -50,6 +50,8 @@ function RepoHelperTest_SyncRepoAccessAll_Success_Write{
     # All users
     $GetAccessAllSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessAllSuccess.json'
     Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/collaborators" -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
+    $getInvitations = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessInvitationsSuccess.json'
+    Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/invitations" -Command "Get-Content -Path $(($getInvitations | Get-Item).FullName)"
 
     # Grant access
     $grantAccessRulasg = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'grantAccessSuccessRulasg.json'
@@ -70,12 +72,12 @@ rulasg
     # As admin Mangnus should not be removed from the repo even if not in the write list
     Assert-NotContains -Expected 'MagnusTim' -Presented $result.Keys
     
-    Assert-AreEqual -Expected '=' -Presented $result.raulgeu
+    Assert-AreEqual -Expected '?' -Presented $result.raulgeu -Comment "Pending invitation"
 
-    Assert-AreEqual -Expected '+ (admin)' -Presented $result.rulasg
+    Assert-AreEqual -Expected '+ (admin)' -Presented $result.rulasg -Comment "added with admin preciouse access"
 
-    Assert-AreEqual -Expected '-' -Presented $result.raulgeukk
-    
+    Assert-AreEqual -Expected '-' -Presented $result.raulgeukk -Comment "remove from list"
+
 }
 
 function RepoHelperTest_SyncRepoAccessAll_Success_Admin{
@@ -87,6 +89,8 @@ function RepoHelperTest_SyncRepoAccessAll_Success_Admin{
     # All users
     $GetAccessAllSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessAllSuccess.json'
     Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/collaborators" -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
+    $getInvitations = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessInvitationsSuccess.json'
+    Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/invitations" -Command "Get-Content -Path $(($getInvitations | Get-Item).FullName)"
 
     # Grant access
     $grantAccessRaulgeu = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'grantAccessSuccessRaulgeuAdmin.json'
@@ -123,6 +127,8 @@ function RepoHelperTest_SyncRepoAccessAll_Success_Admin_WhatIf{
     # All users
     $GetAccessAllSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessAllSuccess.json'
     Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/collaborators" -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
+    $getInvitations = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessInvitationsSuccess.json'
+    Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/invitations" -Command "Get-Content -Path $(($getInvitations | Get-Item).FullName)"
 
     # Grant access
     Set-InvokeCommandAlias -Alias 'gh api repos/solidifycustomers/bit21/collaborators/raulgeu -X PUT -f permission="admin"' -Command "throw"

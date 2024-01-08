@@ -1,7 +1,7 @@
 [
     {
-        "id": 242966538,
-        "node_id": "RI_kwDOKwjZU84Oe2AK",
+        "id": 243067060,
+        "node_id": "RI_kwDOKwjZU84OfOi0",
         "repository": {
             "id": 722000211,
             "node_id": "R_kgDOKwjZUw",
@@ -70,22 +70,22 @@
             "deployments_url": "https://api.github.com/repos/solidifycustomers/bit21/deployments"
         },
         "invitee": {
-            "login": "Raulteu",
-            "id": 25437446,
-            "node_id": "MDQ6VXNlcjI1NDM3NDQ2",
-            "avatar_url": "https://avatars.githubusercontent.com/u/25437446?v=4",
+            "login": "raulgeu",
+            "id": 16279999,
+            "node_id": "MDQ6VXNlcjE2Mjc5OTk5",
+            "avatar_url": "https://avatars.githubusercontent.com/u/16279999?v=4",
             "gravatar_id": "",
-            "url": "https://api.github.com/users/Raulteu",
-            "html_url": "https://github.com/Raulteu",
-            "followers_url": "https://api.github.com/users/Raulteu/followers",
-            "following_url": "https://api.github.com/users/Raulteu/following{/other_user}",
-            "gists_url": "https://api.github.com/users/Raulteu/gists{/gist_id}",
-            "starred_url": "https://api.github.com/users/Raulteu/starred{/owner}{/repo}",
-            "subscriptions_url": "https://api.github.com/users/Raulteu/subscriptions",
-            "organizations_url": "https://api.github.com/users/Raulteu/orgs",
-            "repos_url": "https://api.github.com/users/Raulteu/repos",
-            "events_url": "https://api.github.com/users/Raulteu/events{/privacy}",
-            "received_events_url": "https://api.github.com/users/Raulteu/received_events",
+            "url": "https://api.github.com/users/raulgeu",
+            "html_url": "https://github.com/raulgeu",
+            "followers_url": "https://api.github.com/users/raulgeu/followers",
+            "following_url": "https://api.github.com/users/raulgeu/following{/other_user}",
+            "gists_url": "https://api.github.com/users/raulgeu/gists{/gist_id}",
+            "starred_url": "https://api.github.com/users/raulgeu/starred{/owner}{/repo}",
+            "subscriptions_url": "https://api.github.com/users/raulgeu/subscriptions",
+            "organizations_url": "https://api.github.com/users/raulgeu/orgs",
+            "repos_url": "https://api.github.com/users/raulgeu/repos",
+            "events_url": "https://api.github.com/users/raulgeu/events{/privacy}",
+            "received_events_url": "https://api.github.com/users/raulgeu/received_events",
             "type": "User",
             "site_admin": false
         },
@@ -110,8 +110,8 @@
             "site_admin": false
         },
         "permissions": "write",
-        "created_at": "2024-01-04T17:15:23Z",
-        "url": "https://api.github.com/user/repository_invitations/242966538",
+        "created_at": "2024-01-06T20:00:15Z",
+        "url": "https://api.github.com/user/repository_invitations/243067060",
         "html_url": "https://github.com/solidifycustomers/bit21/invitations",
         "expired": false
     }
