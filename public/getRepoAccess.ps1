@@ -15,10 +15,7 @@ function Get-RepoAccessAll{
         [Parameter(Mandatory)] [string]$Repo
     )
     
-    $param = @{
-        owner = $Owner
-        repo = $Repo
-    }
+    $param = @{ owner = $Owner ; repo = $Repo }
 
     $ret = @{}
 
@@ -45,11 +42,7 @@ function Get-RepoAccess{
         [Parameter(Mandatory)] [string]$User
     )
     
-    $param = @{
-        owner = $Owner
-        repo = $Repo
-        user = $User
-    }
+    $param = @{ owner = $Owner ; repo = $Repo ; user = $User }
 
     $result = Invoke-MyCommandJson -Command GetUserAccess -Parameters $param
 
@@ -69,11 +62,7 @@ function Test-RepoAccess{
         [Parameter(Mandatory)] [string]$User
     )
     
-    $param = @{
-        owner = $Owner
-        repo = $Repo
-        user = $User
-    }
+    $param = @{ owner = $Owner ; repo = $Repo ; user = $User }
 
     $result = Invoke-MyCommandJson -Command TestUserAccess -Parameters $param 2> $null
 

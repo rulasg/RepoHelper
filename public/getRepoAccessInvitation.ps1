@@ -14,10 +14,7 @@ function Get-RepoAccessInvitations{
         [Parameter()][switch]$Ids
     )
     
-    $param = @{
-        owner = $Owner
-        repo = $Repo
-    }
+    $param = @{ owner = $Owner ; repo = $Repo }
 
     $ret = @{}
 
@@ -51,11 +48,7 @@ function Remove-RepoAccessInvitation{
 
     $invitation_Id = $invitations.$User
 
-    $param = @{
-        owner = $Owner
-        repo = $Repo
-        invitation_id = $invitation_Id
-    }
+    $param = @{ owner = $Owner ; repo = $Repo ; invitation_id = $invitation_Id }
 
     $result = Invoke-MyCommandJson -Command CancelRepoAccessInvitation -Parameters $param
 
