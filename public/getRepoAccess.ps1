@@ -49,7 +49,7 @@ function Get-RepoAccessUser{
     }
 
     return $null
-}
+} Export-ModuleMember -Function Get-RepoAccessUser
 
 <#
 .SYNOPSIS
