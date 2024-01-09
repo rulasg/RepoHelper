@@ -137,7 +137,7 @@ function RepoHelperTest_SyncRepoAccess_EnvironmentParameters{
 
     New-TestingFile -Name "contributors" -Content $userList
 
-    Set-InvokeCommandAlias -Alias "GetRepoRemoteUrl" -Command "echo https://github.com/$owner/$repo.git"
+    Set-InvokeCommandAlias -Alias 'git remote get-url origin 2>$null' -Command "echo https://github.com/$owner/$repo.git"
 
     # All users
     $GetAccessAllSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessAllSuccess.json'
@@ -154,7 +154,7 @@ function RepoHelperTest_SyncRepoAccess_EnvironmentParameters{
 
 function RepoHelperTest_SyncRepoAccess_NoParameters {
 
-    Set-InvokeCommandAlias -Alias "GetRepoRemoteUrl" -Command "return $null"
+    Set-InvokeCommandAlias -Alias 'git remote get-url origin 2>$null' -Command 'return $null'
 
     $userList = @"
     raulgeu
@@ -171,7 +171,7 @@ function RepoHelperTest_SyncRepoAccess_NoParameters {
 function RepoHelperTest_SyncRepoAccess_NoUsersFile {
     $owner = 'solidifycustomers' ; $repo = 'bit21' ; $file = "contributors"
 
-    Set-InvokeCommandAlias -Alias "GetRepoRemoteUrl" -Command "echo https://github.com/$owner/$repo.git"
+    Set-InvokeCommandAlias -Alias 'git remote get-url origin 2>$null' -Command "echo https://github.com/$owner/$repo.git"
 
     $result = Sync-RepoAccess admin  $file -WhatIf  @ErrorParameters
 

@@ -9,6 +9,11 @@ function Get-Environment{
         [Parameter(Position = 1)] [string]$Repo
     )
 
+    if(-Not [string]::IsNullOrWhiteSpace($Owner) -and -Not [string]::IsNullOrWhiteSpace($Repo)){
+        return $Owner, $Repo
+    }
+
+    # Get remote repo name
     $url = Invoke-MyCommand -Command GetRepoRemoteUrl
     if($null -ne $url){
 
@@ -16,19 +21,19 @@ function Get-Environment{
         $remoteOwner = $url | Split-Path -Parent | Split-Path -Leafbase
     }
 
-    # Default owner
+    # Default Owner
     if([string]::IsNullOrWhiteSpace($Owner)){
         $Owner = $remoteOwner
     }
 
-    # Default owner
+    # Default Owner
     if([string]::IsNullOrWhiteSpace($Repo)){
         $Repo = $remoteRepo
     }
 
-    if ($null -eq $owner -eq $owner){
+    if ($null -eq $Owner -eq $Owner){
         return $null
     }
 
-    return $owner, $repo
+    return $Owner, $Repo
 }
