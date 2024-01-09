@@ -25,8 +25,8 @@ function Sync-RepoAccess{
     # Read users from file
     $users = Get-UsersFromFile -Path $FilePath
 
-    if(-not $?){
-        "Error reading user file $file" | Write-Error
+    if($null -eq $users){
+        "Error reading user file $FilePath" | Write-Error
         return $null
     }
 
@@ -106,6 +106,10 @@ function Get-UsersFromFile{
     $users = @()
 
     $content = Get-Content -Path $Path
+
+    if(-not $?){
+        return $null
+    }
 
     foreach($line in $content){
         $line = $line.Trim()

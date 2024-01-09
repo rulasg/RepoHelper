@@ -154,6 +154,8 @@ function RepoHelperTest_SyncRepoAccess_EnvironmentParameters{
 
 function RepoHelperTest_SyncRepoAccess_NoParameters {
 
+    Set-InvokeCommandAlias -Alias "GetRepoRemoteUrl" -Command "return $null"
+
     $userList = @"
     raulgeu
     rulasg
@@ -164,4 +166,15 @@ function RepoHelperTest_SyncRepoAccess_NoParameters {
 
     Assert-IsNull -Object $result
     Assert-Contains -Expected "Owner and Repo parameters are required" -Presented $errorvar.Exception.Message
+}
+
+function RepoHelperTest_SyncRepoAccess_NoUsersFile {
+    $owner = 'solidifycustomers' ; $repo = 'bit21' ; $file = "contributors"
+
+    Set-InvokeCommandAlias -Alias "GetRepoRemoteUrl" -Command "echo https://github.com/$owner/$repo.git"
+
+    $result = Sync-RepoAccess admin  $file -WhatIf  @ErrorParameters
+
+    Assert-IsNull -Object $result
+    Assert-Contains -Expected "Error reading user file $file" -Presented $errorvar.Exception.Message
 }
