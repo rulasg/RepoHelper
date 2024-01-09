@@ -26,6 +26,10 @@ function Get-Environment{
         $Repo = $remoteRepo
     }
 
+    if ($null -eq $repo -eq $owner){
+        return $null
+    }
+
     return [PSCustomObject]@{
         Repo = $Repo
         Owner = $Owner

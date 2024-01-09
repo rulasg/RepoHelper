@@ -123,3 +123,45 @@ rulasg
     Assert-AreEqual -Expected '-' -Presented $result.MagnusTim
 
 }
+
+function RepoHelperTest_SyncRepoAccess_EnvironmentParameters{
+    $owner = 'solidifycustomers' ; $repo = 'bit21'
+
+    # "" | Out-File "contributors"
+
+    $userList = @"
+        #MagnusTim
+        #raulgeu
+        rulasg
+"@
+
+    New-TestingFile -Name "contributors" -Content $userList
+
+    Set-InvokeCommandAlias -Alias "GetRepoRemoteUrl" -Command "echo https://github.com/$owner/$repo.git"
+
+    # All users
+    $GetAccessAllSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessAllSuccess.json'
+    Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/collaborators" -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
+    $getInvitations = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessInvitationsSuccess.json'
+    Set-InvokeCommandAlias -Alias "gh api repos/$owner/$repo/invitations" -Command "Get-Content -Path $(($getInvitations | Get-Item).FullName)"
+
+    $result = Sync-RepoAccess admin  "contributors" -WhatIf
+
+    Assert-Count -Expected 2 -Presented $result
+    Assert-AreEqual -Expected '=' -Presented $result.rulasg
+    Assert-AreEqual -Expected '-' -Presented $result.MagnusTim
+}
+
+function RepoHelperTest_SyncRepoAccess_NoParameters {
+
+    $userList = @"
+    raulgeu
+    rulasg
+"@
+    New-TestingFile -Name "contributors" -Content $userList
+
+    $result = Sync-RepoAccess -FilePath "contributors" -role 'write' -WhatIf @ErrorParameters
+
+    Assert-IsNull -Object $result
+    Assert-Contains -Expected "Owner and Repo parameters are required" -Presented $errorvar.Exception.Message
+}
