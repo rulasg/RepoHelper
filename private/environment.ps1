@@ -3,7 +3,7 @@ Set-InvokeCommandAlias -Alias 'GetRepoRemoteUrl' -Command 'git remote get-url or
 
 function Get-Environment{
     [CmdletBinding()]
-    [OutputType([string])]
+    [OutputType([string[]])]
     param(
         [Parameter(Position = 0)] [string]$Owner,
         [Parameter(Position = 1)] [string]$Repo
