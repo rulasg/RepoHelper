@@ -5,8 +5,8 @@ function Get-Environment{
     [CmdletBinding()]
     [OutputType([string])]
     param(
-        [Parameter()] [string]$Owner,
-        [Parameter()] [string]$Repo
+        [Parameter(Position = 0)] [string]$Owner,
+        [Parameter(Position = 1)] [string]$Repo
     )
 
     $url = Invoke-MyCommand -Command GetRepoRemoteUrl
@@ -26,13 +26,9 @@ function Get-Environment{
         $Repo = $remoteRepo
     }
 
-    if ($null -eq $repo -eq $owner){
+    if ($null -eq $owner -eq $owner){
         return $null
     }
 
-    return [PSCustomObject]@{
-        Repo = $Repo
-        Owner = $Owner
-        RepoWithOwner = "$Owner/$Repo"
-    }
+    return $owner, $repo
 }

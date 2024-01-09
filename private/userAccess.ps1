@@ -5,36 +5,36 @@ function Grant-UserAccess{
     [CmdletBinding()]
     [OutputType([hashtable])]
     param(
-        [Parameter(Mandatory)] [string]$owner,
-        [Parameter(Mandatory)] [string]$repo,
-        [Parameter(Mandatory)] [string]$user,
+        [Parameter(Mandatory)] [string]$Owner,
+        [Parameter(Mandatory)] [string]$Repo,
+        [Parameter(Mandatory)] [string]$User,
         [Parameter(Mandatory)]
         [ValidateSet("read", "triage", "write", "maintain", "admin")] [string]$role,
         [Parameter()][switch]$force
     )
-        $param = @{ owner = $owner ; repo = $repo ; user = $user ; role = $role }
+    $param = @{ owner = $Owner ; repo = $Repo ; user = $User ; role = $role }
 
-        # Grant access
-        $result = Invoke-MyCommandJson -Command GrantUserAccess -Parameters $param
+    # Grant access
+    $result = Invoke-MyCommandJson -Command GrantUserAccess -Parameters $param
 
-        if($result.message -eq "Not Found"){
-            $ret = @{ $user = $result.message }
-        } else {
-            $ret = @{ $result.invitee.login = $result.permissions }
-        }
-    
-        return $ret
+    if($result.message -eq "Not Found"){
+        $ret = @{ $User = $result.message }
+    } else {
+        $ret = @{ $result.invitee.login = $result.permissions }
+    }
+
+    return $ret
 }
 
 function Remove-UserAccess{
     [CmdletBinding(SupportsShouldProcess)]
     param(
-        [Parameter(Mandatory)] [string]$owner,
-        [Parameter(Mandatory)] [string]$repo,
-        [Parameter(Mandatory)] [string]$user
+        [Parameter(Mandatory)] [string]$Owner,
+        [Parameter(Mandatory)] [string]$Repo,
+        [Parameter(Mandatory)] [string]$User
     )
 
-    $param = @{ owner = $owner ; repo = $repo ; user = $user }
+    $param = @{ owner = $Owner ; repo = $Repo ; user = $User }
 
     $ret = $null
 

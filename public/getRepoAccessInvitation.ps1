@@ -9,11 +9,20 @@ function Get-RepoAccessInvitations{
     [CmdletBinding()]
     [OutputType([hashtable])]
     param(
-        [Parameter(Mandatory)] [string]$Owner,
-        [Parameter(Mandatory)] [string]$Repo,
+        [Parameter()] [string]$Owner,
+        [Parameter()] [string]$Repo,
         [Parameter()][switch]$Ids
     )
+
+    # Resolve repo name from parameters or environment
+    $owner,$repo = Get-Environment $owner $repo
     
+    # Error if parameters not set. No need to check repo too.
+    if([string]::IsNullOrEmpty($Owner)){
+        "Owner and Repo parameters are required" | Write-Error
+        return $null
+    }
+
     $param = @{ owner = $Owner ; repo = $Repo }
 
     $ret = @{}
@@ -34,10 +43,19 @@ function Get-RepoAccessInvitations{
 function Remove-RepoAccessInvitation{
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory)] [string]$Owner,
-        [Parameter(Mandatory)] [string]$Repo,
+        [Parameter()] [string]$Owner,
+        [Parameter()] [string]$Repo,
         [Parameter(Mandatory)] [string]$User
     )
+
+    # Resolve repo name from parameters or environment
+    $owner,$repo = Get-Environment $owner $repo
+    
+    # Error if parameters not set. No need to check repo too.
+    if([string]::IsNullOrEmpty($Owner)){
+        "Owner and Repo parameters are required" | Write-Error
+        return $null
+    }
 
     $invitations = Get-RepoAccessInvitations -Owner $Owner -Repo $Repo -Ids
 
