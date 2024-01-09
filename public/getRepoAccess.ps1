@@ -10,10 +10,19 @@ function Get-RepoAccess{
     [CmdletBinding()]
     [OutputType([hashtable])]
     param(
-        [Parameter(Mandatory)] [string]$Owner,
-        [Parameter(Mandatory)] [string]$Repo
+        [Parameter()] [string]$Owner,
+        [Parameter()] [string]$Repo
     )
+
+    # Resolve repo name from parameters or environment
+    $owner,$repo = Get-Environment $owner $repo
     
+    # Error if parameters not set. No need to check repo too.
+    if([string]::IsNullOrEmpty($Owner)){
+        "Owner and Repo parameters are required" | Write-Error
+        return $null
+    }
+
     $access = Get-UserAccess -Owner $owner -Repo $repo
 
     $invitations = Get-RepoAccessInvitations -Owner $owner -Repo $repo
@@ -31,11 +40,20 @@ function Get-RepoAccessUser{
     [CmdletBinding()]
     [OutputType([hashtable])]
     param(
-        [Parameter(Mandatory)] [string]$Owner,
-        [Parameter(Mandatory)] [string]$Repo,
+        [Parameter()] [string]$Owner,
+        [Parameter()] [string]$Repo,
         [Parameter(Mandatory)] [string]$User
     )
-    
+
+    # Resolve repo name from parameters or environment
+    $owner,$repo = Get-Environment $owner $repo
+
+    # Error if parameters not set. No need to check repo too.
+    if([string]::IsNullOrEmpty($Owner)){
+        "Owner and Repo parameters are required" | Write-Error
+        return $null
+    }
+
     $permissions = Get-UserAccess -Owner $owner -Repo $repo
         
     if($permissions.$user -eq $role){
@@ -58,11 +76,20 @@ function Get-RepoAccessUser{
 function Test-RepoAccess{
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory)] [string]$Owner,
-        [Parameter(Mandatory)] [string]$Repo,
+        [Parameter()] [string]$Owner,
+        [Parameter()] [string]$Repo,
         [Parameter(Mandatory)] [string]$User
     )
+
+    # Resolve repo name from parameters or environment
+    $owner,$repo = Get-Environment $owner $repo
     
+    # Error if parameters not set. No need to check repo too.
+    if([string]::IsNullOrEmpty($Owner)){
+        "Owner and Repo parameters are required" | Write-Error
+        return $null
+    }
+
     $param = @{ owner = $Owner ; repo = $Repo ; user = $User }
 
     $result = Invoke-MyCommandJson -Command TestUserAccess -Parameters $param 2> $null

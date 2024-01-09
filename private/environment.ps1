@@ -3,12 +3,17 @@ Set-InvokeCommandAlias -Alias 'GetRepoRemoteUrl' -Command 'git remote get-url or
 
 function Get-Environment{
     [CmdletBinding()]
-    [OutputType([string])]
+    [OutputType([string[]])]
     param(
-        [Parameter()] [string]$Owner,
-        [Parameter()] [string]$Repo
+        [Parameter(Position = 0)] [string]$Owner,
+        [Parameter(Position = 1)] [string]$Repo
     )
 
+    if(-Not [string]::IsNullOrWhiteSpace($Owner) -and -Not [string]::IsNullOrWhiteSpace($Repo)){
+        return $Owner, $Repo
+    }
+
+    # Get remote repo name
     $url = Invoke-MyCommand -Command GetRepoRemoteUrl
     if($null -ne $url){
 
@@ -16,23 +21,19 @@ function Get-Environment{
         $remoteOwner = $url | Split-Path -Parent | Split-Path -Leafbase
     }
 
-    # Default owner
+    # Default Owner
     if([string]::IsNullOrWhiteSpace($Owner)){
         $Owner = $remoteOwner
     }
 
-    # Default owner
+    # Default Owner
     if([string]::IsNullOrWhiteSpace($Repo)){
         $Repo = $remoteRepo
     }
 
-    if ($null -eq $repo -eq $owner){
+    if ($null -eq $Owner -eq $Owner){
         return $null
     }
 
-    return [PSCustomObject]@{
-        Repo = $Repo
-        Owner = $Owner
-        RepoWithOwner = "$Owner/$Repo"
-    }
+    return $Owner, $Repo
 }

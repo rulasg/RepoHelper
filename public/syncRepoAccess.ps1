@@ -12,10 +12,10 @@ function Sync-RepoAccess{
         [Parameter()] [string]$Repo
     )
     # Resolve repor form parameters and environment
-    $env = Get-Environment -Owner $owner -Repo $repo
+    $Owner,$Repo = Get-Environment $Owner $Repo
     
-    # Error if parameters not set
-    if($null -eq $env){
+    # Error if parameters not set. No need to check repo too.
+    if([string]::IsNullOrEmpty($Owner)){
         "Owner and Repo parameters are required" | Write-Error
         return $null
     }
@@ -31,8 +31,8 @@ function Sync-RepoAccess{
     }
 
     # Get current permissions and invitations
-    $permissions = Get-RepoAccess -Owner $env.owner -Repo $env.repo
-    $invitations = Get-RepoAccessInvitations -Owner $env.owner -Repo $env.repo
+    $permissions = Get-RepoAccess -Owner $Owner -Repo $Repo
+    $invitations = Get-RepoAccessInvitations -Owner $Owner -Repo $Repo
 
     # Update or add existing users
     foreach($user in $users){
@@ -58,7 +58,7 @@ function Sync-RepoAccess{
 
         # Force to avoid the call to check if the access is already set
         if ($PSCmdlet.ShouldProcess("Target", "Operation")) {
-            $result = Grant-RepoAccess -Owner $env.Owner -Repo $env.Repo -User $user -Role $role -Force
+            $result = Grant-RepoAccess -Owner $Owner -Repo $Repo -User $user -Role $role -Force
             
             if($result.$user -eq $role.ToLower()){
                 $ret.$user = $status
