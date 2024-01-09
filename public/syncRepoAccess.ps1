@@ -6,19 +6,33 @@ function Sync-RepoAccess{
     [CmdletBinding(SupportsShouldProcess)]
     [OutputType([hashtable])]
     param(
-        [Parameter(Mandatory)] [string]$FilePath,
-        [Parameter(Mandatory)] [string]$owner,
-        [Parameter(Mandatory)] [string]$repo,
-        [Parameter(Mandatory)]
-        [ValidateSet("read", "triage", "write", "maintain", "admin")] [string]$role
+        [Parameter(Mandatory,Position=0)][ValidateSet("read", "triage", "write", "maintain", "admin")] [string]$role,
+        [Parameter(Mandatory,Position=1)] [string]$FilePath,
+        [Parameter()] [string]$Owner,
+        [Parameter()] [string]$Repo
     )
+    # Resolve repor form parameters and environment
+    $env = Get-Environment -Owner $owner -Repo $repo
+    
+    # Error if parameters not set
+    if($null -eq $env){
+        "Owner and Repo parameters are required" | Write-Error
+        return $null
+    }
 
     $ret = @{}
 
-    $users = Get-Content -Path $FilePath
+    # Read users from file
+    $users = Get-UsersFromFile -Path $FilePath
 
-    $permissions = Get-RepoAccess -Owner $owner -Repo $repo
-    $invitations = Get-RepoAccessInvitations -Owner $owner -Repo $repo
+    if($null -eq $users){
+        "Error reading user file $FilePath" | Write-Error
+        return $null
+    }
+
+    # Get current permissions and invitations
+    $permissions = Get-RepoAccess -Owner $env.owner -Repo $env.repo
+    $invitations = Get-RepoAccessInvitations -Owner $env.owner -Repo $env.repo
 
     # Update or add existing users
     foreach($user in $users){
@@ -44,7 +58,7 @@ function Sync-RepoAccess{
 
         # Force to avoid the call to check if the access is already set
         if ($PSCmdlet.ShouldProcess("Target", "Operation")) {
-            $result = Grant-RepoAccess -Owner $owner -Repo $repo -User $user -Role $role -Force
+            $result = Grant-RepoAccess -Owner $env.Owner -Repo $env.Repo -User $user -Role $role -Force
             
             if($result.$user -eq $role.ToLower()){
                 $ret.$user = $status
@@ -54,7 +68,6 @@ function Sync-RepoAccess{
         } else {
             $ret.$user = $status
         }
-    
     }
 
     # Delete non existing users
@@ -82,3 +95,33 @@ function Sync-RepoAccess{
         return $ret
 
 } Export-ModuleMember -Function Sync-RepoAccess
+
+function Get-UsersFromFile{
+    [CmdletBinding()]
+    [OutputType([string[]])]
+    param(
+        [Parameter(Mandatory)] [string]$Path
+    )
+
+    $users = @()
+
+    $content = Get-Content -Path $Path
+
+    if(-not $?){
+        return $null
+    }
+
+    foreach($line in $content){
+        $line = $line.Trim()
+        if($line -eq ""){
+            continue
+        }
+        if($line.StartsWith("#")){
+            continue
+        }
+
+        $users += $line
+    }
+
+    return $users
+}
