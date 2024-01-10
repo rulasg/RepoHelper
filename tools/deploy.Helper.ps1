@@ -78,12 +78,12 @@ function Install-Dependencies{
 
     $requiredModules = $ModuleManifestPath | Get-Item | Import-PowerShellDataFile | Select-Object -ExpandProperty requiredModules
 
-    foreach ($requiredModule in $requiredModules) {
+    foreach ($module in $requiredModules) {
 
         #Check if requiredModule specification is a hashtable
-        if($requiredModule -is [hashtable]){
-            $requiredModule = $requiredModule.Name
-            $requiredVersion = $requiredModule.Version
+        if($module -is [hashtable]){
+            $requiredModule = $module.ModuleName
+            $requiredVersion = $module.ModuleVersion
         }
 
         $module = Import-Module -Name $requiredModule -RequiredVersion:$requiredVersion -PassThru -ErrorAction SilentlyContinue
