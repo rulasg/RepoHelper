@@ -1,4 +1,17 @@
 
+# Managing dependencies
+$MODULE_INVOKATION_TAG = "RepoHelperModule_Mock"
+
+function Set-InvokeCommandMock{
+    [CmdletBinding(SupportsShouldProcess)]
+    param(
+        [Parameter(Mandatory,Position=0)][string]$Alias,
+        [Parameter(Mandatory,Position=1)][string]$Command
+    )
+
+    InvokeHelper\Set-InvokeCommandAlias -Alias $Alias -Command $Command -Tag $MODULE_INVOKATION_TAG
+}
+
 #Module path is where resides the RootModule file. This file. :)
 $MODULE_PATH = $PSScriptRoot
 
@@ -25,4 +38,8 @@ Foreach($import in @($Public + $Private))
 # Set variables visible to the module and its functions only
 
 Export-ModuleMember -Function RepoHelperTest_*
+
+# Disable calling dependencies
+# This requires that all dependecies are called through mocks
+Disable-InvokeCommandAlias -Tag "RepoHelperModule"
 
