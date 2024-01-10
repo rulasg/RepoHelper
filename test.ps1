@@ -113,6 +113,7 @@ function Import-RequiredModule{
 #>
 function Get-RequiredModule{
     [CmdletBinding()]
+    [OutputType([hashtable])]
     param()
 
     # Required Modules
