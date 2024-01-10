@@ -1,5 +1,5 @@
 
-Set-InvokeCommandAlias -Alias 'GetRepoRemoteUrl' -Command 'git remote get-url origin 2>$null'
+Set-MyInvokeCommandAlias -Alias 'GetRepoRemoteUrl' -Command 'git remote get-url origin 2>$null'
 
 function Get-Environment{
     [CmdletBinding()]
