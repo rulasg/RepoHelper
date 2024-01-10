@@ -79,13 +79,20 @@ function Install-Dependencies{
     $requiredModules = $ModuleManifestPath | Get-Item | Import-PowerShellDataFile | Select-Object -ExpandProperty requiredModules
 
     foreach ($requiredModule in $requiredModules) {
-        $module = Import-Module -Name $requiredModule -PassThru -ErrorAction SilentlyContinue
+
+        #Check if requiredModule specification is a hashtable
+        if($requiredModule -is [hashtable]){
+            $requiredModule = $requiredModule.Name
+            $requiredVersion = $requiredModule.Version
+        }
+
+        $module = Import-Module -Name $requiredModule -RequiredVersion:$requiredVersion -PassThru -ErrorAction SilentlyContinue
 
         if ($null -eq $module) {
             "Installing module $requiredModule" | Write-Host -ForegroundColor DarkGray
-            Install-Module -Name $requiredModule -Force -AllowPrerelease
-            $module = Import-Module -Name $requiredModule -PassThru
-            "Loaded module Name[$($module.Name)] Version[$($module.Version)]" | Write-Host -ForegroundColor DarkGray
+            Install-Module -Name $requiredModule -Force -AllowPrerelease -RequiredVersion:$requiredVersion
+            $module = Import-Module -Name $requiredModule -RequiredVersion:$requiredVersion -PassThru
+            "Loaded module Name[{0}] Version[{1}] PreRelease[{2}]" -f $module.Name, $module.Version, $module.privatedata.psdata.prerelease | Write-Host -ForegroundColor DarkGray
         }
     }
 }
