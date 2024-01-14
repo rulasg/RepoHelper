@@ -165,7 +165,7 @@ function RepoHelperTest_SyncRepoAccess_NoParameters {
     $result = Sync-RepoAccess -FilePath "contributors" -role 'write' -WhatIf @ErrorParameters
 
     Assert-IsNull -Object $result
-    Assert-Contains -Expected "Owner and Repo parameters are required" -Presented $errorvar.Exception.Message
+    Assert-Contains -Expected "[Sync-RepoAccess] Owner and Repo parameters are required" -Presented $errorvar.Exception.Message
 }
 
 function RepoHelperTest_SyncRepoAccess_NoUsersFile {
