@@ -16,7 +16,7 @@ function Sync-RepoAccess{
 
     # Error if parameters not set. No need to check repo too.
     if([string]::IsNullOrEmpty($Owner) -or [string]::IsNullOrEmpty($Repo)){
-        "Owner and Repo parameters are required" | Write-Error
+        "[Sync-RepoAccess] Owner and Repo parameters are required" | Write-Error
         return $null
     }
 

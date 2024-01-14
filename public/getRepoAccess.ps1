@@ -18,8 +18,8 @@ function Get-RepoAccess{
     $owner,$repo = Get-Environment $owner $repo
     
     # Error if parameters not set. No need to check repo too.
-    if([string]::IsNullOrEmpty($Owner)){
-        "Owner and Repo parameters are required" | Write-Error
+    if([string]::IsNullOrEmpty($Owner) -or [string]::IsNullOrEmpty($Repo)){
+        "[Get-RepoAccess] Owner and Repo parameters are required" | Write-Error
         return $null
     }
 
@@ -56,22 +56,30 @@ function Get-RepoAccessUser{
     $owner,$repo = Get-Environment $owner $repo
 
     # Error if parameters not set. No need to check repo too.
-    if([string]::IsNullOrEmpty($Owner)){
-        "Owner and Repo parameters are required" | Write-Error
+    if([string]::IsNullOrEmpty($Owner) -or [string]::IsNullOrEmpty($Repo)){
+        "[Get-RepoAccessUser] Owner and Repo parameters are required" | Write-Error
         return $null
     }
 
     $permissions = Get-UserAccess -Owner $owner -Repo $repo
-        
+
+    "Found $($permissions.Count) users with access" | Write-Verbose
+
     if($permissions.$user -eq $role){
+        "Found user $user with access role $role" | Write-Verbose
         return $permissions.$user
     }
 
     $invitations = Get-RepoAccessInvitations -Owner $owner -Repo $repo
 
+    "Found $($invitations.Count) users with invitations" | Write-Verbose
+
     if($invitations.$user -eq $role){
+        "Found user $user with invitation role $role" | Write-Verbose
         return $invitations.$user
     }
+
+    "User $user not found with access or invitation" | Write-Verbose
 
     return $null
 } Export-ModuleMember -Function Get-RepoAccessUser
@@ -92,17 +100,27 @@ function Test-RepoAccess{
     $owner,$repo = Get-Environment $owner $repo
     
     # Error if parameters not set. No need to check repo too.
-    if([string]::IsNullOrEmpty($Owner)){
-        "Owner and Repo parameters are required" | Write-Error
+    if([string]::IsNullOrEmpty($Owner) -or [string]::IsNullOrEmpty($Repo)){
+        "[Test-RepoAccess] Owner and Repo parameters are required" | Write-Error
         return $null
     }
 
     $param = @{ owner = $Owner ; repo = $Repo ; user = $User }
 
+    "Invoking TestUserAccess with parameters:" | Write-Verbose
+    $param | Convertto-Json -Depth 1 | Write-Verbose
+
     $result = Invoke-MyCommandJson -Command TestUserAccess -Parameters $param 2> $null
 
     $ret = $null -eq $result
 
-    return $ret
+    if($null -eq $result){
+        "User $User has access to $Owner/$Repo" | Write-Verbose
+        $ret = $true
+    } else {
+        "User $User has no access to $Owner/$Repo" | Write-Verbose
+        $ret = $false
+    }
 
+    return $ret
 } Export-ModuleMember -Function Test-RepoAccess

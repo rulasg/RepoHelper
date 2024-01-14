@@ -19,7 +19,7 @@ function Get-RepoAccessInvitations{
 
     # Error if parameters not set. No need to check repo too.
     if([string]::IsNullOrEmpty($Owner) -or [string]::IsNullOrEmpty($Repo)){
-        "Owner and Repo parameters are required" | Write-Error
+        "[Get-RepoAccessInvitations] Owner and Repo parameters are required" | Write-Error
         return $null
     }
 
@@ -43,7 +43,6 @@ function Get-RepoAccessInvitations{
     return $ret
 } Export-ModuleMember -Function Get-RepoAccessInvitations
 
-
 function Remove-RepoAccessInvitation{
     [CmdletBinding()]
     param(
@@ -56,21 +55,30 @@ function Remove-RepoAccessInvitation{
     $owner,$repo = Get-Environment $owner $repo
     
     # Error if parameters not set. No need to check repo too.
-    if([string]::IsNullOrEmpty($Owner)){
-        "Owner and Repo parameters are required" | Write-Error
+    if([string]::IsNullOrEmpty($Owner) -or [string]::IsNullOrEmpty($Repo)){
+        "[Remove-RepoAccessInvitation] Owner and Repo parameters are required" | Write-Error
         return $null
     }
 
+    "Removing access invitation for $User to $Owner/$Repo" | Write-Verbose
+
     $invitations = Get-RepoAccessInvitations -Owner $Owner -Repo $Repo -Ids
+
+    "Found $($invitations.Count) invitations on $Owner/$Repo" | Write-Verbose
 
     if (-not $invitations.ContainsKey($User)) {
         Write-Warning "User $User not found in invitations list."
         return $null
     }
 
+    "Found invitation for $User [$($invitations.$User)] on $Owner/$Repo" | Write-Verbose
+
     $invitation_Id = $invitations.$User
 
     $param = @{ owner = $Owner ; repo = $Repo ; invitation_id = $invitation_Id }
+
+    "Invoking CancelRepoAccessInvitation with parameters:" | Write-Verbose
+    $param | Convertto-Json -Depth 1 | Write-Verbose
 
     $result = Invoke-MyCommandJson -Command CancelRepoAccessInvitation -Parameters $param
 
