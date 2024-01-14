@@ -20,21 +20,23 @@ This example searches for a repository ownered by "MyOwner" that have "MyRepo" i
 function Find-RepoByName{
     [CmdletBinding(SupportsShouldProcess)]
     param(
-        [Parameter()][string]$Name,
+        [Parameter(Mandatory)][string]$Name,
         [Parameter()][string]$Owner
     )
 
-    $attributes = 'name,url'
+    $attributes = 'name,fullName,url'
 
-    if($Owner){
-        $command = 'gh search repos {name} in:name user:{owner} --json {attributes}'
-        $command = $command -replace "{owner}", "$($Owner)"
-    } else {
-        $command = 'gh search repos {name} in:name --json {attributes}'
+    $command = 'gh search repos {name} --match name'
+    $command = $command -replace "{name}", $Name
+
+    #check of $owner is null or whitespace
+    if (-not [string]::IsNullOrWhiteSpace($Owner)) {
+        $command = $command + " --owner {owner}"
+        $command = $command -replace "{owner}", $Owner
     }
 
-    $command = $command -replace "{name}", "$($Name)"
-    $command = $command -replace "{attributes}", "$($attributes)"
+    $command = $command + " --json {attributes}"
+    $command = $command -replace "{attributes}", $attributes
 
     if ($PSCmdlet.ShouldProcess("repo", $command)) {
         $ret = Invoke-GhExpression $command
@@ -46,21 +48,66 @@ function Find-RepoByName{
     return $ret
 } Export-ModuleMember -Function Find-RepoByName
 
+function Get-RepoCollaborators{
+    [CmdletBinding(SupportsShouldProcess)]
+    param(
+        [Parameter(ValueFromPipelineByPropertyName)][Alias("fullName")][string]$RepoName
+    )
+
+    process{
+
+        $command = 'gh api repos/{repoName}/collaborators '
+        $command = $command -replace "{repoName}", "$($RepoName)"
+        $command = $command -replace "{attributes}", "$($attributes)"
+        
+        $collaborators = Invoke-GhExpression $command
+        
+        $ret = foreach ($collaborator in $collaborators) {
+            [PSCustomObject]@{
+                Login = $collaborator.login
+                Role = $collaborator.role_name
+            }
+        }
+        
+        return $ret
+    }
+} Export-ModuleMember -Function Get-RepoCollaborators
+
 function Get-RepoAdmins{
     [CmdletBinding(SupportsShouldProcess)]
     param(
-        [Parameter()][string]$RepoName
+        [Parameter(ValueFromPipelineByPropertyName)][Alias("fullName")][string]$RepoName
     )
 
-    $command = 'gh api repos/{repoName}/collaborators '
-    $command = $command -replace "{repoName}", "$($RepoName)"
-    $command = $command -replace "{attributes}", "$($attributes)"
+    process{
 
-    $collaborators = Invoke-GhExpression $command
+        $command = 'gh api repos/{repoName}/collaborators'
+        $command = $command -replace "{repoName}", "$($RepoName)"
+        $command = $command -replace "{attributes}", "$($attributes)"
+        
+        $collaborators = Invoke-GhExpression $command -whatif:$WhatIfPreference
 
-    $admin = $collaborators | Where-Object {$_.role_name -eq 'admin'}
+        $admin = $collaborators | Where-Object {$_.role_name -eq 'admin'}
 
-    $ret = $admin.login
-
-    return $ret
+        $ret = $admin.login
+        
+        return $ret
+    }
 } Export-ModuleMember -Function Get-RepoAdmins
+
+function Test-IsAdmin{
+    [CmdletBinding(SupportsShouldProcess)]
+    param(
+        [Parameter(ValueFromPipelineByPropertyName)][Alias("fullName")][string]$RepoName,
+        [Parameter()][Alias("login")][string]$User
+    )
+
+    process{
+
+        $admins = Get-RepoAdmins -RepoName $RepoName
+        
+        $ret = $admins -contains $Login
+        
+        return $ret
+    }
+} Export-ModuleMember -Function IsAdmin

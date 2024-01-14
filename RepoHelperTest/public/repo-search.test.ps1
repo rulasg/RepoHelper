@@ -23,7 +23,18 @@ function RepoHelperTest_Search_Repo_NameWithOwner{
 
 function RepoHelperTest_RepoAdmins_Get{
 
-    $result = Get-RepoAdmins -RepoName 'bit21/bitkeeper'
+    $result = Get-RepoAdmins -RepoName 'bit21/bitkeeper' -WhatIf @InfoParameters
+
+    Assert-Contains -Expected "gh api repos/bit21/bitkeeper/collaborators" -presented $infoVar -Comment "Command not as expected"
+
+}
+
+function RepoHelperTest_RepoCollaborators_Get{
+
+    $result = Get-RepoCollaborators -RepoName 'ps-developers-sandbox/github-games-rulasg'
+
+    
 
     Assert-NotImplemented
 }
+
