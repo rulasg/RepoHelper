@@ -80,8 +80,10 @@ function Sync-RepoAccess{
             "User $user has already an invitation pending for role $($invitations.$user)" | Write-Verbose
             $status = "+ ($($invitations.$user))"
         } else {
+            "User $user has no access" | Write-Verbose
             $status = "+"
         }
+        "Status: $status" | Write-Verbose
 
         # Force to avoid the call to check if the access is already set
         if ($PSCmdlet.ShouldProcess("User $user", "Grant-RepoAccess -Owner $Owner -Repo $Repo -User $user -Role $role -Force")) {
