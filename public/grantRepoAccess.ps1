@@ -12,7 +12,7 @@ function Grant-RepoAccess{
         [Parameter()] [string]$Repo,
         [Parameter(Mandatory)] [string]$User,
         [Parameter(Mandatory)]
-        [ValidateSet("read", "triage", "write", "maintain", "admin")] [string]$role,
+        [ValidateSet("read", "triage", "write", "maintain", "admin")] [string]$Role,
         [Parameter()][switch]$force
     )
 

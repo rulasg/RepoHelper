@@ -9,7 +9,7 @@ function Grant-UserAccess{
         [Parameter(Mandatory)] [string]$Repo,
         [Parameter(Mandatory)] [string]$User,
         [Parameter(Mandatory)]
-        [ValidateSet("read", "triage", "write", "maintain", "admin")] [string]$role,
+        [ValidateSet("read", "triage", "write", "maintain", "admin")] [string]$Role,
         [Parameter()][switch]$force
     )
     $param = @{ owner = $Owner ; repo = $Repo ; user = $User ; role = $role }
