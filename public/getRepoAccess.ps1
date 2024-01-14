@@ -23,11 +23,18 @@ function Get-RepoAccess{
         return $null
     }
 
+    "Getting users access on $Owner/$Repo" | Write-Verbose
     $access = Get-UserAccess -Owner $owner -Repo $repo
+    "Found $($access.Count) users with access" | Write-Verbose
 
+    "Getting users invitations on $Owner/$Repo" | Write-Verbose
     $invitations = Get-RepoAccessInvitations -Owner $owner -Repo $repo
+    "Found $($invitations.Count) users with invitations" | Write-Verbose
 
+    # no need to unique the list as github makes them exclusive
     $ret = $access + $invitations
+
+    "Found $($ret.Count) users with access or invitations" | Write-Verbose
 
     return $ret
 } Export-ModuleMember -Function Get-RepoAccess

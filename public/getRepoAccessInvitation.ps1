@@ -16,18 +16,22 @@ function Get-RepoAccessInvitations{
 
     # Resolve repo name from parameters or environment
     $owner,$repo = Get-Environment $owner $repo
-    
+
     # Error if parameters not set. No need to check repo too.
-    if([string]::IsNullOrEmpty($Owner)){
+    if([string]::IsNullOrEmpty($Owner) -or [string]::IsNullOrEmpty($Repo)){
         "Owner and Repo parameters are required" | Write-Error
         return $null
     }
+
+    "Getting access invitations for $role to $Owner/$Repo from $FilePath" | Write-Verbose
 
     $param = @{ owner = $Owner ; repo = $Repo }
 
     $ret = @{}
 
     $result = Invoke-MyCommandJson -Command GetUserAccessInvitations -Parameters $param
+
+    "Found $($result.count) invitations for role $role" | Write-Verbose
 
     foreach ($item in $result) {
 
