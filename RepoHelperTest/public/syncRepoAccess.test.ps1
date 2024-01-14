@@ -173,8 +173,36 @@ function RepoHelperTest_SyncRepoAccess_NoUsersFile {
 
     Set-InvokeCommandMock -Alias 'git remote get-url origin 2>$null' -Command "echo https://github.com/$owner/$repo.git"
 
-    $result = Sync-RepoAccess admin  $file -WhatIf  @ErrorParameters
+    $result = Sync-RepoAccess admin $file -WhatIf  @ErrorParameters
 
     Assert-IsNull -Object $result
     Assert-Contains -Expected "Error reading user file $file" -Presented $errorvar.Exception.Message
+}
+
+function RepoHelperTest_SyncRepoAccess_Error_On_Invitations {
+    $owner = 'solidifycustomers' ; $repo = 'bit21'
+
+    # "" | Out-File "contributors"
+
+    $userList = @"
+        #MagnusTim
+        #raulgeu
+        rulasg
+"@
+
+    New-TestingFile -Name "contributors" -Content $userList
+
+    Set-InvokeCommandMock -Alias 'git remote get-url origin 2>$null' -Command "echo https://github.com/$owner/$repo.git"
+
+    # All users
+    $GetAccessAllSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessAllSuccess.json'
+    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/collaborators" -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
+    $getAccessInvitationsError = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessInvitationsError.json'
+    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations" -Command "Get-Content -Path $(($getAccessInvitationsError | Get-Item).FullName)"
+
+    $result = Sync-RepoAccess admin  "contributors" -WhatIf -Verbose
+
+    Assert-Count -Expected 2 -Presented $result
+    Assert-AreEqual -Expected '=' -Presented $result.rulasg
+    Assert-AreEqual -Expected '-' -Presented $result.MagnusTim
 }

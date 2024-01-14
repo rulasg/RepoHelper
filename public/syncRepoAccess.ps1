@@ -36,10 +36,21 @@ function Sync-RepoAccess{
 
     # Get current permissions and invitations
     $permissions = Get-UserAccess -Owner $Owner -Repo $Repo
+
+    if($null -eq $permissions){
+        "Error getting current permissions" | Write-Error
+        $permissions = @{}
+    }
+
     $invitations = Get-RepoAccessInvitations -Owner $Owner -Repo $Repo
 
-    "Found $($permissions.Count) permissions granted" | Write-Verbose
-    "Found $($invitations.Count) invitations pending" | Write-Verbose
+    if($null -eq $invitations){
+        "Error getting current invitations. Check if you are on a personal account. Try Verbose for more information." | Write-Verbose
+        $invitations = @{}
+    }
+
+    "Found [$($permissions.Count)] permissions granted" | Write-Verbose
+    "Found [$($invitations.Count)] invitations pending" | Write-Verbose
 
     # Update or add existing users
     foreach($user in $users){
