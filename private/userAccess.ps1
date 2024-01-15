@@ -17,12 +17,17 @@ function Grant-UserAccess{
     # Grant access
     $result = Invoke-MyCommandJson -Command GrantUserAccess -Parameters $param
 
-    if($result.message -eq "Not Found"){
-        $ret = @{ $User = $result.message }
+    if($null -eq $result){
+        "Error: $User not found" | Write-Verbose
+        $status = "X"
+    } elseif ($result.message -eq "Not Found"){
+        "Error: $User - $(result.message)" | Write-Verbose
+        $status = result.message
     } else {
-        $ret = @{ $result.invitee.login = $result.permissions }
+        $status = $result.permissions
     }
-
+    
+    $ret = @{ $User = $status }
     return $ret
 }
 
