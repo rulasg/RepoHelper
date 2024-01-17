@@ -4,10 +4,10 @@ function RepoHelperTest_GetRepoAccessAll_SUCCESS{
     $owner = 'solidifycustomers' ; $repo = 'bit21' 
     
     $GetAccessAllSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessAllSuccess.json'
-    Set-InvokeCommandMock -Alias 'gh api repos/solidifycustomers/bit21/collaborators' -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
+    Set-InvokeCommandMock -Alias 'gh api repos/solidifycustomers/bit21/collaborators --paginate' -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
 
     $GetInvitations = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessInvitationsSuccess.json'
-    Set-InvokeCommandMock -Alias 'gh api repos/solidifycustomers/bit21/invitations' -Command "Get-Content -Path $(($GetInvitations | Get-Item).FullName)"
+    Set-InvokeCommandMock -Alias 'gh api repos/solidifycustomers/bit21/invitations --paginate' -Command "Get-Content -Path $(($GetInvitations | Get-Item).FullName)"
 
     $result = Get-RepoAccess -owner $owner -repo $repo
 
@@ -25,7 +25,7 @@ function RepoHelperTest_GetRepoAccess_Success{
     # Set-InvokeCommandMock -Alias 'gh api repos/solidifycustomers/bit21/collaborators/raulgeu/permission' -Command "Get-Content -Path $(($GetAccessSuccess | Get-Item).FullName)"
 
     $GetAccessAllSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessAllSuccess.json'
-    Set-InvokeCommandMock -Alias 'gh api repos/solidifycustomers/bit21/collaborators' -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
+    Set-InvokeCommandMock -Alias 'gh api repos/solidifycustomers/bit21/collaborators --paginate' -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
 
     $result = Get-RepoAccess -Owner $owner -Repo $repo
 

@@ -3,7 +3,7 @@ function RepoHelperTest_GetRepoInvitations_SUCCESS{
     $owner = 'solidifycustomers' ; $repo = 'bit21' ; $user = 'raulgeu' ; $role = 'write'
 
     $GetAccessAllSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessInvitationsSuccess.json'
-    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations" -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
+    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations --paginate" -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
 
     $result = Get-RepoAccessInvitations -owner $owner -repo $repo
 
@@ -15,7 +15,7 @@ function RepoHelperTest_GetRepoInvitations_SUCCESS_Ids{
     $owner = 'solidifycustomers' ; $repo = 'bit21' ; $id = 243067060 ; $user = 'raulgeu'
 
     $GetAccessAllSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessInvitationsSuccess.json'
-    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations" -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
+    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations --paginate" -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
 
     $result = Get-RepoAccessInvitations -owner $owner -repo $repo -Ids
 
@@ -24,9 +24,13 @@ function RepoHelperTest_GetRepoInvitations_SUCCESS_Ids{
 
 function RepoHelperTest_GetRepoInvitations_Empty{
 
-    $owner = 'solidifycustomers' ; $repo = 'bit21' 
+    $owner = 'solidifycustomers' ; $repo = 'bit21'
+    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations --paginate" -Command 'echo "[]"'
 
-    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations" -Command 'echo "[]"'
+    $command = (Get-InvokeCommandAliasList).GetUserAccessInvitations
+    $command = $command -replace '{owner}', $owner
+    $command = $command -replace '{repo}', $repo
+    Set-InvokeCommandAlias -Alias $command -Command 'echo "[]"'
 
     $result = Get-RepoAccessInvitations -owner $owner -repo $repo
 
