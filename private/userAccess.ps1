@@ -15,6 +15,8 @@ function Grant-UserAccess{
     $param = @{ owner = $Owner ; repo = $Repo ; user = $User ; role = $role }
 
     # Grant access
+    #TODO: Identify why this call may return a null value
+    #TODO: debug if this function is called twice when calling Sync-RepoAccess
     $result = Invoke-MyCommandJson -Command GrantUserAccess -Parameters $param
 
     if($null -eq $result){
