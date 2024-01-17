@@ -200,7 +200,7 @@ function RepoHelperTest_SyncRepoAccess_Error_On_Invitations {
     $getAccessInvitationsError = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessInvitationsError.json'
     Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations" -Command "Get-Content -Path $(($getAccessInvitationsError | Get-Item).FullName)"
 
-    $result = Sync-RepoAccess admin  "contributors" -WhatIf -Verbose
+    $result = Sync-RepoAccess admin  "contributors" -WhatIf
 
     Assert-Count -Expected 2 -Presented $result
     Assert-AreEqual -Expected '=' -Presented $result.rulasg
