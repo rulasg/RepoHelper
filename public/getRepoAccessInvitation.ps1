@@ -1,4 +1,4 @@
-Set-MyInvokeCommandAlias -Alias 'GetUserAccessInvitations'   -Command 'gh api repos/{owner}/{repo}/invitations'
+Set-MyInvokeCommandAlias -Alias 'GetUserAccessInvitations'   -Command 'gh api repos/{owner}/{repo}/invitations --paginate'
 Set-MyInvokeCommandAlias -Alias 'CancelRepoAccessInvitation' -Command 'gh api repos/{owner}/{repo}/invitations/{invitation_id} -X DELETE'
 
 <#
