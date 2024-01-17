@@ -21,8 +21,8 @@ function Grant-UserAccess{
         "Error: $User not found" | Write-Verbose
         $status = "X"
     } elseif ($result.message -eq "Not Found"){
-        "Error: $User - $(result.message)" | Write-Verbose
-        $status = result.message
+        "Error: $User - $($result.message)" | Write-Verbose
+        $status = $result.message
     } else {
         $status = $result.permissions
     }
