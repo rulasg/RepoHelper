@@ -8,13 +8,13 @@ $cmd = @'
 curl -L -s -H "Authorization: Bearer $env:GH_TOKEN" -X PATCH https://api.github.com/repos/{owner}/{repo}/properties/values -d '{"properties":[{"property_name":"{name}","value":"{value}"}]}'
 '@
 
-Set-MyInvokeCommandAlias -Alias SetRepoProperties -Command $cmd
+Set-MyInvokeCommandAlias -Alias SetRepoProperty -Command $cmd
 
 <#
 .SYNOPSIS
     Sets the custom properties of a repository.
 #>
-function Set-RepoProperties{
+function Set-RepoProperty{
     [CmdletBinding(SupportsShouldProcess)]
     param(
         [Parameter()] [string]$Owner,
@@ -37,7 +37,7 @@ function Set-RepoProperties{
     $param = @{ owner = $Owner ; repo = $Repo ; name = $Name ; value = $Value }
 
     if($PSCmdlet.ShouldProcess("$Owner/$Repo","Set property $Name to $Value")){
-        $result = Invoke-MyCommandJson -Command SetRepoProperties -Parameters $param
+        $result = Invoke-MyCommandJson -Command SetRepoProperty -Parameters $param
     }
 
     if($null -ne $result){
@@ -45,5 +45,5 @@ function Set-RepoProperties{
     }
     
     return $null
-} Export-ModuleMember -Function Set-RepoProperties
+} Export-ModuleMember -Function Set-RepoProperty
 

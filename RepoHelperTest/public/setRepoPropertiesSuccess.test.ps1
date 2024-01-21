@@ -13,9 +13,9 @@ curl -L -s -H "Authorization: Bearer $env:GH_TOKEN" -X PATCH https://api.github.
     # If success return null
     Set-InvokeCommandMock -Alias $cmd -Command "echo null"
 
-    $result = Set-RepoProperties -owner $owner -repo $repo -name $property -value $value
+    $result = Set-RepoProperty -owner $owner -repo $repo -name $property -value $value
 
-    Assert-IsNull -Object $result -Comment "Set-RepoProperties should return null on success"
+    Assert-IsNull -Object $result -Comment "Set-RepoProperty should return null on success"
 }
 
 function RepoHelperTest_SetRepoProperties_NotFound{
@@ -34,8 +34,8 @@ curl -L -s -H "Authorization: Bearer $env:GH_TOKEN" -X PATCH https://api.github.
     $mockfile = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'setRepoPropertiesNotFound.json'
     Set-InvokeCommandMock -Alias $cmd -Command "Get-Content -Path $(($mockfile | Get-Item).FullName)"
 
-    $result = Set-RepoProperties -owner $owner -repo $repo -name $property -value $value @ErrorParameters
+    $result = Set-RepoProperty -owner $owner -repo $repo -name $property -value $value @ErrorParameters
 
-    Assert-IsNull -Object $result -Comment "Set-RepoProperties should return null on success"
+    Assert-IsNull -Object $result -Comment "Set-RepoProperty should return null on success"
     Assert-Contains -Expected  "Error setting property $property to $value for $owner/$repo" -Presented $errorVar.Exception.Message
 }

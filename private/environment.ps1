@@ -40,7 +40,7 @@ function Get-Environment{
 
 function Get-EnvironmentOwner{
     [CmdletBinding()]
-    [OutputType([string[]])]
+    [OutputType([string])]
     param(
         [Parameter(Position = 0)] [string]$Owner
     )
