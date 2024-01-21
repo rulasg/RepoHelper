@@ -21,3 +21,14 @@ function RepoHelperTest_GetRepoProperties_NoProperties{
 
     Assert-Count -Expected 0 -Presented $result
 }
+
+function RepoHelperTest_GetRepoProperties_NoRepo{
+    $owner = 'solidifycustomers' ; $repo = 'wrongRepo'
+
+    $mockFile = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getRepoPropertiesNotFound.json'
+    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo" -Command "Get-Content -Path $(($mockFile | Get-Item).FullName)"
+
+    $result = Get-RepoProperties -owner $owner -repo $repo
+
+    Assert-IsNull -Object $result
+}
