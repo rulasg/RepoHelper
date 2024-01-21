@@ -45,6 +45,10 @@ function Get-EnvironmentOwner{
         [Parameter(Position = 0)] [string]$Owner
     )
 
+    if(-Not [string]::IsNullOrWhiteSpace($Owner)){
+        return $Owner
+    }
+
     $owner,$repo = Get-Environment -Owner $Owner
 
     return $owner

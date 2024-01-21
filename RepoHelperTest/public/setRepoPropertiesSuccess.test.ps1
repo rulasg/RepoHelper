@@ -15,7 +15,7 @@ curl -L -s -H "Authorization: Bearer $env:GH_TOKEN" -X PATCH https://api.github.
 
     $result = Set-RepoProperties -owner $owner -repo $repo -name $property -value $value
 
-    Assert-IsNull -Object $result -Message "Set-RepoProperties should return null on success"
+    Assert-IsNull -Object $result -Comment "Set-RepoProperties should return null on success"
 }
 
 function RepoHelperTest_SetRepoProperties_NotFound{
