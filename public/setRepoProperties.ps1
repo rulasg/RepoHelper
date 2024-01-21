@@ -36,12 +36,14 @@ function Set-RepoProperties{
 
     $param = @{ owner = $Owner ; repo = $Repo ; name = $Name ; value = $Value }
 
-    $result = Invoke-MyCommandJson -Command SetRepoProperties -Parameters $param 
+    if($PSCmdlet.ShouldProcess("$Owner/$Repo","Set property $Name to $Value")){
+        $result = Invoke-MyCommandJson -Command SetRepoProperties -Parameters $param
+    }
 
     if($null -ne $result){
         "Error setting property $Name to $Value for $Owner/$Repo" | Write-Error
     }
     
     return $null
-}
+} Export-ModuleMember -Function Set-RepoProperties
 
