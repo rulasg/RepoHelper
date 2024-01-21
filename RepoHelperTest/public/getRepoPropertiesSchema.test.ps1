@@ -16,4 +16,16 @@ function RepoHelperTest_GetRepoPropertiesSchema_Success{
     Assert-AreEqual -Presented $resultOwner.required           -Expected "False"
     Assert-AreEqual -Presented $resultOwner.description        -Expected "person responsible for the content and the health of the repo"
     Assert-AreEqual -Presented $resultOwner.values_editable_by -Expected "org_and_repo_actors"
-} 
+}
+
+function RepoHelperTest_GetRepoProperties_NotFound{
+
+    $owner = 'solidifycustomers22'
+
+    $mockFile = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getRepoPropertiesSchemaNotFound.json'
+    Set-InvokeCommandMock -Alias "gh api orgs/$owner/properties/schema" -Command "Get-Content -Path $(($mockFile | Get-Item).FullName)"
+
+    $result = Get-RepoPropertiesSchema -owner $owner
+
+    Assert-IsNull -Object $result
+}
