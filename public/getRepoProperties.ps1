@@ -7,8 +7,8 @@ Set-MyInvokeCommandAlias -Alias 'GetRepoInformation' -Command 'gh api repos/{own
 function Get-RepoProperties{
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory,Position=0)] [string]$Owner,
-        [Parameter(Mandatory,Position=1)] [string]$Repo
+        [Parameter()] [string]$Owner,
+        [Parameter()] [string]$Repo
     )
 
     # Resolve repor form parameters and environment

@@ -40,10 +40,14 @@ function Get-Environment{
 
 function Get-EnvironmentOwner{
     [CmdletBinding()]
-    [OutputType([string[]])]
+    [OutputType([string])]
     param(
         [Parameter(Position = 0)] [string]$Owner
     )
+
+    if(-Not [string]::IsNullOrWhiteSpace($Owner)){
+        return $Owner
+    }
 
     $owner,$repo = Get-Environment -Owner $Owner
 
