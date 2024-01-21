@@ -131,7 +131,7 @@ function Sync-RepoAccess{
         }
     }
 
-        return $ret
+    return $ret
 
 } Export-ModuleMember -Function Sync-RepoAccess
 
