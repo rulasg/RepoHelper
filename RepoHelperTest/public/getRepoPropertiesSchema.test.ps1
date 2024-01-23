@@ -29,3 +29,22 @@ function RepoHelperTest_GetRepoProperties_NotFound{
 
     Assert-IsNull -Object $result
 }
+
+
+function RepoHelperTest_GetRepoProperties_OneResult{
+
+    $owner = 'solidify-internal'
+
+    $mockFile = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getRepoPropertiesSchemaOneResult.json'
+    Set-InvokeCommandMock -Alias "gh api orgs/$owner/properties/schema" -Command "Get-Content -Path $(($mockFile | Get-Item).FullName)"
+
+    $result = Get-RepoPropertiesSchema -owner $owner
+
+    Assert-Count -Expected 1 -Presented $result
+    Assert-AreEqual -Presented $result.property_name      -Expected "owner"
+    Assert-AreEqual -Presented $result.value_type         -Expected "string"
+    Assert-AreEqual -Presented $result.required           -Expected "False"
+    Assert-AreEqual -Presented $result.description        -Expected "Person responsable of the well-being of the repo and content"
+    Assert-AreEqual -Presented $result.values_editable_by -Expected "org_actors"
+
+}

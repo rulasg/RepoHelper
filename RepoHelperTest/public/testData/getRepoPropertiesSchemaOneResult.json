@@ -1,0 +1,2 @@
+[{"property_name":"owner","value_type":"string","required":false,"description":"Person responsable of the well-being of the repo and content","values_editable_by":"org_actors"}]
+
