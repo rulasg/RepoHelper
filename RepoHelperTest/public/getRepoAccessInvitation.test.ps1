@@ -27,10 +27,10 @@ function RepoHelperTest_GetRepoInvitations_Empty{
     $owner = 'solidifycustomers' ; $repo = 'bit21'
     Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations --paginate" -Command 'echo "[]"'
 
-    $command = (Get-InvokeCommandAliasList).GetUserAccessInvitations
+    $command = (Get-InvokeCommandAliasList).GetUserAccessInvitations.command
     $command = $command -replace '{owner}', $owner
     $command = $command -replace '{repo}', $repo
-    Set-InvokeCommandAlias -Alias $command -Command 'echo "[]"'
+    Set-InvokeCommandMock -Alias $command -Command 'echo "[]"'
 
     $result = Get-RepoAccessInvitations -owner $owner -repo $repo
 
