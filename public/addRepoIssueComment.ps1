@@ -25,7 +25,9 @@ function Add-RepoIssueComment{
         $param = @{ owner = $Owner ; repo = $Repo ; issuenumber = $IssueNumber ; comment = $Comment }
 
         # Return the URL of the comment
-        $result = Invoke-MyCommand -Command AddRepoIssueComment -Parameters $param
+        if($PSCmdlet.ShouldProcess("$Owner/$Repo","Add comment to issue $IssueNumber")){
+            $result = Invoke-MyCommand -Command AddRepoIssueComment -Parameters $param
+        }
 
         $Uri = $result | Get-Uri
         if(! $Uri){

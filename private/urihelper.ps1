@@ -1,5 +1,6 @@
 function Test-Uri{
     [CmdletBinding()]
+    [OutputType([bool])]
     param(
         [Parameter(Mandatory,ValueFromPipeline)] [string]$Uri
     )
@@ -10,7 +11,7 @@ function Test-Uri{
         }
 
         try{
-            $result = [System.Uri]::new($uri)
+            $null = [System.Uri]::new($uri)
             return $true
         }catch{
             return $false
@@ -20,13 +21,14 @@ function Test-Uri{
 
 function Get-Uri{
     [CmdletBinding()]
+    [OutputType([System.Uri])]
     param(
         [Parameter(Mandatory,ValueFromPipeline)] [string]$Uri
     )
     process {
 
         if([string]::IsNullOrWhiteSpace($Uri)){
-            return $false
+            return $null
         }
 
         try{
