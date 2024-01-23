@@ -30,12 +30,14 @@ function Get-RepoPropertiesSchema{
         "Error getting repo information" | Write-Error
         return $null
     }
-    $IsEmpty = [string]::IsNullOrEmpty($result.custom_properties)
-    $ret = $IsEmpty ? $null : $result
 
     # Filter null values.
     # Seen null values in the schema on the beta version
-    $ret = $ret.Where({ $null -ne $_ })
+    $result = $result.Where({ $null -ne $_ })
+
+    # $IsEmpty = $result.Count -eq 0
+    $IsEmpty = [string]::IsNullOrEmpty($result[0].property_name)
+    $ret = $IsEmpty ? $null : $result
 
     "Repo Properties Schema for org [$owner] : " | Write-Verbose
     $ret | Format-List | Out-String | Write-Verbose
