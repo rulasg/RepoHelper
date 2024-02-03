@@ -9,20 +9,27 @@ function Grant-UserAccess{
         [Parameter(Mandatory)] [string]$Repo,
         [Parameter(Mandatory)] [string]$User,
         [Parameter(Mandatory)]
-        [ValidateSet("read", "triage", "write", "maintain", "admin")] [string]$role,
+        [ValidateSet("read", "triage", "write", "maintain", "admin")] [string]$Role,
         [Parameter()][switch]$force
     )
     $param = @{ owner = $Owner ; repo = $Repo ; user = $User ; role = $role }
 
     # Grant access
+    #TODO: Identify why this call may return a null value
+    #TODO: debug if this function is called twice when calling Sync-RepoAccess
     $result = Invoke-MyCommandJson -Command GrantUserAccess -Parameters $param
 
-    if($result.message -eq "Not Found"){
-        $ret = @{ $User = $result.message }
+    if($null -eq $result){
+        "Error: $User not found" | Write-Verbose
+        $status = "X"
+    } elseif ($result.message -eq "Not Found"){
+        "Error: $User - $($result.message)" | Write-Verbose
+        $status = $result.message
     } else {
-        $ret = @{ $result.invitee.login = $result.permissions }
+        $status = $result.permissions
     }
-
+    
+    $ret = @{ $User = $status }
     return $ret
 }
 

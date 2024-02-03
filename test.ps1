@@ -118,7 +118,8 @@ function Get-RequiredModule{
 
     # Required Modules
     $localPath = $PSScriptRoot
-    $requiredModule = $localPath | Join-Path -child "*.psd1" |  Get-Item | Import-PowerShellDataFile | Select-Object -ExpandProperty requiredModules
+    $manifest = $localPath | Join-Path -child "*.psd1" |  Get-Item | Import-PowerShellDataFile
+    $requiredModule = $null -eq $manifest.RequiredModules ? @() : $manifest.RequiredModules
 
     # Convert to hashtable
     $ret = @()

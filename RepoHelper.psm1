@@ -1,19 +1,8 @@
-
-# Managing dependencies
-$MODULE_INVOKATION_TAG = "RepoHelperModule"
-
-function Set-MyInvokeCommandAlias{
-    [CmdletBinding(SupportsShouldProcess)]
-    param(
-        [Parameter(Mandatory,Position=0)][string]$Alias,
-        [Parameter(Mandatory,Position=1)][string]$Command
-    )
-
-    InvokeHelper\Set-InvokeCommandAlias -Alias $Alias -Command $Command -Tag $MODULE_INVOKATION_TAG
-}
-
 #Module path is where resides the RootModule file. This file. :)
 $MODULE_PATH = $PSScriptRoot
+
+# Import Set-MyInvokeCommandAlias
+. $(($MODULE_PATH | Join-Path -ChildPath "private" -AdditionalChildPath SetMyInvokeCommandAlias.ps1 | Get-Item).FullName)
 
 #Get public and private function definition files.
 $Public  = @( Get-ChildItem -Path $MODULE_PATH\public\*.ps1 -ErrorAction SilentlyContinue )

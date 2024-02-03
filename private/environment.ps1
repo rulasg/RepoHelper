@@ -37,3 +37,19 @@ function Get-Environment{
 
     return $Owner, $Repo
 }
+
+function Get-EnvironmentOwner{
+    [CmdletBinding()]
+    [OutputType([string])]
+    param(
+        [Parameter(Position = 0)] [string]$Owner
+    )
+
+    if(-Not [string]::IsNullOrWhiteSpace($Owner)){
+        return $Owner
+    }
+
+    $owner,$repo = Get-Environment -Owner $Owner
+
+    return $owner
+}
