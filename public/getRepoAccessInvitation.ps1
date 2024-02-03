@@ -29,6 +29,8 @@ function Get-RepoAccessInvitations{
 
     $result = Invoke-MyCommandJson -Command GetUserAccessInvitations -Parameters $param
 
+    if($result | Test-NotFound){ return }
+
     foreach ($item in $result) {
 
         $ret += @{

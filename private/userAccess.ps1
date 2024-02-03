@@ -61,6 +61,8 @@ function Get-UserAccess{
 
     $result = Invoke-MyCommandJson -Command GetUserAccessAll -Parameters $param
 
+    if($result | Test-NotFound){ return }
+
     foreach ($item in $result) {
         $ret += @{
             $item.login = $item.role_name
