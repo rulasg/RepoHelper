@@ -25,18 +25,13 @@ function Get-RepoAccessTeam{
     }
     $ret = @()
 
-    $headerLine =  "| Photo                      | Name   | Access   | Email   | Handle | Company    |"
-    $headerLines = "|----------------------------|--------|----------|---------|--------|------------|" 
-    # $templateLine ="| ![@{login}]({avatar}?s=40) | {name} | {access} | {email} | {login}| {company}  |"
-    $templateLine ="| ![@{login}]({avatar}) | {name} | {access} | {email} | {login}| {company}  |"
-    
-    
     # HEADER
-    if($NoHeaders){
-        $ret += $headerLine
-        $ret += $headerLines
+    if(-not $NoHeaders){
+        $ret += "| Photo                      | Name   | Access   | Email   | Handle | Company    |"
+        $ret += "|----------------------------|--------|----------|---------|--------|------------|" 
     }
     
+    $templateLine ="| ![@{login}]({avatar}) | {name} | {access} | {email} | {login}| {company}  |"
     # Get access Control
     $accessList = Get-RepoAccess -Owner $owner -Repo $repo 
     
