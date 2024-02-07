@@ -17,3 +17,5 @@ function Reset-InvokeCommandMock{
 
     InvokeHelper\Reset-InvokeCommandAlias -Tag $MODULE_INVOKATION_TAG
 }
+ 
+Reset-InvokeCommandMock
