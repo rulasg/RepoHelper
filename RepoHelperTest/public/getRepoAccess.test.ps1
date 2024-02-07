@@ -17,20 +17,39 @@ function RepoHelperTest_GetRepoAccessAll_SUCCESS{
     Assert-AreEqual -Expected $result.raulgeukk -Presented 'write'
 }
 
-function RepoHelperTest_GetRepoAccess_Success{
+function RepoHelperTest_GetRepoAccess_Success_FromAccess{
 
-    $owner = 'solidifycustomers' ; $repo = 'bit21' ; $user = 'raulgeu'
+    $owner = 'solidifycustomers' ; $repo = 'bit21' ; $user = 'raulgeukk'
 
     # $GetAccessSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessSuccess.json'
     # Set-InvokeCommandMock -Alias 'gh api repos/solidifycustomers/bit21/collaborators/raulgeu/permission' -Command "Get-Content -Path $(($GetAccessSuccess | Get-Item).FullName)"
 
     $GetAccessAllSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessAllSuccess.json'
     Set-InvokeCommandMock -Alias 'gh api repos/solidifycustomers/bit21/collaborators --paginate' -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
+    Set-InvokeCommandMock -Alias 'gh api repos/solidifycustomers/bit21/invitations --paginate' -Command "echo []"
 
     $result = Get-RepoAccess -Owner $owner -Repo $repo
 
     Assert-AreEqual -Expected 'write' -Presented $result.$user
 }
+
+function RepoHelperTest_GetRepoAccess_Success_FromInvites{
+
+    $owner = 'solidifycustomers' ; $repo = 'bit21' ; $user = 'raulgeu'
+
+    # $GetAccessSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessSuccess.json'
+    # Set-InvokeCommandMock -Alias 'gh api repos/solidifycustomers/bit21/collaborators/raulgeu/permission' -Command "Get-Content -Path $(($GetAccessSuccess | Get-Item).FullName)"
+
+    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/collaborators --paginate" -Command "echo []"
+    $GetInvitations = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessInvitationsSuccess.json'
+    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations --paginate" -Command "Get-Content -Path $(($GetInvitations | Get-Item).FullName)"
+
+    $result = Get-RepoAccess -Owner $owner -Repo $repo
+
+    Assert-AreEqual -Expected 'write' -Presented $result.$user
+}
+
+
 
 function RepoHelperTest_TestRepoAccess_Success_True{
 
