@@ -13,9 +13,9 @@ RepoHelperTest_GetRepoAccessTeam_Success{
 
     # Get User information
     MockCall -command "gh api users/rulasg" -filename 'getUserSuccess_rulasg.json'
-    MockCall -command "gh api users/raulgeu" -filename 'getuserSuccess_raulgeu.json'
-    MockCall -command "gh api users/raulgeukk" -filename 'getuserSuccess_raulgeukk.json'
-    MockCall -command "gh api users/MagnusTim" -filename 'getuserSuccess_MagnusTim.json'
+    MockCall -command "gh api users/raulgeu" -filename 'getUserSuccess_raulgeu.json'
+    MockCall -command "gh api users/raulgeukk" -filename 'getUserSuccess_raulgeukk.json'
+    MockCall -command "gh api users/MagnusTim" -filename 'getUserSuccess_MagnusTim.json'
 
     # Act
     $result = Get-RepoAccessTeam -Owner $owner -Repo $repo
@@ -44,9 +44,9 @@ function RepoHelperTest_GetRepoAccessTeam_Success_NoHead{
 
     # Get User information
     MockCall -command "gh api users/rulasg" -filename 'getUserSuccess_rulasg.json'
-    MockCall -command "gh api users/raulgeu" -filename 'getuserSuccess_raulgeu.json'
-    MockCall -command "gh api users/raulgeukk" -filename 'getuserSuccess_raulgeukk.json'
-    MockCall -command "gh api users/MagnusTim" -filename 'getuserSuccess_MagnusTim.json'
+    MockCall -command "gh api users/raulgeu" -filename 'getUserSuccess_raulgeu.json'
+    MockCall -command "gh api users/raulgeukk" -filename 'getUserSuccess_raulgeukk.json'
+    MockCall -command "gh api users/MagnusTim" -filename 'getUserSuccess_MagnusTim.json'
 
     # Act
     $result = Get-RepoAccessTeam -Owner $owner -Repo $repo -NoHeaders
@@ -66,6 +66,6 @@ function MockCall{
 
     )
 
-    $mockFile = $PSScriptRoot | Join-Path -ChildPath 'testdata' -AdditionalChildPath $filename
+    $mockFile = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath $filename
     Set-InvokeCommandMock -Alias $command -Command "Get-Content -Path $(($mockFile | Get-Item).FullName)"
 }
