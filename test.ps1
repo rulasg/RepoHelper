@@ -91,7 +91,7 @@ function Import-RequiredModule{
             $AllowPrerelease = ($AllowPrerelease -or ($null -ne $V[1]))
         }
 
-        $module = Import-Module $ModuleName -PassThru -ErrorAction SilentlyContinue -RequiredVersion:$semVer
+        $module = Import-Module $ModuleName -PassThru -ErrorAction SilentlyContinue -MinimumVersion:$semVer
 
         if ($null -eq $module) {
             "Installing module Name[{0}] Version[{1}] AllowPrerelease[{2}]" -f $ModuleName, $ModuleVersion, $AllowPrerelease | Write-Host -ForegroundColor DarkGray

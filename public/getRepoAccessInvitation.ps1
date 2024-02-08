@@ -31,6 +31,8 @@ function Get-RepoAccessInvitations{
 
     $result = Invoke-MyCommandJson -Command GetUserAccessInvitations -Parameters $param
 
+    if($result | Test-NotFound){ return }
+
     # Check if we are on a private accoutn and not org account.
     # This error is returned when the repo is a personal account repo with no invitations possible
     if($result.message -eq 'Resource not accessible by integration'){

@@ -1,3 +1,4 @@
+Set-MyInvokeCommandAlias -Alias 'GetUserAccessAll' -Command 'gh api repos/{owner}/{repo}/collaborators --paginate'
 Set-MyInvokeCommandAlias -Alias 'GrantUserAccess'  -Command 'gh api repos/{owner}/{repo}/collaborators/{user} -X PUT -f permission="{role}"'
 Set-MyInvokeCommandAlias -Alias 'RemoveUserAccess'  -Command 'gh api repos/{owner}/{repo}/collaborators/{user} -X DELETE'
 
@@ -67,6 +68,8 @@ function Get-UserAccess{
     $ret = @{}
 
     $result = Invoke-MyCommandJson -Command GetUserAccessAll -Parameters $param
+
+    if($result | Test-NotFound){ return }
 
     foreach ($item in $result) {
         $ret += @{

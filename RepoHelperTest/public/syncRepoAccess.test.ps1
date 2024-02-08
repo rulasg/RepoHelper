@@ -1,16 +1,18 @@
 function RepoHelperTest_SyncRepoAccessAll_Success_Write{
     $owner = 'solidifycustomers' ; $repo = 'bit21'
 
+    Reset-InvokeCommandMock
+
     # Avoid calls to single user check
-    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/collaborators" -Command "throw"
-    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations" -Command "throw"
+    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/collaborators --paginate" -Command "throw"
+    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations --paginate" -Command "throw"
 
     # All users
     $GetAccessAllSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessAllSuccess.json'
-    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/collaborators" -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
+    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/collaborators --paginate" -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
 
     $getInvitations = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessInvitationsSuccess.json'
-    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations" -Command "Get-Content -Path $(($getInvitations | Get-Item).FullName)"
+    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations --paginate" -Command "Get-Content -Path $(($getInvitations | Get-Item).FullName)"
 
     # Grant access
     $grantAccessRulasg = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'grantAccessSuccessRulasg.json'
@@ -45,25 +47,28 @@ rulasg
 function RepoHelperTest_SyncRepoAccessAll_Success_Admin{
     $owner = 'solidifycustomers' ; $repo = 'bit21'
 
+    Reset-InvokeCommandMock
+
+
     # Avoid calls to single user check
-    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/collaborators" -Command "throw"
-    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations" -Command "throw"
+    # Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/collaborators --paginate" -Command "throw"
+    # Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations --paginate" -Command "throw"
 
     # All users
     $GetAccessAllSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessAllSuccess.json'
-    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/collaborators" -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
+    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/collaborators --paginate" -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
     $getInvitations = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessInvitationsSuccess.json'
-    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations" -Command "Get-Content -Path $(($getInvitations | Get-Item).FullName)"
+    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations --paginate" -Command "Get-Content -Path $(($getInvitations | Get-Item).FullName)"
 
     # Grant access
     $grantAccessRaulgeu = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'grantAccessSuccessRaulgeuAdmin.json'
     Set-InvokeCommandMock -Alias 'gh api repos/solidifycustomers/bit21/collaborators/raulgeu -X PUT -f permission="admin"' -Command "Get-Content -Path $(($grantAccessRaulgeu | Get-Item).FullName)"
-
+    
     # Remove MagnusTim
     Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/collaborators/MagnusTim -X DELETE" -Command "echo null"
 
-
     # Remove raulgeu
+    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations/243067060 -X DELETE" -Command "echo null"
     Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/collaborators/raulgeu -X DELETE" -Command "echo null"
     Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations/$invitation_id -X DELETE" -Command "echo null"
 
@@ -89,15 +94,17 @@ rulasg
 function RepoHelperTest_SyncRepoAccessAll_Success_Admin_WhatIf{
     $owner = 'solidifycustomers' ; $repo = 'bit21'
 
+    Reset-InvokeCommandMock
+
     # Avoid calls to single user check
-    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/collaborators" -Command "throw"
-    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations" -Command "throw"
+    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/collaborators --paginate" -Command "throw"
+    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations --paginate" -Command "throw"
 
     # All users
     $GetAccessAllSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessAllSuccess.json'
-    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/collaborators" -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
+    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/collaborators --paginate" -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
     $getInvitations = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessInvitationsSuccess.json'
-    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations" -Command "Get-Content -Path $(($getInvitations | Get-Item).FullName)"
+    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations --paginate" -Command "Get-Content -Path $(($getInvitations | Get-Item).FullName)"
 
     # Grant access
     Set-InvokeCommandMock -Alias 'gh api repos/solidifycustomers/bit21/collaborators/raulgeu -X PUT -f permission="admin"' -Command "throw"
@@ -127,6 +134,8 @@ rulasg
 function RepoHelperTest_SyncRepoAccess_EnvironmentParameters{
     $owner = 'solidifycustomers' ; $repo = 'bit21'
 
+    Reset-InvokeCommandMock
+
     # "" | Out-File "contributors"
 
     $userList = @"
@@ -141,9 +150,9 @@ function RepoHelperTest_SyncRepoAccess_EnvironmentParameters{
 
     # All users
     $GetAccessAllSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessAllSuccess.json'
-    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/collaborators" -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
+    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/collaborators --paginate" -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
     $getInvitations = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessInvitationsSuccess.json'
-    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations" -Command "Get-Content -Path $(($getInvitations | Get-Item).FullName)"
+    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations --paginate" -Command "Get-Content -Path $(($getInvitations | Get-Item).FullName)"
 
     $result = Sync-RepoAccess admin  "contributors" -WhatIf
 
@@ -153,6 +162,8 @@ function RepoHelperTest_SyncRepoAccess_EnvironmentParameters{
 }
 
 function RepoHelperTest_SyncRepoAccess_NoParameters {
+
+    Reset-InvokeCommandMock
 
     Set-InvokeCommandMock -Alias 'git remote get-url origin 2>$null' -Command 'return $null'
 
@@ -171,6 +182,8 @@ function RepoHelperTest_SyncRepoAccess_NoParameters {
 function RepoHelperTest_SyncRepoAccess_NoUsersFile {
     $owner = 'solidifycustomers' ; $repo = 'bit21' ; $file = "contributors"
 
+    Reset-InvokeCommandMock
+
     Set-InvokeCommandMock -Alias 'git remote get-url origin 2>$null' -Command "echo https://github.com/$owner/$repo.git"
 
     $result = Sync-RepoAccess admin $file -WhatIf  @ErrorParameters
@@ -181,6 +194,8 @@ function RepoHelperTest_SyncRepoAccess_NoUsersFile {
 
 function RepoHelperTest_SyncRepoAccess_Error_On_Invitations {
     $owner = 'solidifycustomers' ; $repo = 'bit21'
+
+    Reset-InvokeCommandMock
 
     # "" | Out-File "contributors"
 
@@ -196,9 +211,9 @@ function RepoHelperTest_SyncRepoAccess_Error_On_Invitations {
 
     # All users
     $GetAccessAllSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessAllSuccess.json'
-    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/collaborators" -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
+    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/collaborators --paginate" -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
     $getAccessInvitationsError = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessInvitationsError.json'
-    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations" -Command "Get-Content -Path $(($getAccessInvitationsError | Get-Item).FullName)"
+    Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations --paginate" -Command "Get-Content -Path $(($getAccessInvitationsError | Get-Item).FullName)"
 
     $result = Sync-RepoAccess admin  "contributors" -WhatIf
 
