@@ -31,14 +31,17 @@ function Get-RepoAccessTeam{
         $ret += "|----------------------------|--------|----------|---------|--------|------------|" 
     }
     
-    $templateLine ="| ![@{login}]({avatar}) | {name} | {access} | {email} | {login}| {company}  |"
+    $templateLine ="| {avatar} | {name} | {access} | {email} |  [@{login}](https://https://github.com/{login}) | {company}  |"
     # Get access Control
-    $accessList = Get-RepoAccess -Owner $owner -Repo $repo 
+    $accessList = Get-RepoAccess -Owner $owner -Repo $repo
+
+    # Sort by access
+    $accessList = $accessList | Sort-Object -Property value
     
     Foreach($login in $accessList.Keys){
         
         $user = Get-RepoUser -Login $login
-        $avatar = 'https://avatars.githubusercontent.com/{login}?s=40' -replace '{login}',$login
+        $avatar =  '<img alt="" width="100" height="100" class="avatar width-full height-full avatar-before-user-status" src="https://avatars.githubusercontent.com/{login}">' -replace '{login}',$login
 
         $userline = $templateLine
         $userline = $userline -replace '{login}',   $user.login

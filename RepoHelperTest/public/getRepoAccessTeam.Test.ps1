@@ -24,10 +24,10 @@ RepoHelperTest_GetRepoAccessTeam_Success{
     Assert-Contains -Presented $result -Expected "| Photo                      | Name   | Access   | Email   | Handle | Company    |"
     Assert-Contains -Presented $result -Expected "|----------------------------|--------|----------|---------|--------|------------|"
 
-    Assert-Contains -Presented $result -Expected "| ![@raulgeukk](https://avatars.githubusercontent.com/raulgeukk?s=40) | Raul Dibildos kk | write | raulgeukk@github.com | raulgeukk| Contoso  |"
-    Assert-Contains -Presented $result -Expected "| ![@raulgeu](https://avatars.githubusercontent.com/raulgeu?s=40) | Raul Dibildos | write | raulgeu@github.com | raulgeu| Contoso  |"
-    Assert-Contains -Presented $result -Expected "| ![@MagnusTim](https://avatars.githubusercontent.com/MagnusTim?s=40) | Magnus Timner | admin | MagnusTim@github.com | MagnusTim| Contoso  |"
-    Assert-Contains -Presented $result -Expected "| ![@rulasg](https://avatars.githubusercontent.com/rulasg?s=40) | Raul Gonzalez | admin | rulasg@github.com | rulasg| Contoso  |"
+    Assert-Contains -Presented $result -Expected '| <img alt="" width="100" height="100" class="avatar width-full height-full avatar-before-user-status" src="https://avatars.githubusercontent.com/MagnusTim"> | Magnus Timner | admin | MagnusTim@github.com |  [@MagnusTim](https://https://github.com/MagnusTim) | Contoso  |'
+    Assert-Contains -Presented $result -Expected '| <img alt="" width="100" height="100" class="avatar width-full height-full avatar-before-user-status" src="https://avatars.githubusercontent.com/rulasg"> | Raul Gonzalez | admin | rulasg@github.com |  [@rulasg](https://https://github.com/rulasg) | Contoso  |'
+    Assert-Contains -Presented $result -Expected '| <img alt="" width="100" height="100" class="avatar width-full height-full avatar-before-user-status" src="https://avatars.githubusercontent.com/raulgeukk"> | Raul Dibildos kk | write | raulgeukk@github.com |  [@raulgeukk](https://https://github.com/raulgeukk) | Contoso  |'
+    Assert-Contains -Presented $result -Expected '| <img alt="" width="100" height="100" class="avatar width-full height-full avatar-before-user-status" src="https://avatars.githubusercontent.com/raulgeu"> | Raul Dibildos | write | raulgeu@github.com |  [@raulgeu](https://https://github.com/raulgeu) | Contoso  |'
 }
 
 function RepoHelperTest_GetRepoAccessTeam_Success_NoHead{
@@ -53,11 +53,10 @@ function RepoHelperTest_GetRepoAccessTeam_Success_NoHead{
 
     Assert-Count -Expected 4 -Presented $result
 
-    Assert-Contains -Presented $result -Expected "| ![@raulgeukk](https://avatars.githubusercontent.com/raulgeukk?s=40) | Raul Dibildos kk | write | raulgeukk@github.com | raulgeukk| Contoso  |"
-    Assert-Contains -Presented $result -Expected "| ![@raulgeu](https://avatars.githubusercontent.com/raulgeu?s=40) | Raul Dibildos | write | raulgeu@github.com | raulgeu| Contoso  |"
-    Assert-Contains -Presented $result -Expected "| ![@MagnusTim](https://avatars.githubusercontent.com/MagnusTim?s=40) | Magnus Timner | admin | MagnusTim@github.com | MagnusTim| Contoso  |"
-    Assert-Contains -Presented $result -Expected "| ![@rulasg](https://avatars.githubusercontent.com/rulasg?s=40) | Raul Gonzalez | admin | rulasg@github.com | rulasg| Contoso  |"
-
+    Assert-Contains -Presented $result -Expected '| <img alt="" width="100" height="100" class="avatar width-full height-full avatar-before-user-status" src="https://avatars.githubusercontent.com/MagnusTim"> | Magnus Timner | admin | MagnusTim@github.com |  [@MagnusTim](https://https://github.com/MagnusTim) | Contoso  |'
+    Assert-Contains -Presented $result -Expected '| <img alt="" width="100" height="100" class="avatar width-full height-full avatar-before-user-status" src="https://avatars.githubusercontent.com/rulasg"> | Raul Gonzalez | admin | rulasg@github.com |  [@rulasg](https://https://github.com/rulasg) | Contoso  |'
+    Assert-Contains -Presented $result -Expected '| <img alt="" width="100" height="100" class="avatar width-full height-full avatar-before-user-status" src="https://avatars.githubusercontent.com/raulgeukk"> | Raul Dibildos kk | write | raulgeukk@github.com |  [@raulgeukk](https://https://github.com/raulgeukk) | Contoso  |'
+    Assert-Contains -Presented $result -Expected '| <img alt="" width="100" height="100" class="avatar width-full height-full avatar-before-user-status" src="https://avatars.githubusercontent.com/raulgeu"> | Raul Dibildos | write | raulgeu@github.com |  [@raulgeu](https://https://github.com/raulgeu) | Contoso  |'
 }
 
 function MockCall{
