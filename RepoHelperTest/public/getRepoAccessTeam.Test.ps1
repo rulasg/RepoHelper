@@ -12,7 +12,7 @@ RepoHelperTest_GetRepoAccessTeam_Success{
     Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations --paginate" -Command "Get-Content -Path $(($getInvitations | Get-Item).FullName)"
 
     # Get User information
-    MockCall -command "gh api users/rulasg" -filename 'getuserSuccess_rulasg.json'
+    MockCall -command "gh api users/rulasg" -filename 'getUserSuccess_rulasg.json'
     MockCall -command "gh api users/raulgeu" -filename 'getuserSuccess_raulgeu.json'
     MockCall -command "gh api users/raulgeukk" -filename 'getuserSuccess_raulgeukk.json'
     MockCall -command "gh api users/MagnusTim" -filename 'getuserSuccess_MagnusTim.json'
@@ -43,7 +43,7 @@ function RepoHelperTest_GetRepoAccessTeam_Success_NoHead{
     Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations --paginate" -Command "Get-Content -Path $(($getInvitations | Get-Item).FullName)"
 
     # Get User information
-    MockCall -command "gh api users/rulasg" -filename 'getuserSuccess_rulasg.json'
+    MockCall -command "gh api users/rulasg" -filename 'getUserSuccess_rulasg.json'
     MockCall -command "gh api users/raulgeu" -filename 'getuserSuccess_raulgeu.json'
     MockCall -command "gh api users/raulgeukk" -filename 'getuserSuccess_raulgeukk.json'
     MockCall -command "gh api users/MagnusTim" -filename 'getuserSuccess_MagnusTim.json'
