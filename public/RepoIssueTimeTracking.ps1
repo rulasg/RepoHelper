@@ -137,30 +137,42 @@ function GetRepoIssueTimeTracking{
         $title = $result.title
         $comments = $result.comments
 
-        $body = $comments.body
-        $md = $body | ConvertFrom-Markdown
-        $tags = $md.Tokens.inline | Where-Object {$_.Tag -eq $TT_END} | Select-Object -Property PreviousSibling | Select-Object -ExpandProperty PreviousSibling
-        $contents = $tags.Content
-
-        $times = $contents | ForEach-Object{$_.Text.Substring($_.Start,$_.Length)}
-
         $totalMinutes = 0
+        $totalTimes = 0
         $records = @()
 
-        foreach($content in $contents){
-            try {
-                $time = $content.Text.Substring($content.Start,$content.Length)
-                $text = $content.Text
+        foreach ($comment in $comments){
 
-                $totalMinutes += ConvertTo-Minutes $time
-                $records += [PSCustomObject]@{
-                    Time = $time
-                    Text = $text
+            $body = $comment.body
+            $md = $body | ConvertFrom-Markdown
+            $tags = $md.Tokens.inline | Where-Object {$_.Tag -eq $TT_END} | Select-Object -Property PreviousSibling | Select-Object -ExpandProperty PreviousSibling
+            $contents = $tags.Content
+
+            # Skipp comments without time tags
+            If($null -eq $contents){ continue }
+
+            $commentTotalMinutes = 0
+
+            # We allow to have more than one time tag in a comment
+            foreach($content in $contents){
+                $totalTimes++
+
+                $time = $content.Text.Substring($content.Start,$content.Length)
+                
+                #Control the time tag syntax
+                try { $commentTotalMinutes += ConvertTo-Minutes $time}
+                catch {
+                    Write-Warning -Message "Skipping Tag [ $time ] $text"
+                    Write-Warning -Message $_.Exception.Message
                 }
             }
-            catch {
-                Write-Warning -Message "Skipping Tag [ $time ] $text"
-                Write-Warning -Message $_.Exception.Message
+
+            $totalMinutes += $commentTotalMinutes
+
+            $records += [PSCustomObject]@{
+                Time = $commentTotalMinutes
+                Text = $comment.body
+                CreatedAt = $comment.createdAt
             }
         }
 
@@ -170,7 +182,7 @@ function GetRepoIssueTimeTracking{
             Owner = $Owner
             IssueNumber = $IssueNumber
             Comments = $comments.Count
-            Times = $times.Count
+            Times = $totalTimes
             Records = $records
             TotalMinutes = $totalMinutes
             Total = ConvertTo-TimeString -Minutes $totalMinutes
