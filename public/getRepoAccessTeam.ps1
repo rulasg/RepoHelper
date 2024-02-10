@@ -36,9 +36,12 @@ function Get-RepoAccessTeam{
     $accessList = Get-RepoAccess -Owner $owner -Repo $repo
 
     # Sort by access
-    $accessList = $accessList | Sort-Object -Property value
+    $accessList = $accessList.GetEnumerator() | Sort-Object -Property  Value
     
-    Foreach($login in $accessList.Keys){
+    # Create lines for each access
+    Foreach($access in $accessList){
+        $login = $access.Name
+        $value = $access.Value
         
         $user = Get-RepoUser -Login $login
         $avatar =  '<img alt="" width="100" height="100" class="avatar width-full height-full avatar-before-user-status" src="https://avatars.githubusercontent.com/{login}">' -replace '{login}',$login
@@ -47,7 +50,7 @@ function Get-RepoAccessTeam{
         $userline = $userline -replace '{login}',   $user.login
         $userline = $userline -replace '{avatar}',  $avatar
         $userline = $userline -replace '{name}',    $user.name
-        $userline = $userline -replace '{access}',  $accessList.$login
+        $userline = $userline -replace '{access}',  $value
         $userline = $userline -replace '{email}',   $user.email
         $userline = $userline -replace '{company}', $user.company
 
