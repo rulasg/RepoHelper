@@ -7,7 +7,7 @@ function RepoHelperTest_AddRepoIssueComment_Success{
     $mockUrl = "https://api.github.com/repos/{owner}/{repo}/issues/{issueNumber}#issuecomment-1906504801"
     $mockUrl = $mockUrl -replace '{owner}',$owner -replace '{repo}',$repo -replace '{issueNumber}',$issueNumber
 
-    Set-InvokeCommandMock -Alias "gh issue comment $issueNumber -b '$comment' -R $owner/$repo" -Command "echo $mockUrl"
+    MockCallToString -Command "gh issue comment $issueNumber -b `"$comment`" -R $owner/$repo" -OutString $mockUrl
 
     $result = Add-RepoIssueComment -Owner $owner -Repo $repo -IssueNumber $issueNumber -Comment $comment
 
@@ -20,14 +20,13 @@ function RepoHelperTest_AddRepoIssueComment_Success_minimalCommand{
 
     $owner = 'orgName' ; $repo = 'repoName' ; $issueNumber = '1' ; $comment = 'This is a comment'
 
-    Set-InvokeCommandMock -Alias 'git remote get-url origin 2>$null' -Command "echo https://github.com/$owner/$repo.git"
+    MockCallToString -Command 'git remote get-url origin 2>$null' -OutString "https://github.com/$owner/$repo.git"
 
-    $mockUrl = "https://api.github.com/repos/{owner}/{repo}/issues/{issueNumber}#issuecomment-1906504801"
-    $mockUrl = $mockUrl -replace '{owner}',$owner -replace '{repo}',$repo -replace '{issueNumber}',$issueNumber
+    $mockUrl = "https://api.github.com/repos/$owner/$repo/issues/$issueNumber#issuecomment-1906504801"
+    MockCallToString -Command "gh issue comment $issueNumber -b `"$comment`" -R $owner/$repo" -OutString $mockUrl
 
-    Set-InvokeCommandMock -Alias "gh issue comment $issueNumber -b '$comment' -R $owner/$repo" -Command "echo $mockUrl"
 
-    $result = $comment | Add-RepoIssueComment $issueNumber
+    $result = Add-RepoIssueComment $issueNumber $comment
 
     Assert-AreEqual -Expected $mockUrl -Presented $result
 }
@@ -41,11 +40,28 @@ function RepoHelperTest_AddRepoIssueComment_WrongIssueNumber{
     $mockUrl = "https://api.github.com/repos/{owner}/{repo}/issues/{issueNumber}#issuecomment-1906504801"
     $mockUrl = $mockUrl -replace '{owner}',$owner -replace '{repo}',$repo -replace '{issueNumber}',$issueNumber
 
-    Set-InvokeCommandMock -Alias "gh issue comment $issueNumber -b '$comment' -R $owner/$repo" -Command "return $null"
+    MockCallToNull -Command "gh issue comment $issueNumber -b `"$comment`" -R $owner/$repo"
 
     $result = Add-RepoIssueComment -Owner $owner -Repo $repo -IssueNumber $issueNumber -Comment $comment @ErrorParameters
 
     Assert-IsNull -Object $result
     Assert-Count -Expected 1 -Presented $errorvar
     Assert-Contains -Expected "Error adding comment to issue $issueNumber for $owner/$repo" -Presented $errorvar.exception.Message
+}
+
+function RepoHelperTest_GetRepoIssues_Success{
+
+    Reset-InvokeCommandMock
+
+    $owner = 'solidifycustomers' ; $repo = 'bit21' ; $attributes="number,title"
+
+    MockCall -Command "gh issue list -R $owner/$repo --json $attributes" -filename getIssueList.json
+
+    $result = Get-RepoIssue -Owner $owner -Repo $repo
+
+    Assert-Count -Expected 5 -Presented $result
+
+    Assert-Contains -Expected 12 -Presented $result.number
+    Assert-Contains -Expected "comment development 12" -Presented $result.title
+
 }
