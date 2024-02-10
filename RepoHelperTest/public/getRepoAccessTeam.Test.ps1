@@ -58,14 +58,3 @@ function RepoHelperTest_GetRepoAccessTeam_Success_NoHead{
     Assert-Contains -Presented $result -Expected '| <img alt="" width="100" height="100" class="avatar width-full height-full avatar-before-user-status" src="https://avatars.githubusercontent.com/raulgeukk"> | Raul Dibildos kk | write | raulgeukk@github.com |  [@raulgeukk](https://https://github.com/raulgeukk) | Contoso  |'
     Assert-Contains -Presented $result -Expected '| <img alt="" width="100" height="100" class="avatar width-full height-full avatar-before-user-status" src="https://avatars.githubusercontent.com/raulgeu"> | Raul Dibildos | write | raulgeu@github.com |  [@raulgeu](https://https://github.com/raulgeu) | Contoso  |'
 }
-
-function MockCall{
-    param(
-        [string] $command,
-        [string] $filename
-
-    )
-
-    $mockFile = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath $filename
-    Set-InvokeCommandMock -Alias $command -Command "Get-Content -Path $(($mockFile | Get-Item).FullName)"
-}

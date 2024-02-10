@@ -1,0 +1,154 @@
+{
+    "comments": [
+        {
+            "id": "IC_kwDOLJ-GD85zQ_QH",
+            "author": {
+                "login": "rulasg"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "<tt>33m</tt>\n Testing how to add time to issues",
+            "createdAt": "2024-02-08T11:01:08Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/rulasgorg/repo1/issues/1#issuecomment-1933833223",
+            "viewerDidAuthor": true
+        },
+        {
+            "id": "IC_kwDOLJ-GD85zRAKQ",
+            "author": {
+                "login": "rulasg"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "<tt>12x</tt>\n Otra cosa que hice",
+            "createdAt": "2024-02-08T11:02:43Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/rulasgorg/repo1/issues/1#issuecomment-1933836944",
+            "viewerDidAuthor": true
+        },
+        {
+            "id": "IC_kwDOLJ-GD85zRAUc",
+            "author": {
+                "login": "rulasg"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "<tt>d45</tt>\n Y otra coas",
+            "createdAt": "2024-02-08T11:02:58Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/rulasgorg/repo1/issues/1#issuecomment-1933837596",
+            "viewerDidAuthor": true
+        },
+        {
+            "id": "IC_kwDOLJ-GD85zRFKJ",
+            "author": {
+                "login": "rulasg"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "hago algo y luego indico el tiempo que he dedicado \n <tt>45m</tt>\n Y otra coas",
+            "createdAt": "2024-02-08T11:13:07Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/rulasgorg/repo1/issues/1#issuecomment-1933857417",
+            "viewerDidAuthor": true
+        },
+        {
+            "id": "IC_kwDOLJ-GD85zZZSa",
+            "author": {
+                "login": "rulasg"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "<TT>1h</TT> comment",
+            "createdAt": "2024-02-09T14:30:53Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/rulasgorg/repo1/issues/1#issuecomment-1936037018",
+            "viewerDidAuthor": true
+        },
+        {
+            "id": "IC_kwDOLJ-GD85zZbpS",
+            "author": {
+                "login": "rulasg"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "some test to add as comment",
+            "createdAt": "2024-02-09T14:37:02Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/rulasgorg/repo1/issues/1#issuecomment-1936046674",
+            "viewerDidAuthor": true
+        },
+        {
+            "id": "IC_kwDOLJ-GD85zZb8P",
+            "author": {
+                "login": "rulasg"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "<TT>1h</TT> comment",
+            "createdAt": "2024-02-09T14:37:45Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/rulasgorg/repo1/issues/1#issuecomment-1936047887",
+            "viewerDidAuthor": true
+        },
+        {
+            "id": "IC_kwDOLJ-GD85zZe1n",
+            "author": {
+                "login": "rulasg"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "<TT>1h</TT> comment",
+            "createdAt": "2024-02-09T14:45:09Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/rulasgorg/repo1/issues/1#issuecomment-1936059751",
+            "viewerDidAuthor": true
+        },
+        {
+            "id": "IC_kwDOLJ-GD85zZhD_",
+            "author": {
+                "login": "rulasg"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "<TT>1h</TT> comment",
+            "createdAt": "2024-02-09T14:50:47Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/rulasgorg/repo1/issues/1#issuecomment-1936068863",
+            "viewerDidAuthor": true
+        },
+        {
+            "id": "IC_kwDOLJ-GD85zZhEh",
+            "author": {
+                "login": "rulasg"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "<TT>1h</TT> comment",
+            "createdAt": "2024-02-09T14:50:49Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/rulasgorg/repo1/issues/1#issuecomment-1936068897",
+            "viewerDidAuthor": true
+        }
+    ]
+}

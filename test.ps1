@@ -96,7 +96,7 @@ function Import-RequiredModule{
         if ($null -eq $module) {
             "Installing module Name[{0}] Version[{1}] AllowPrerelease[{2}]" -f $ModuleName, $ModuleVersion, $AllowPrerelease | Write-Host -ForegroundColor DarkGray
             $installed = Install-Module -Name $ModuleName -Force -AllowPrerelease:$AllowPrerelease -passThru -RequiredVersion:$ModuleVersion
-            $module = Import-Module -Name $installed.Name -RequiredVersion ($installed.Version.Split('-')[0]) -Force -PassThru
+            $module = $installed | ForEach-Object {Import-Module -Name $_.Name -RequiredVersion ($_.Version.Split('-')[0]) -Force -PassThru}
         }
 
         "Imported module Name[{0}] Version[{1}] PreRelease[{2}]" -f $module.Name, $module.Version, $module.privatedata.psdata.prerelease | Write-Host -ForegroundColor DarkGray
