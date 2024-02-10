@@ -48,6 +48,27 @@ function RepoHelperTest_GetRepoIssueTimeTracking_SUCCESS
     Assert-AreEqual -Expected "10h 33m" -Presented $result.Total
 }
 
+function RepoHelperTest_GetRepoIssueTimeTracking_SUCCESS_SeveralTimesInSingleComment
+{
+    Reset-InvokeCommandMock
+
+    $owner = "rulasgorg" ; $repo = "repo1" ; $issue = 3 
+
+    MockCall -Command "gh issue view $issue -R $owner/$repo --json title,comments" -filename getIssueComments_MultiTimesInComment.json
+
+    $result = Get-RepoIssueTimeTracking $issue -Owner $owner -Repo $repo
+
+    Assert-AreEqual -Expected "Issue3 Repo1" -Presented $result.Title
+    Assert-AreEqual -Expected $issue -Presented $result.IssueNumber
+    Assert-AreEqual -Expected $repo -Presented $result.Repo
+    Assert-AreEqual -Expected $owner -Presented $result.Owner
+    Assert-AreEqual -Expected 2 -Presented $result.Comments
+    Assert-AreEqual -Expected 6 -Presented $result.Times
+    Assert-AreEqual -Expected 231 -Presented $result.TotalMinutes
+    Assert-AreEqual -Expected "3h 51m" -Presented $result.Total
+
+}
+
 function RepoHelperTest_GetRepoIssueTimeTracking_WrongFormat
 {
     Reset-InvokeCommandMock
@@ -91,14 +112,43 @@ function RepoHelperTest_GetRepoIssueTimeTrackingRecords_SUCCESS{
     $result = Get-RepoIssueTimeTrackingRecords $issue -Owner $owner -Repo $repo
 
     Assert-count -Expected 3 -Presented $result
-    Assert-contains -Presented $result.Text -Expected "<TT>33m</TT> First time tracking comment"
-    Assert-contains -Presented $result.Text -Expected "<TT>2h</TT> Third  time tracking comment"
-    $text = @"
-<TT>1d</TT> Sixth  time tracking comment
-New line in comment
-And Second line
+
+    # Text
+    $resultText = $result.Text | ConvertTo-Json
+    $textExpected = @"
+[
+  "<TT>33m</TT> First time tracking comment",
+  "<TT>2h</TT> Third  time tracking comment",
+  "<TT>1d</TT> Sixth  time tracking comment\nNew line in comment\nAnd Second line"
+]
 "@
-    Assert-contains -Presented $result.Text -Expected $text
+    Assert-AreEqual -Expected $textExpected -Presented $resultText
+
+    # CreatedAt
+    Assert-Contains -Expected (Get-Date -Date "February 10, 2024 7:28:36 AM") -Presented $result.CreatedAt
+    Assert-Contains -Expected (Get-Date -Date "February 10, 2024 7:30:43 AM") -Presented $result.CreatedAt
+    Assert-Contains -Expected (Get-Date -Date "February 10, 2024 7:32:50 AM") -Presented $result.CreatedAt
+}
+
+function RepoHelperTest_GetRepoIssueTimeTrackingRecord_SUCCESS_SeveralTimesInSingleComment
+{
+    Reset-InvokeCommandMock
+
+    $owner = "rulasgorg" ; $repo = "repo1" ; $issue = 3 
+
+    MockCall -Command "gh issue view $issue -R $owner/$repo --json title,comments" -filename getIssueComments_MultiTimesInComment.json
+
+    $result = Get-RepoIssueTimeTrackingRecords $issue -Owner $owner -Repo $repo
+    $resultText = $result.Text | ConvertTo-Json
+    $expectedText = @"
+[
+  "- [ ] <TT>11m</TT> For 1 task\r\n- [x] <TT>22m</TT> For 2 task\r\n- [ ] <TT>33m</TT> For 3 task",
+  "- [ ] <TT>44m</TT> For 4 task\r\n- [x] <TT>55m</TT> For 5 task\r\n- [ ] <TT>66m</TT> For 6 task"
+]
+"@
+
+    Assert-count -Expected 2 -Presented $result
+    Assert-AreEqual -Expected $expectedText -Presented $resultText
 }
 
 function RepoHelperTest_TimeTracking_ConvertToMinutes{
