@@ -69,7 +69,7 @@ function RepoHelperTest_GetRepoIssueTimeTracking_Notfound
 {
     Reset-InvokeCommandMock
 
-    $owner = "rulasgorgkk" ; $repo = "repo1" ; $issue = 1 ; $time = "1h"
+    $owner = "rulasgorgkk" ; $repo = "repo1" ; $issue = 1
 
     MockCallToString -Command "gh issue view $issue -R $owner/$repo --json title,comments" -OutString "null"
 

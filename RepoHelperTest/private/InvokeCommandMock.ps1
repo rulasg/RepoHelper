@@ -44,8 +44,7 @@ function MockCallToString{
 
 function MockCallToNull{
     param(
-        [string] $command,
-        [string] $OutString
+        [string] $command
     )
 
     Set-InvokeCommandMock -Alias $command -Command 'return $null'

@@ -4,6 +4,10 @@ $TT_START = "<TT>"
 $TT_END = "</TT>"
 Set-MyInvokeCommandAlias -Alias "GetIssueComments" -Command "gh issue view {number} -R {owner}/{repo} --json title,comments"
 
+<#
+.SYNOPSIS
+    Adds time tracking to an issue in a GitHub repository.
+#>
 function Add-RepoIssueTimeTracking{
     [CmdletBinding(SupportsShouldProcess)]
     [Alias("att")]
@@ -31,12 +35,16 @@ function Add-RepoIssueTimeTracking{
 
         $body = "$timeTag $Comment"
 
-        $result = Add-RepoIssueComment -IssueNumber $IssueNumber -Owner $Owner -Repo $Repo -Comment $body
+        $result = Add-RepoIssueComment -IssueNumber $IssueNumber -Owner $Owner -Repo $Repo -Comment $body -WhatIf:$WhatIfPreference
 
         return $result
     }
 } Export-ModuleMember -Function Add-RepoIssueTimeTracking -Alias "att"
 
+<#
+.SYNOPSIS
+    Gets time tracking from an issue in a GitHub repository.
+#>
 function Get-RepoIssueTimeTracking{
     [CmdletBinding()]
     [Alias("gtt")]
@@ -78,6 +86,10 @@ function Get-RepoIssueTimeTracking{
     }
 } Export-ModuleMember -Function Get-RepoIssueTimeTracking -Alias "gtt"
 
+<#
+.SYNOPSIS
+    Gets time tracking records from an issue in a GitHub repository.
+#>
 function Get-RepoIssueTimeTrackingRecords{
     [CmdletBinding()]
     [Alias("gttr")]
@@ -168,6 +180,10 @@ function GetRepoIssueTimeTracking{
     }
 } 
 
+<#
+.SYNOPSIS
+    Converts a time tag to minutes.
+#>
 function ConvertTo-Minutes([string] $Tag){
     # TODO: Implemnet
     # calculate the time based on m,h,d
@@ -196,4 +212,4 @@ function ConvertTo-TimeString([int] $Minutes){
 
     $ret = "{0}h {1}m" -f $hours,$minutes
     return $ret
-} Export-ModuleMember -Function ConvertTo-TimeString
+}
