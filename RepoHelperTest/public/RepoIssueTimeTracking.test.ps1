@@ -96,6 +96,10 @@ function RepoHelperTest_TimeTracking_ConvertToMinutes{
     Assert-ConvertToMinutes -Tag "1000m" -Expected 1000
     Assert-ConvertToMinutes -Tag "5h" -Expected (5*60)
     Assert-ConvertToMinutes -Tag "5d" -Expected (5*60*8)
+
+    Assert-ConvertToMinutes -Tag "22M" -Expected (22)
+    Assert-ConvertToMinutes -Tag "11H" -Expected (11*60)
+    Assert-ConvertToMinutes -Tag "3D" -Expected (3*8*60)
 }
 
 function Assert-ThrowOnConvertToMinutes{
