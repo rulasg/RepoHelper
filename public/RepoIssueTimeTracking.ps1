@@ -38,7 +38,7 @@ function Add-RepoIssueTimeTracking{
 } Export-ModuleMember -Function Add-RepoIssueTimeTracking -Alias "att"
 
 function Get-RepoIssueTimeTracking{
-    [CmdletBinding(SupportsShouldProcess)]
+    [CmdletBinding()]
     [Alias("gtt")]
     param(
         [Parameter(Mandatory,ValueFromPipeline,Position=0)] [int]$IssueNumber,
@@ -55,6 +55,62 @@ function Get-RepoIssueTimeTracking{
             return $null
         }
     }
+
+    process{
+        $result = GetRepoIssueTimeTracking -IssueNumber $IssueNumber -Owner $Owner -Repo $Repo
+
+        if($null -eq $result){
+            return $null
+        }
+
+        $ret = [PSCustomObject]@{
+            Title = $result.title
+            Repo = $result.Repo
+            Owner = $result.Owner
+            IssueNumber = $result.IssueNumber
+            Comments = $result.Comments
+            Times = $result.Times
+            TotalMinutes = $result.TotalMinutes
+            Total = $result.Total
+        }
+
+        return $ret
+    }
+} Export-ModuleMember -Function Get-RepoIssueTimeTracking -Alias "gtt"
+
+function Get-RepoIssueTimeTrackingRecords{
+    [CmdletBinding()]
+    [Alias("gttr")]
+    param(
+        [Parameter(Mandatory,ValueFromPipeline,Position=0)] [int]$IssueNumber,
+        [Parameter()] [string]$Owner,
+        [Parameter()] [string]$Repo
+    )
+
+    begin{
+        $owner,$repo = Get-Environment $Owner $Repo
+        
+        # Error if parameters not set. No need to check repo too.
+        if([string]::IsNullOrEmpty($Owner) -or [string]::IsNullOrEmpty($Repo)){
+            "[Get-RepoIssueTimeTrackingRecords] Owner and Repo parameters are required" | Write-Error
+            return $null
+        }
+    }
+
+    process{
+        $result = GetRepoIssueTimeTracking -IssueNumber $IssueNumber -Owner $Owner -Repo $Repo
+
+        return $result.Records
+    }
+} Export-ModuleMember -Function Get-RepoIssueTimeTrackingRecords -Alias "gttr"
+
+function GetRepoIssueTimeTracking{
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)] [int]$IssueNumber,
+        [Parameter(Mandatory)] [string]$Owner,
+        [Parameter(Mandatory)] [string]$Repo
+    )
 
     process {
         $param = @{ owner = $Owner ; repo = $Repo ; number = $IssueNumber }
@@ -73,15 +129,25 @@ function Get-RepoIssueTimeTracking{
         $md = $body | ConvertFrom-Markdown
         $tags = $md.Tokens.inline | Where-Object {$_.Tag -eq $TT_END} | Select-Object -Property PreviousSibling | Select-Object -ExpandProperty PreviousSibling
         $contents = $tags.Content
+
         $times = $contents | ForEach-Object{$_.Text.Substring($_.Start,$_.Length)}
 
         $totalMinutes = 0
-        foreach($time in $times){
+        $records = @()
+
+        foreach($content in $contents){
             try {
+                $time = $content.Text.Substring($content.Start,$content.Length)
+                $text = $content.Text
+
                 $totalMinutes += ConvertTo-Minutes $time
+                $records += [PSCustomObject]@{
+                    Time = $time
+                    Text = $text
+                }
             }
             catch {
-                Write-Warning -Message "Skipping Tag [ $time ]"
+                Write-Warning -Message "Skipping Tag [ $time ] $text"
                 Write-Warning -Message $_.Exception.Message
             }
         }
@@ -93,13 +159,14 @@ function Get-RepoIssueTimeTracking{
             IssueNumber = $IssueNumber
             Comments = $comments.Count
             Times = $times.Count
+            Records = $records
             TotalMinutes = $totalMinutes
             Total = ConvertTo-TimeString -Minutes $totalMinutes
         }
 
         return $ret
     }
-} Export-ModuleMember -Function Get-RepoIssueTimeTracking -Alias "gtt"
+} 
 
 function ConvertTo-Minutes([string] $Tag){
     # TODO: Implemnet

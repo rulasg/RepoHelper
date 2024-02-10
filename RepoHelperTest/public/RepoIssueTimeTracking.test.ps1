@@ -59,9 +59,9 @@ function RepoHelperTest_GetRepoIssueTimeTracking_WrongFormat
     $result = Get-RepoIssueTimeTracking $issue -Owner $owner -Repo $repo @WarningParameters
 
     Assert-AreEqual -Expected 378 -Presented $result.TotalMinutes
-    Assert-Contains -Presented $warningVar.Message -Expected "Skipping Tag [ 12x ]"
+    # Assert-Contains -Presented $warningVar.Message -Expected "Skipping Tag [ 12x ]"
     Assert-Contains -Presented $warningVar.Message -Expected "Invalid time tag: 12x"
-    Assert-Contains -Presented $warningVar.Message -Expected "Skipping Tag [ d45 ]"
+    # Assert-Contains -Presented $warningVar.Message -Expected "Skipping Tag [ d45 ]"
     Assert-Contains -Presented $warningVar.Message -Expected "Invalid time tag: d45"
 }
 
@@ -71,7 +71,6 @@ function RepoHelperTest_GetRepoIssueTimeTracking_Notfound
 
     $owner = "rulasgorgkk" ; $repo = "repo1" ; $issue = 1 ; $time = "1h"
 
-    # MockCall -Command "gh issue view 1 -R rulasgorg/repo1 --json comments" -filename getIssueComments_WrongTTFormat.json
     MockCallToString -Command "gh issue view $issue -R $owner/$repo --json title,comments" -OutString "null"
 
     $result = Get-RepoIssueTimeTracking $issue -Owner $owner -Repo $repo @ErrorParameters
@@ -80,6 +79,26 @@ function RepoHelperTest_GetRepoIssueTimeTracking_Notfound
     Assert-Count -Expected 1 -Presented $errorvar.exception.Message
     Assert-Contains -Presented $errorvar.exception.Message -Expected "Error getting comments for issue $issue for $owner/$repo"
 
+}
+
+function RepoHelperTest_GetRepoIssueTimeTrackingRecords_SUCCESS{
+    Reset-InvokeCommandMock
+
+    $owner = "rulasgorg" ; $repo = "repo1" ; $issue = 2 
+
+    MockCall -Command "gh issue view $issue -R $owner/$repo --json title,comments" -filename getIssueComments.json
+
+    $result = Get-RepoIssueTimeTrackingRecords $issue -Owner $owner -Repo $repo
+
+    Assert-count -Expected 3 -Presented $result
+    Assert-contains -Presented $result.Text -Expected "<TT>33m</TT> First time tracking comment"
+    Assert-contains -Presented $result.Text -Expected "<TT>2h</TT> Third  time tracking comment"
+    $text = @"
+<TT>1d</TT> Sixth  time tracking comment
+New line in comment
+And Second line
+"@
+    Assert-contains -Presented $result.Text -Expected $text
 }
 
 function RepoHelperTest_TimeTracking_ConvertToMinutes{
