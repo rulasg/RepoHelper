@@ -28,6 +28,12 @@ RepoHelperTest_GetRepoAccessTeam_Success{
     Assert-Contains -Presented $result -Expected '| <img alt="" width="100" height="100" class="avatar width-full height-full avatar-before-user-status" src="https://avatars.githubusercontent.com/rulasg"> | Raul Gonzalez | admin | rulasg@github.com |  [@rulasg](https://https://github.com/rulasg) | Contoso  |'
     Assert-Contains -Presented $result -Expected '| <img alt="" width="100" height="100" class="avatar width-full height-full avatar-before-user-status" src="https://avatars.githubusercontent.com/raulgeukk"> | Raul Dibildos kk | write | raulgeukk@github.com |  [@raulgeukk](https://https://github.com/raulgeukk) | Contoso  |'
     Assert-Contains -Presented $result -Expected '| <img alt="" width="100" height="100" class="avatar width-full height-full avatar-before-user-status" src="https://avatars.githubusercontent.com/raulgeu"> | Raul Dibildos | write | raulgeu@github.com |  [@raulgeu](https://https://github.com/raulgeu) | Contoso  |'
+
+    # Assert Sorted by Access
+    Assert-IsTrue -Condition ($result[2] -like '*| admin |*' )
+    Assert-IsTrue -Condition ($result[3] -like '*| admin |*' )
+    Assert-IsTrue -Condition ($result[4] -like '*| write |*' )
+    Assert-IsTrue -Condition ($result[5] -like '*| write |*' )
 }
 
 function RepoHelperTest_GetRepoAccessTeam_Success_NoHead{

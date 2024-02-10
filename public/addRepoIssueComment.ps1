@@ -47,7 +47,7 @@ function Add-RepoIssueComment{
     Adds a comment to an issue in a GitHub repository.
 #>
 function Get-RepoIssue{
-    [CmdletBinding(SupportsShouldProcess)]
+    [CmdletBinding()]
     [Alias("gri")]
     param(
         [Parameter()] [string]$Owner,
@@ -66,9 +66,7 @@ function Get-RepoIssue{
         $param = @{ owner = $Owner ; repo = $Repo; attributes="number,title" }
 
         # Return the URL of the comment
-        if($PSCmdlet.ShouldProcess("$Owner/$Repo","Add comment to issue $IssueNumber")){
-            $result = Invoke-MyCommandJson -Command ListRepoIssues -Parameters $param
-        }
+        $result = Invoke-MyCommandJson -Command ListRepoIssues -Parameters $param
 
         if($result | Test-NotFound){
             Write-Error -Message "Repo not found"
