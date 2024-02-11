@@ -91,7 +91,7 @@ function Install-Dependencies{
         if ($null -eq $module) {
             "Installing module $requiredModule" | Write-Host -ForegroundColor DarkGray
             Install-Module -Name $requiredModule -Force -AllowPrerelease -RequiredVersion:$requiredVersion
-            $module = Import-Module -Name $requiredModule -RequiredVersion:$requiredVersion -PassThru
+            $module = Import-Module -Name $requiredModule -MinimumVersion:$requiredVersion -PassThru
             "Loaded module Name[{0}] Version[{1}] PreRelease[{2}]" -f $module.Name, $module.Version, $module.privatedata.psdata.prerelease | Write-Host -ForegroundColor DarkGray
         }
     }
