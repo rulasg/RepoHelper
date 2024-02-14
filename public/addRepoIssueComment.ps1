@@ -63,7 +63,7 @@ function Get-RepoIssue{
             return $null
         }
 
-        $param = @{ owner = $Owner ; repo = $Repo; attributes="number,title" }
+        $param = @{ owner = $Owner ; repo = $Repo; attributes="number,title,url" }
 
         # Return the URL of the comment
         $result = Invoke-MyCommandJson -Command ListRepoIssues -Parameters $param
@@ -73,7 +73,6 @@ function Get-RepoIssue{
             return
         }
 
-        # return the URL of the comment
         return $result
     }
 

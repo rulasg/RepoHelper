@@ -34,7 +34,7 @@ function RepoHelperTest_GetRepoIssueTimeTracking_SUCCESS
 
     $owner = "rulasgorg" ; $repo = "repo1" ; $issue = 2 
 
-    MockCall -Command "gh issue view $issue -R $owner/$repo --json title,comments" -filename getIssueComments.json
+    MockCall -Command "gh issue view $issue -R $owner/$repo --json title,comments,url" -filename getIssueComments.json
 
     $result = Get-RepoIssueTimeTracking $issue -Owner $owner -Repo $repo
 
@@ -46,6 +46,7 @@ function RepoHelperTest_GetRepoIssueTimeTracking_SUCCESS
     Assert-AreEqual -Expected 3 -Presented $result.Times
     Assert-AreEqual -Expected 633 -Presented $result.TotalMinutes
     Assert-AreEqual -Expected "10h 33m" -Presented $result.Total
+    Assert-AreEqual -Expected "https://github.com/$owner/$repo/issues/$issue" -Presented $result.Url
 }
 
 function RepoHelperTest_GetRepoIssueTimeTracking_SUCCESS_SeveralTimesInSingleComment
@@ -54,7 +55,7 @@ function RepoHelperTest_GetRepoIssueTimeTracking_SUCCESS_SeveralTimesInSingleCom
 
     $owner = "rulasgorg" ; $repo = "repo1" ; $issue = 3 
 
-    MockCall -Command "gh issue view $issue -R $owner/$repo --json title,comments" -filename getIssueComments_MultiTimesInComment.json
+    MockCall -Command "gh issue view $issue -R $owner/$repo --json title,comments,url" -filename getIssueComments_MultiTimesInComment.json
 
     $result = Get-RepoIssueTimeTracking $issue -Owner $owner -Repo $repo
 
@@ -66,6 +67,8 @@ function RepoHelperTest_GetRepoIssueTimeTracking_SUCCESS_SeveralTimesInSingleCom
     Assert-AreEqual -Expected 6 -Presented $result.Times
     Assert-AreEqual -Expected 231 -Presented $result.TotalMinutes
     Assert-AreEqual -Expected "3h 51m" -Presented $result.Total
+    Assert-AreEqual -Expected "https://github.com/$owner/$repo/issues/$issue" -Presented $result.Url
+
 
 }
 
@@ -75,7 +78,7 @@ function RepoHelperTest_GetRepoIssueTimeTracking_WrongFormat
 
     $owner = "rulasgorg" ; $repo = "repo1" ; $issue = 1 
 
-    MockCall -Command "gh issue view $issue -R $owner/$repo --json title,comments" -filename getIssueComments_WrongTTFormat.json
+    MockCall -Command "gh issue view $issue -R $owner/$repo --json title,comments,url" -filename getIssueComments_WrongTTFormat.json
 
     $result = Get-RepoIssueTimeTracking $issue -Owner $owner -Repo $repo @WarningParameters
 
@@ -92,7 +95,7 @@ function RepoHelperTest_GetRepoIssueTimeTracking_Notfound
 
     $owner = "rulasgorgkk" ; $repo = "repo1" ; $issue = 1
 
-    MockCallToString -Command "gh issue view $issue -R $owner/$repo --json title,comments" -OutString "null"
+    MockCallToString -Command "gh issue view $issue -R $owner/$repo --json title,comments,url" -OutString "null"
 
     $result = Get-RepoIssueTimeTracking $issue -Owner $owner -Repo $repo @ErrorParameters
 
@@ -106,15 +109,15 @@ function RepoHelperTest_GetRepoIssueTimeTracking_Pipe
 {
     Reset-InvokeCommandMock
 
-    $owner = "rulasgorgkk" ; $repo = "repo1" ; $attributes = "number,title"
+    $owner = "rulasgorgkk" ; $repo = "repo1" ; $attributes = "title,comments,url" ; $attributes2 = "number,title,url"
 
-    MockCall -Command "gh issue list -R $owner/$repo --json $attributes" -filename getIssueList.json
+    MockCall -Command "gh issue list -R $owner/$repo --json $attributes2" -filename getIssueList.json
 
-    MockCall -Command "gh issue view 1 -R $owner/$repo --json title,comments" -filename getIssueComments.json
-    MockCall -Command "gh issue view 4 -R $owner/$repo --json title,comments" -filename getIssueComments_2.json
-    MockCall -Command "gh issue view 8 -R $owner/$repo --json title,comments" -filename getIssueComments.json
-    MockCall -Command "gh issue view 21 -R $owner/$repo --json title,comments" -filename getIssueComments_2.json
-    MockCall -Command "gh issue view 12 -R $owner/$repo --json title,comments" -filename getIssueComments.json
+    MockCall -Command "gh issue view 1 -R $owner/$repo --json $attributes" -filename getIssueComments.json
+    MockCall -Command "gh issue view 4 -R $owner/$repo --json $attributes" -filename getIssueComments_2.json
+    MockCall -Command "gh issue view 8 -R $owner/$repo --json $attributes" -filename getIssueComments.json
+    MockCall -Command "gh issue view 21 -R $owner/$repo --json $attributes" -filename getIssueComments_2.json
+    MockCall -Command "gh issue view 12 -R $owner/$repo --json $attributes" -filename getIssueComments.json
 
     $result = Get-RepoIssue -Owner $owner -Repo $repo
 
@@ -149,15 +152,15 @@ function RepoHelperTest_GetRepoIssueTimeTrackingRecords_Pipe
 {
     Reset-InvokeCommandMock
 
-    $owner = "rulasgorgkk" ; $repo = "repo1" ; $attributes = "number,title"
+    $owner = "rulasgorgkk" ; $repo = "repo1" ; $attributes = "title,comments,url" ; $attributes2 = "number,title,url"
 
-    MockCall -Command "gh issue list -R $owner/$repo --json $attributes" -filename getIssueList.json
+    MockCall -Command "gh issue list -R $owner/$repo --json $attributes2" -filename getIssueList.json
 
-    MockCall -Command "gh issue view 1 -R $owner/$repo --json title,comments" -filename getIssueComments.json
-    MockCall -Command "gh issue view 4 -R $owner/$repo --json title,comments" -filename getIssueComments_2.json
-    MockCall -Command "gh issue view 8 -R $owner/$repo --json title,comments" -filename getIssueComments.json
-    MockCall -Command "gh issue view 21 -R $owner/$repo --json title,comments" -filename getIssueComments_2.json
-    MockCall -Command "gh issue view 12 -R $owner/$repo --json title,comments" -filename getIssueComments.json
+    MockCall -Command "gh issue view 1 -R $owner/$repo --json $attributes" -filename getIssueComments.json
+    MockCall -Command "gh issue view 4 -R $owner/$repo --json $attributes" -filename getIssueComments_2.json
+    MockCall -Command "gh issue view 8 -R $owner/$repo --json $attributes" -filename getIssueComments.json
+    MockCall -Command "gh issue view 21 -R $owner/$repo --json $attributes" -filename getIssueComments_2.json
+    MockCall -Command "gh issue view 12 -R $owner/$repo --json $attributes" -filename getIssueComments.json
 
     $result = Get-RepoIssue -Owner $owner -Repo $repo 
 
@@ -176,7 +179,8 @@ function RepoHelperTest_GetRepoIssueTimeTrackingRecords_Pipe
     "Time": 11,
     "CreatedAt": "2024-02-10T07:28:36Z",
     "Repo": "repo1",
-    "Owner": "rulasgorgkk"
+    "Owner": "rulasgorgkk",
+    "Url": "https://github.com/rulasgorg/repo1/issues/2#issuecomment-1936914856"
   },
   {
     "Number": 4,
@@ -184,7 +188,8 @@ function RepoHelperTest_GetRepoIssueTimeTrackingRecords_Pipe
     "Time": 33,
     "CreatedAt": "2024-02-10T07:30:43Z",
     "Repo": "repo1",
-    "Owner": "rulasgorgkk"
+    "Owner": "rulasgorgkk",
+    "Url": "https://github.com/rulasgorg/repo1/issues/2#issuecomment-1936915371"
   },
   {
     "Number": 4,
@@ -192,7 +197,8 @@ function RepoHelperTest_GetRepoIssueTimeTrackingRecords_Pipe
     "Time": 66,
     "CreatedAt": "2024-02-10T07:32:50Z",
     "Repo": "repo1",
-    "Owner": "rulasgorgkk"
+    "Owner": "rulasgorgkk",
+    "Url": "https://github.com/rulasgorg/repo1/issues/2#issuecomment-1936915977"
   }
 ]
 "@
@@ -210,7 +216,8 @@ function RepoHelperTest_GetRepoIssueTimeTrackingRecords_Pipe
     "Time": 33,
     "CreatedAt": "2024-02-10T07:28:36Z",
     "Repo": "repo1",
-    "Owner": "rulasgorgkk"
+    "Owner": "rulasgorgkk",
+    "Url": "https://github.com/rulasgorg/repo1/issues/2#issuecomment-1936914856"
   },
   {
     "Number": 12,
@@ -218,7 +225,8 @@ function RepoHelperTest_GetRepoIssueTimeTrackingRecords_Pipe
     "Time": 120,
     "CreatedAt": "2024-02-10T07:30:43Z",
     "Repo": "repo1",
-    "Owner": "rulasgorgkk"
+    "Owner": "rulasgorgkk",
+    "Url": "https://github.com/rulasgorg/repo1/issues/2#issuecomment-1936915371"
   },
   {
     "Number": 12,
@@ -226,7 +234,8 @@ function RepoHelperTest_GetRepoIssueTimeTrackingRecords_Pipe
     "Time": 480,
     "CreatedAt": "2024-02-10T07:32:50Z",
     "Repo": "repo1",
-    "Owner": "rulasgorgkk"
+    "Owner": "rulasgorgkk",
+    "Url": "https://github.com/rulasgorg/repo1/issues/2#issuecomment-1936915977"
   }
 ]
 "@
@@ -238,7 +247,7 @@ function RepoHelperTest_GetRepoIssueTimeTrackingRecords_SUCCESS{
 
     $owner = "rulasgorg" ; $repo = "repo1" ; $issue = 2 
 
-    MockCall -Command "gh issue view $issue -R $owner/$repo --json title,comments" -filename getIssueComments.json
+    MockCall -Command "gh issue view $issue -R $owner/$repo --json title,comments,url" -filename getIssueComments.json
 
     $result = Get-RepoIssueTimeTrackingRecords $issue -Owner $owner -Repo $repo
 
@@ -267,7 +276,7 @@ function RepoHelperTest_GetRepoIssueTimeTrackingRecord_SUCCESS_SeveralTimesInSin
 
     $owner = "rulasgorg" ; $repo = "repo1" ; $issue = 3 
 
-    MockCall -Command "gh issue view $issue -R $owner/$repo --json title,comments" -filename getIssueComments_MultiTimesInComment.json
+    MockCall -Command "gh issue view $issue -R $owner/$repo --json title,comments,url" -filename getIssueComments_MultiTimesInComment.json
 
     $result = Get-RepoIssueTimeTrackingRecords $issue -Owner $owner -Repo $repo
     $resultText = $result.Text | ConvertTo-Json

@@ -150,5 +150,7 @@
             "url": "https://github.com/rulasgorg/repo1/issues/1#issuecomment-1936068897",
             "viewerDidAuthor": true
         }
-    ]
+    ],
+    "title": "Title of issue 1",
+    "url": "https://github.com/rulasgorg/repo1/issues/1"
 }
