@@ -76,5 +76,6 @@
             "viewerDidAuthor": true
         }
     ],
-    "title": "Title of issue 2"
+    "title": "Title of issue 2",
+    "url": "https://github.com/rulasgorg/repo1/issues/2"
 }

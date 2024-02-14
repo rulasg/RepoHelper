@@ -2,7 +2,7 @@
 
 $TT_START = "<TT>"
 $TT_END = "</TT>"
-Set-MyInvokeCommandAlias -Alias "GetIssueComments" -Command "gh issue view {number} -R {owner}/{repo} --json title,comments"
+Set-MyInvokeCommandAlias -Alias "GetIssueComments" -Command "gh issue view {number} -R {owner}/{repo} --json {attributes}"
 
 <#
 .SYNOPSIS
@@ -80,6 +80,7 @@ function Get-RepoIssueTimeTracking{
             Times = $result.Times
             TotalMinutes = $result.TotalMinutes
             Total = $result.Total
+            Url = $result.url
         }
 
         return $ret
@@ -121,6 +122,7 @@ function Get-RepoIssueTimeTrackingRecords{
                 CreatedAt = $record.CreatedAt
                 Repo = $Repo
                 Owner = $Owner
+                Url = $record.Url
             }
         }
 
@@ -137,7 +139,7 @@ function GetRepoIssueTimeTracking{
     )
 
     process {
-        $param = @{ owner = $Owner ; repo = $Repo ; number = $IssueNumber }
+        $param = @{ owner = $Owner ; repo = $Repo ; number = $IssueNumber ; attributes = 'title,comments,url'}
 
         $result = Invoke-MyCommandJson -Command "GetIssueComments" -Parameters $param
 
@@ -147,6 +149,7 @@ function GetRepoIssueTimeTracking{
         }
 
         $title = $result.title
+        $url = $result.url
         $comments = $result.comments
 
         $totalMinutes = 0
@@ -185,6 +188,7 @@ function GetRepoIssueTimeTracking{
                 Time = $commentTotalMinutes
                 Text = $comment.body
                 CreatedAt = $comment.createdAt
+                Url = $comment.url
             }
         }
 
@@ -198,6 +202,7 @@ function GetRepoIssueTimeTracking{
             Records = $records
             TotalMinutes = $totalMinutes
             Total = ConvertTo-TimeString -Minutes $totalMinutes
+            Url = $url
         }
 
         return $ret
