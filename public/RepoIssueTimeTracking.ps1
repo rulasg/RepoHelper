@@ -15,6 +15,7 @@ function Add-RepoIssueTimeTracking{
         [Parameter(Mandatory,Position=0)] [int]$IssueNumber,
         [Parameter(Mandatory,Position=1)] [string]$Time,
         [Parameter(Mandatory,Position=2)] [string]$Comment,
+        [Parameter()] [switch]$NoCheckbox,
         [Parameter()] [string]$Owner,
         [Parameter()] [string]$Repo
     )
@@ -30,10 +31,22 @@ function Add-RepoIssueTimeTracking{
     }
 
     process {
+
+        # Test time format
+        $result = ConvertTo-Minutes -Tag $Time
+        if($null -eq $result){
+            "Wrong time format [$time]" | Write-Error
+            return $null
+        }
+
+        # Build tag string
         $timeTag = $TT_START+"{time}"+$TT_END
         $timeTag = $timeTag -replace "{time}",$Time
 
         $body = "$timeTag $Comment"
+
+        #Add checkbox
+        $body = $NoCheckbox ? $body : "- [ ] $body"
 
         $result = Add-RepoIssueComment -IssueNumber $IssueNumber -Owner $Owner -Repo $Repo -Comment $body -WhatIf:$WhatIfPreference
 
@@ -175,11 +188,14 @@ function GetRepoIssueTimeTracking{
                 $time = $content.Text.Substring($content.Start,$content.Length)
                 
                 #Control the time tag syntax
-                try { $commentTotalMinutes += ConvertTo-Minutes $time}
-                catch {
-                    Write-Warning -Message "Skipping Tag [ $time ] $text"
-                    Write-Warning -Message $_.Exception.Message
+                $commentTime = ConvertTo-Minutes $time
+                if($null -eq $commentTime){
+                    Write-Warning -Message "Skipping wrong time [ $time ] $($content.text)"
+                    continue
                 }
+
+                # Add to total comment minutes
+                $commentTotalMinutes += $commentTime
             }
 
             $totalMinutes += $commentTotalMinutes
@@ -217,7 +233,8 @@ function ConvertTo-Minutes([string] $Tag){
     # TODO: Implemnet
     # calculate the time based on m,h,d
     if (-not ($Tag -match "^\d+[mhd]$")) {
-        throw "Invalid time tag: $Tag"
+         "Invalid time tag: $Tag" | Write-Verbose
+        return $null
     }
 
     "Match found: $($matches[0])" | Write-Verbose
@@ -229,7 +246,8 @@ function ConvertTo-Minutes([string] $Tag){
         'h' { $time = $number * 60 } # Hours
         'd' { $time = $number * 60 * 8 } # Days
         Default {
-            throw "Invalid time tag: $Tag"
+             "Invalid time tag: $Tag" | Write-Verbose
+            return $null
         }
     }
     return $time
