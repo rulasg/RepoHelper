@@ -5,9 +5,39 @@ function RepoHelperTest_AddRepoIssueTimeTracking_SUCCESS
 
     $owner = "rulasgorg" ; $repo = "repo1" ; $issue = 1 ; $time = "1h" ; $comment = "comment"
 
-    MockCallToString -Command "gh issue comment $issue -b `"<TT>$time</TT> $comment`" -R $owner/$repo" -OutString "https://github.com/$owner/$repo/issues/1#issuecomment-1936046674"
+    MockCallToString -Command "gh issue comment $issue -b `"- [ ] <TT>$time</TT> $comment`" -R $owner/$repo" -OutString "https://github.com/$owner/$repo/issues/1#issuecomment-1936046674"
 
     $result = Add-RepoIssueTimeTracking $issue $time $comment -Owner $owner -Repo $repo
+
+    # https://github.com/rulasgorg/repo1/issues/1#issuecomment-1936046674
+    Assert-IsTrue -Condition ($result.StartsWith("https://github.com/$owner/$repo/issues/$issue#issuecomment-"))
+}
+function RepoHelperTest_AddRepoIssueTimeTracking_WrongTimeFormat
+{
+    Reset-InvokeCommandMock
+
+    $wrongTime = "x"
+
+    $owner = "rulasgorg" ; $repo = "repo1" ; $issue = 1  ; $comment = "comment"
+
+    MockCallToString -Command "gh issue comment $issue -b `"- [ ] <TT>$wrongTime</TT> $comment`" -R $owner/$repo" -OutString "https://github.com/$owner/$repo/issues/1#issuecomment-1936046674"
+
+    $result = Add-RepoIssueTimeTracking $issue $wrongTime $comment -Owner $owner -Repo $repo @ErrorParameters
+
+    Assert-IsNull -Object $result
+    Assert-Count -Expected 1 -Presented $errorvar.Exception.Message
+    Assert-Contains -Expected "Wrong time format [$wrongTime]" -Presented $errorvar.Exception.Message
+}
+
+function RepoHelperTest_AddRepoIssueTimeTracking_SUCCESS_With_NoCheckBox
+{
+    Reset-InvokeCommandMock
+
+    $owner = "rulasgorg" ; $repo = "repo1" ; $issue = 1 ; $time = "1h" ; $comment = "comment"
+
+    MockCallToString -Command "gh issue comment $issue -b `"- [ ] <TT>$time</TT> $comment`" -R $owner/$repo" -OutString "https://github.com/$owner/$repo/issues/1#issuecomment-1936046674"
+
+    $result = Add-RepoIssueTimeTracking $issue $time $comment -Owner $owner -Repo $repo 
 
     # https://github.com/rulasgorg/repo1/issues/1#issuecomment-1936046674
     Assert-IsTrue -Condition ($result.StartsWith("https://github.com/$owner/$repo/issues/$issue#issuecomment-"))
@@ -22,7 +52,7 @@ function RepoHelperTest_AddRepoIssueTimeTracking_SUCCESS_NoOwnerRepo
     MockCallToString -Command 'git remote get-url origin 2>$null' -OutString "https://github.com/$owner/$repo.git"
     MockCallToString -Command "gh issue comment $issue -b `"<TT>$time</TT> $comment`" -R $owner/$repo" -OutString "https://github.com/$owner/$repo/issues/1#issuecomment-1936046674"
 
-    $result = Add-RepoIssueTimeTracking $issue $time $comment
+    $result = Add-RepoIssueTimeTracking $issue $time $comment -NoCheckbox
 
     # https://github.com/rulasgorg/repo1/issues/1#issuecomment-1936046674
     Assert-IsTrue -Condition ($result.StartsWith("https://github.com/$owner/$repo/issues/$issue#issuecomment-"))
@@ -83,10 +113,14 @@ function RepoHelperTest_GetRepoIssueTimeTracking_WrongFormat
     $result = Get-RepoIssueTimeTracking $issue -Owner $owner -Repo $repo @WarningParameters
 
     Assert-AreEqual -Expected 378 -Presented $result.TotalMinutes
-    # Assert-Contains -Presented $warningVar.Message -Expected "Skipping Tag [ 12x ]"
-    Assert-Contains -Presented $warningVar.Message -Expected "Invalid time tag: 12x"
-    # Assert-Contains -Presented $warningVar.Message -Expected "Skipping Tag [ d45 ]"
-    Assert-Contains -Presented $warningVar.Message -Expected "Invalid time tag: d45"
+    $expectedJson = @'
+[
+  "Skipping wrong time [ 12x ] <tt>12x</tt>\nOtra cosa que hice",
+  "Skipping wrong time [ d45 ] <tt>d45</tt>\nY otra coas"
+]
+'@
+    $json = $warningVar.Message | ConvertTo-Json
+    Assert-AreEqual -Expected $expectedJson -Presented $json
 }
 
 function RepoHelperTest_GetRepoIssueTimeTracking_Notfound
@@ -294,8 +328,8 @@ function RepoHelperTest_GetRepoIssueTimeTrackingRecord_SUCCESS_SeveralTimesInSin
 function RepoHelperTest_TimeTracking_ConvertToMinutes{
 
     # Wrong input
-    Assert-ThrowOnConvertToMinutes -Tag "1"
-    Assert-ThrowOnConvertToMinutes -Tag "1z"
+    Assert-WrongConvertToMinutes -Tag "1"
+    Assert-WrongConvertToMinutes -Tag "1z"
 
 
     # Correct input
@@ -311,18 +345,13 @@ function RepoHelperTest_TimeTracking_ConvertToMinutes{
     Assert-ConvertToMinutes -Tag "3D" -Expected (3*8*60)
 }
 
-function Assert-ThrowOnConvertToMinutes{
+function Assert-WrongConvertToMinutes{
     param(
         [string]$Tag
     )
 
-    $hasThrow = $false
-    try{
-        $null = ConvertTo-Minutes -Time $Tag
-    }catch{
-        $hasThrow = $true
-    }
-    Assert-IsTrue -Condition $hasThrow
+    $result = ConvertTo-Minutes $Tag
+    Assert-IsTrue -Condition ($null -eq $result)
 }
 
 function Assert-ConvertToMinutes{
@@ -331,6 +360,6 @@ function Assert-ConvertToMinutes{
         [int]$Expected
     )
 
-    $result = ConvertTo-Minutes -Tag $Tag
+    $result = ConvertTo-Minutes $Tag
     Assert-AreEqual -Expected $Expected -Presented $result
 }
