@@ -1,0 +1,80 @@
+{
+    "comments": [
+        {
+            "id": "IC_kwDOLJ-GD85zcvmo",
+            "author": {
+                "login": "rulasg"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "<TT>11m</TT> First time tracking comment",
+            "createdAt": "2024-02-10T07:28:36Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/rulasgorg/repo1/issues/2#issuecomment-1936914856",
+            "viewerDidAuthor": true
+        },
+        {
+            "id": "IC_kwDOLJ-GD85zcvrn",
+            "author": {
+                "login": "rulasg"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "Second comment with no TT",
+            "createdAt": "2024-02-10T07:29:52Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/rulasgorg/repo1/issues/2#issuecomment-1936915175",
+            "viewerDidAuthor": true
+        },
+        {
+            "id": "IC_kwDOLJ-GD85zcvur",
+            "author": {
+                "login": "rulasg"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "<TT>33m</TT> Third  time tracking comment",
+            "createdAt": "2024-02-10T07:30:43Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/rulasgorg/repo1/issues/2#issuecomment-1936915371",
+            "viewerDidAuthor": true
+        },
+        {
+            "id": "IC_kwDOLJ-GD85zcv4J",
+            "author": {
+                "login": "rulasg"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "<TT>66m</TT> Sixth  time tracking comment\nNew line in comment\nAnd Second line",
+            "createdAt": "2024-02-10T07:32:50Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/rulasgorg/repo1/issues/2#issuecomment-1936915977",
+            "viewerDidAuthor": true
+        },
+        {
+            "id": "IC_kwDOLJ-GD85zcv5d",
+            "author": {
+                "login": "rulasg"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "Seventh and last  comment with no TT",
+            "createdAt": "2024-02-10T07:33:18Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/rulasgorg/repo1/issues/2#issuecomment-1936916061",
+            "viewerDidAuthor": true
+        }
+    ],
+    "title": "Title of issue 2"
+}
