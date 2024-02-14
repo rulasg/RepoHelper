@@ -49,7 +49,7 @@ function Get-RepoIssueTimeTracking{
     [CmdletBinding()]
     [Alias("gtt")]
     param(
-        [Parameter(Mandatory,ValueFromPipeline,Position=0)] [int]$IssueNumber,
+        [Parameter(Mandatory,ValueFromPipeline,ValueFromPipelineByPropertyName,Position=0)][Alias("Number")][int]$IssueNumber,
         [Parameter()] [string]$Owner,
         [Parameter()] [string]$Repo
     )
@@ -94,7 +94,7 @@ function Get-RepoIssueTimeTrackingRecords{
     [CmdletBinding()]
     [Alias("gttr")]
     param(
-        [Parameter(Mandatory,ValueFromPipeline,Position=0)] [int]$IssueNumber,
+        [Parameter(Mandatory,ValueFromPipeline,ValueFromPipelineByPropertyName,Position=0)][Alias("Number")][int]$IssueNumber,
         [Parameter()] [string]$Owner,
         [Parameter()] [string]$Repo
     )
@@ -112,7 +112,19 @@ function Get-RepoIssueTimeTrackingRecords{
     process{
         $result = GetRepoIssueTimeTracking -IssueNumber $IssueNumber -Owner $Owner -Repo $Repo
 
-        return $result.Records
+        $ret = @()
+        foreach($record in $result.Records){
+            $ret += [PSCustomObject]@{
+                Number = $IssueNumber
+                Text = $record.Text
+                Time = $record.Time
+                CreatedAt = $record.CreatedAt
+                Repo = $Repo
+                Owner = $Owner
+            }
+        }
+
+        return $ret
     }
 } Export-ModuleMember -Function Get-RepoIssueTimeTrackingRecords -Alias "gttr"
 

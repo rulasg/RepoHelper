@@ -102,6 +102,137 @@ function RepoHelperTest_GetRepoIssueTimeTracking_Notfound
 
 }
 
+function RepoHelperTest_GetRepoIssueTimeTracking_Pipe
+{
+    Reset-InvokeCommandMock
+
+    $owner = "rulasgorgkk" ; $repo = "repo1" ; $attributes = "number,title"
+
+    MockCall -Command "gh issue list -R $owner/$repo --json $attributes" -filename getIssueList.json
+
+    MockCall -Command "gh issue view 1 -R $owner/$repo --json title,comments" -filename getIssueComments.json
+    MockCall -Command "gh issue view 4 -R $owner/$repo --json title,comments" -filename getIssueComments_2.json
+    MockCall -Command "gh issue view 8 -R $owner/$repo --json title,comments" -filename getIssueComments.json
+    MockCall -Command "gh issue view 21 -R $owner/$repo --json title,comments" -filename getIssueComments_2.json
+    MockCall -Command "gh issue view 12 -R $owner/$repo --json title,comments" -filename getIssueComments.json
+
+    $result = Get-RepoIssue -Owner $owner -Repo $repo
+
+    $result = $result | Get-RepoIssueTimeTracking -Owner $Owner -Repo $repo
+
+    Assert-Count -Expected 5 -Presented $result
+    
+    $issue = $result | Where-Object {$_.IssueNumber -eq 4}
+    
+    Assert-AreEqual -Presented $issue.Title        -Expected  "Title of issue 2"
+    Assert-AreEqual -Presented $issue.Repo         -Expected  "repo1"
+    Assert-AreEqual -Presented $issue.Owner        -Expected  "rulasgorgkk"
+    Assert-AreEqual -Presented $issue.IssueNumber  -Expected  4
+    Assert-AreEqual -Presented $issue.Comments     -Expected  5
+    Assert-AreEqual -Presented $issue.Times        -Expected  3
+    Assert-AreEqual -Presented $issue.TotalMinutes -Expected  110
+    Assert-AreEqual -Presented $issue.Total        -Expected  "1h 50m"
+
+    $issue =  $result | Where-Object {$_.IssueNumber -eq 12}
+
+    Assert-AreEqual -Presented $issue.Title        -Expected  "Title of issue 2"
+    Assert-AreEqual -Presented $issue.Repo         -Expected  "repo1"
+    Assert-AreEqual -Presented $issue.Owner        -Expected  "rulasgorgkk"
+    Assert-AreEqual -Presented $issue.IssueNumber  -Expected  12
+    Assert-AreEqual -Presented $issue.Comments     -Expected  5
+    Assert-AreEqual -Presented $issue.Times        -Expected  3
+    Assert-AreEqual -Presented $issue.TotalMinutes -Expected  633
+    Assert-AreEqual -Presented $issue.Total        -Expected  "10h 33m"
+}
+
+function RepoHelperTest_GetRepoIssueTimeTrackingRecords_Pipe
+{
+    Reset-InvokeCommandMock
+
+    $owner = "rulasgorgkk" ; $repo = "repo1" ; $attributes = "number,title"
+
+    MockCall -Command "gh issue list -R $owner/$repo --json $attributes" -filename getIssueList.json
+
+    MockCall -Command "gh issue view 1 -R $owner/$repo --json title,comments" -filename getIssueComments.json
+    MockCall -Command "gh issue view 4 -R $owner/$repo --json title,comments" -filename getIssueComments_2.json
+    MockCall -Command "gh issue view 8 -R $owner/$repo --json title,comments" -filename getIssueComments.json
+    MockCall -Command "gh issue view 21 -R $owner/$repo --json title,comments" -filename getIssueComments_2.json
+    MockCall -Command "gh issue view 12 -R $owner/$repo --json title,comments" -filename getIssueComments.json
+
+    $result = Get-RepoIssue -Owner $owner -Repo $repo 
+
+    $result = $result | Get-RepoIssueTimeTrackingRecords -Owner $Owner -Repo $repo
+
+    Assert-Count -Expected 15 -Presented $result
+
+    
+    $issueRecords = $result | Where-Object {$_.Number -eq 4}
+    Assert-Count -Expected 3 -Presented $issueRecords
+    $expectedJson = @"
+[
+  {
+    "Number": 4,
+    "Text": "<TT>11m</TT> First time tracking comment",
+    "Time": 11,
+    "CreatedAt": "2024-02-10T07:28:36Z",
+    "Repo": "repo1",
+    "Owner": "rulasgorgkk"
+  },
+  {
+    "Number": 4,
+    "Text": "<TT>33m</TT> Third  time tracking comment",
+    "Time": 33,
+    "CreatedAt": "2024-02-10T07:30:43Z",
+    "Repo": "repo1",
+    "Owner": "rulasgorgkk"
+  },
+  {
+    "Number": 4,
+    "Text": "<TT>66m</TT> Sixth  time tracking comment\nNew line in comment\nAnd Second line",
+    "Time": 66,
+    "CreatedAt": "2024-02-10T07:32:50Z",
+    "Repo": "repo1",
+    "Owner": "rulasgorgkk"
+  }
+]
+"@
+    Assert-AreEqual -Expected $expectedJson -Presented ($issueRecords | ConvertTo-Json)
+
+
+    $issue =  $result | Where-Object {$_.Number -eq 12}
+
+    Assert-Count -Expected 3 -Presented $issue
+    $expectedJson = @"
+[
+  {
+    "Number": 12,
+    "Text": "<TT>33m</TT> First time tracking comment",
+    "Time": 33,
+    "CreatedAt": "2024-02-10T07:28:36Z",
+    "Repo": "repo1",
+    "Owner": "rulasgorgkk"
+  },
+  {
+    "Number": 12,
+    "Text": "<TT>2h</TT> Third  time tracking comment",
+    "Time": 120,
+    "CreatedAt": "2024-02-10T07:30:43Z",
+    "Repo": "repo1",
+    "Owner": "rulasgorgkk"
+  },
+  {
+    "Number": 12,
+    "Text": "<TT>1d</TT> Sixth  time tracking comment\nNew line in comment\nAnd Second line",
+    "Time": 480,
+    "CreatedAt": "2024-02-10T07:32:50Z",
+    "Repo": "repo1",
+    "Owner": "rulasgorgkk"
+  }
+]
+"@
+    Assert-AreEqual -Expected $expectedJson -Presented ($issue | ConvertTo-Json)
+}
+
 function RepoHelperTest_GetRepoIssueTimeTrackingRecords_SUCCESS{
     Reset-InvokeCommandMock
 
