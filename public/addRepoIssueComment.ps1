@@ -1,4 +1,4 @@
-Set-MyInvokeCommandAlias -Alias AddRepoIssueComment -Command 'gh issue comment {issuenumber} -b "{comment}" -R {owner}/{repo}'
+Set-MyInvokeCommandAlias -Alias AddRepoIssueComment -Command 'gh issue comment {number} -b "{comment}" -R {owner}/{repo}'
 Set-MyInvokeCommandAlias -Alias ListRepoIssues -Command "gh issue list -R {owner}/{repo} --json {attributes}"
 
 <#
@@ -8,7 +8,7 @@ Set-MyInvokeCommandAlias -Alias ListRepoIssues -Command "gh issue list -R {owner
 function Add-RepoIssueComment{
     [CmdletBinding(SupportsShouldProcess)]
     param(
-        [Parameter(Mandatory,Position=0)] [string]$IssueNumber,
+        [Parameter(Mandatory,Position=0)] [string]$Number,
         [Parameter(Mandatory,Position=1)] [string]$Comment,
         [Parameter()] [string]$Owner,
         [Parameter()] [string]$Repo
@@ -23,16 +23,16 @@ function Add-RepoIssueComment{
             return $null
         }
 
-        $param = @{ owner = $Owner ; repo = $Repo ; issuenumber = $IssueNumber ; comment = $Comment }
+        $param = @{ owner = $Owner ; repo = $Repo ; number = $Number ; comment = $Comment }
 
         # Return the URL of the comment
-        if($PSCmdlet.ShouldProcess("$Owner/$Repo","Add comment to issue $IssueNumber")){
+        if($PSCmdlet.ShouldProcess("$Owner/$Repo","Add comment to issue $Number")){
             $result = Invoke-MyCommand -Command AddRepoIssueComment -Parameters $param
         }
 
         # if(($result | Test-NotFound) -or ($result | Test-IsNull) -or  (-Not ($result | Get-Uri))){
         if(($null -eq $result) -or ($result | Test-NotFound ) -or (-Not ($result | Get-Uri))){
-            "Error adding comment to issue $IssueNumber for $Owner/$Repo" | Write-Error
+            "Error adding comment to issue $Number for $Owner/$Repo" | Write-Error
             return $null
         }
 

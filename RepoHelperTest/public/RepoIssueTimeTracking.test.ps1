@@ -69,7 +69,7 @@ function RepoHelperTest_GetRepoIssueTimeTracking_SUCCESS
     $result = Get-RepoIssueTimeTracking $issue -Owner $owner -Repo $repo
 
     Assert-AreEqual -Expected "Title of issue 2" -Presented $result.Title
-    Assert-AreEqual -Expected $issue -Presented $result.IssueNumber
+    Assert-AreEqual -Expected $issue -Presented $result.Number
     Assert-AreEqual -Expected $repo -Presented $result.Repo
     Assert-AreEqual -Expected $owner -Presented $result.Owner
     Assert-AreEqual -Expected 5 -Presented $result.Comments
@@ -90,7 +90,7 @@ function RepoHelperTest_GetRepoIssueTimeTracking_SUCCESS_SeveralTimesInSingleCom
     $result = Get-RepoIssueTimeTracking $issue -Owner $owner -Repo $repo
 
     Assert-AreEqual -Expected "Issue3 Repo1" -Presented $result.Title
-    Assert-AreEqual -Expected $issue -Presented $result.IssueNumber
+    Assert-AreEqual -Expected $issue -Presented $result.Number
     Assert-AreEqual -Expected $repo -Presented $result.Repo
     Assert-AreEqual -Expected $owner -Presented $result.Owner
     Assert-AreEqual -Expected 2 -Presented $result.Comments
@@ -159,23 +159,23 @@ function RepoHelperTest_GetRepoIssueTimeTracking_Pipe
 
     Assert-Count -Expected 5 -Presented $result
     
-    $issue = $result | Where-Object {$_.IssueNumber -eq 4}
+    $issue = $result | Where-Object {$_.Number -eq 4}
     
     Assert-AreEqual -Presented $issue.Title        -Expected  "Title of issue 2"
     Assert-AreEqual -Presented $issue.Repo         -Expected  "repo1"
     Assert-AreEqual -Presented $issue.Owner        -Expected  "rulasgorgkk"
-    Assert-AreEqual -Presented $issue.IssueNumber  -Expected  4
+    Assert-AreEqual -Presented $issue.Number  -Expected  4
     Assert-AreEqual -Presented $issue.Comments     -Expected  5
     Assert-AreEqual -Presented $issue.Times        -Expected  3
     Assert-AreEqual -Presented $issue.TotalMinutes -Expected  110
     Assert-AreEqual -Presented $issue.Total        -Expected  "1h 50m"
 
-    $issue =  $result | Where-Object {$_.IssueNumber -eq 12}
+    $issue =  $result | Where-Object {$_.Number -eq 12}
 
     Assert-AreEqual -Presented $issue.Title        -Expected  "Title of issue 2"
     Assert-AreEqual -Presented $issue.Repo         -Expected  "repo1"
     Assert-AreEqual -Presented $issue.Owner        -Expected  "rulasgorgkk"
-    Assert-AreEqual -Presented $issue.IssueNumber  -Expected  12
+    Assert-AreEqual -Presented $issue.Number  -Expected  12
     Assert-AreEqual -Presented $issue.Comments     -Expected  5
     Assert-AreEqual -Presented $issue.Times        -Expected  3
     Assert-AreEqual -Presented $issue.TotalMinutes -Expected  633

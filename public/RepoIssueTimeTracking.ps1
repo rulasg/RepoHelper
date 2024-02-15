@@ -12,7 +12,7 @@ function Add-RepoIssueTimeTracking{
     [CmdletBinding(SupportsShouldProcess)]
     [Alias("att")]
     param(
-        [Parameter(Mandatory,Position=0)] [int]$IssueNumber,
+        [Parameter(Mandatory,Position=0)] [int]$Number,
         [Parameter(Mandatory,Position=1)] [string]$Time,
         [Parameter(Mandatory,Position=2)] [string]$Comment,
         [Parameter()] [switch]$NoCheckbox,
@@ -48,7 +48,7 @@ function Add-RepoIssueTimeTracking{
         #Add checkbox
         $body = $NoCheckbox ? $body : "- [ ] $body"
 
-        $result = Add-RepoIssueComment -IssueNumber $IssueNumber -Owner $Owner -Repo $Repo -Comment $body -WhatIf:$WhatIfPreference
+        $result = Add-RepoIssueComment -Number $Number -Owner $Owner -Repo $Repo -Comment $body -WhatIf:$WhatIfPreference
 
         return $result
     }
@@ -62,7 +62,7 @@ function Get-RepoIssueTimeTracking{
     [CmdletBinding()]
     [Alias("gtt")]
     param(
-        [Parameter(Mandatory,ValueFromPipeline,ValueFromPipelineByPropertyName,Position=0)][Alias("Number")][int]$IssueNumber,
+        [Parameter(Mandatory,ValueFromPipeline,ValueFromPipelineByPropertyName,Position=0)][int]$Number,
         [Parameter()] [string]$Owner,
         [Parameter()] [string]$Repo
     )
@@ -78,7 +78,7 @@ function Get-RepoIssueTimeTracking{
     }
 
     process{
-        $result = GetRepoIssueTimeTracking -IssueNumber $IssueNumber -Owner $Owner -Repo $Repo
+        $result = GetRepoIssueTimeTracking -Number $Number -Owner $Owner -Repo $Repo
 
         if($null -eq $result){
             return $null
@@ -88,7 +88,7 @@ function Get-RepoIssueTimeTracking{
             Title = $result.title
             Repo = $result.Repo
             Owner = $result.Owner
-            IssueNumber = $result.IssueNumber
+            Number = $result.Number
             Comments = $result.Comments
             Times = $result.Times
             TotalMinutes = $result.TotalMinutes
@@ -108,7 +108,7 @@ function Get-RepoIssueTimeTrackingRecords{
     [CmdletBinding()]
     [Alias("gttr")]
     param(
-        [Parameter(Mandatory,ValueFromPipeline,ValueFromPipelineByPropertyName,Position=0)][Alias("Number")][int]$IssueNumber,
+        [Parameter(Mandatory,ValueFromPipeline,ValueFromPipelineByPropertyName,Position=0)][int]$Number,
         [Parameter()] [string]$Owner,
         [Parameter()] [string]$Repo
     )
@@ -124,12 +124,12 @@ function Get-RepoIssueTimeTrackingRecords{
     }
 
     process{
-        $result = GetRepoIssueTimeTracking -IssueNumber $IssueNumber -Owner $Owner -Repo $Repo
+        $result = GetRepoIssueTimeTracking -Number $Number -Owner $Owner -Repo $Repo
 
         $ret = @()
         foreach($record in $result.Records){
             $ret += [PSCustomObject]@{
-                Number = $IssueNumber
+                Number = $Number
                 Text = $record.Text
                 Time = $record.Time
                 CreatedAt = $record.CreatedAt
@@ -146,18 +146,18 @@ function Get-RepoIssueTimeTrackingRecords{
 function GetRepoIssueTimeTracking{
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory)] [int]$IssueNumber,
+        [Parameter(Mandatory)] [int]$Number,
         [Parameter(Mandatory)] [string]$Owner,
         [Parameter(Mandatory)] [string]$Repo
     )
 
     process {
-        $param = @{ owner = $Owner ; repo = $Repo ; number = $IssueNumber ; attributes = 'title,comments,url'}
+        $param = @{ owner = $Owner ; repo = $Repo ; number = $Number ; attributes = 'title,comments,url'}
 
         $result = Invoke-MyCommandJson -Command "GetIssueComments" -Parameters $param
 
         if(($null -eq $result) -or ($result | Test-NotFound )){
-            "Error getting comments for issue $IssueNumber for $Owner/$Repo" | Write-Error
+            "Error getting comments for issue $Number for $Owner/$Repo" | Write-Error
             return $null
         }
 
@@ -212,7 +212,7 @@ function GetRepoIssueTimeTracking{
             Title = $title
             Repo = $Repo
             Owner = $Owner
-            IssueNumber = $IssueNumber
+            Number = $Number
             Comments = $comments.Count
             Times = $totalTimes
             Records = $records
