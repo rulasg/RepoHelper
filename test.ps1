@@ -81,7 +81,7 @@ function Import-RequiredModule{
             $ModuleVersion = [string]::IsNullOrWhiteSpace($RequiredModule.RequiredVersion) ? $RequiredModule.ModuleVersion : $RequiredModule.RequiredVersion
         }
 
-        "Importing module Name[{0}] Version[{1}] AllowPrerelease[{2}]" -f $ModuleName, $ModuleVersion, $AllowPrerelease | Write-Host -ForegroundColor DarkGray
+        "Importing module Name[{0}] Version[{1}] AllowPrerelease[{2}]" -f $ModuleName, $ModuleVersion, $AllowPrerelease | Write-Verbose
 
         # Following semVer we can manually specidy a taged version to specify that is prerelease
         # Extract the semVer from it and set AllowPrerelease to true
@@ -113,7 +113,7 @@ function Import-RequiredModule{
 #>
 function Get-RequiredModule{
     [CmdletBinding()]
-    [OutputType([hashtable[]])]
+    [OutputType([Object[]])]
     param()
 
     # Required Modules
@@ -135,7 +135,7 @@ function Get-RequiredModule{
 Import-RequiredModule "TestingHelper" -AllowPrerelease
 
 # Install and Load Module dependencies
-Get-RequiredModule | Import-RequiredModule -AllowPrerelease 
+Get-RequiredModule | Import-RequiredModule -AllowPrerelease
 
 if($TestName){
     Invoke-TestingHelper -TestName $TestName -ShowTestErrors:$ShowTestErrors
