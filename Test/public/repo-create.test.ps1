@@ -1,4 +1,4 @@
-function RepoHelperTest_Create_Repo_Path{
+function Test_Create_Repo_Path{
 
     $repoName = 'testModule_{0}' -f $((New-guid).Guid.Substring(0,8))
     $repoDescription = 'A demo for testing'
@@ -17,7 +17,7 @@ function RepoHelperTest_Create_Repo_Path{
 
 }
 
-function RepoHelperTest_Create_Repo_Local{
+function Test_Create_Repo_Local{
 
     $repoName = 'testModule_{0}' -f $((New-guid).Guid.Substring(0,8))
 
@@ -40,7 +40,7 @@ function RepoHelperTest_Create_Repo_Local{
     Assert-Contains -Expected $expectedCommand -presented $infoVar -Comment "Command not as expected"
 }
 
-function RepoHelperTest_Create_Repo_Local_Folder{
+function Test_Create_Repo_Local_Folder{
 
     $repoName = 'testModule_{0}' -f $((New-guid).Guid.Substring(0,8))
 

@@ -1,4 +1,4 @@
-function RepoHelperTest_GrantRepoAccess_SUCCESS_NotCache{
+function Test_GrantRepoAccess_SUCCESS_NotCache{
 
     Reset-InvokeCommandMock
     
@@ -17,7 +17,7 @@ function RepoHelperTest_GrantRepoAccess_SUCCESS_NotCache{
     Assert-AreEqual -Expected $result.$user -Presented $role
 }
 
-function RepoHelperTest_GrantRepoAccess_SUCCESS_Cached{
+function Test_GrantRepoAccess_SUCCESS_Cached{
 
     Reset-InvokeCommandMock
 
@@ -35,7 +35,7 @@ function RepoHelperTest_GrantRepoAccess_SUCCESS_Cached{
     Assert-AreEqual -Expected $result.$user -Presented $role
 }
 
-function RepoHelperTest_GrantRepoAccess_fail_wrong_user_repo_owner{
+function Test_GrantRepoAccess_fail_wrong_user_repo_owner{
     $owner = 'solidifycustomers' ; $repo = 'bit21' ; $user = 'wrongUser' ; $role = 'triage'
 
     Reset-InvokeCommandMock

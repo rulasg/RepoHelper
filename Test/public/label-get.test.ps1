@@ -1,7 +1,7 @@
 
 # create a test function that calls Get-RepoLabels and checks the result
 
-function RepoHelperTest_RepoLabel_List{
+function Test_RepoLabel_List{
 
     # simple call 
     $result = Get-RepoLabels -whatif @InfoParameters
@@ -16,7 +16,7 @@ function RepoHelperTest_RepoLabel_List{
 
 # craete a test that calls Export-RepoLabels and checks the result
 
-function RepoHelperTest_RepoLabel_Export{
+function Test_RepoLabel_Export{
 
     # simple call 
     $result = Export-RepoLabels -Repo "rulasg/testpublicrepo" -Path test.json -WhatIf @InfoParameters

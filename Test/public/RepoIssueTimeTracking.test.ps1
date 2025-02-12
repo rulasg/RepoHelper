@@ -1,5 +1,5 @@
 
-function RepoHelperTest_AddRepoIssueTimeTracking_SUCCESS
+function Test_AddRepoIssueTimeTracking_SUCCESS
 {
     Reset-InvokeCommandMock
 
@@ -12,7 +12,7 @@ function RepoHelperTest_AddRepoIssueTimeTracking_SUCCESS
     # https://github.com/rulasgorg/repo1/issues/1#issuecomment-1936046674
     Assert-IsTrue -Condition ($result.StartsWith("https://github.com/$owner/$repo/issues/$issue#issuecomment-"))
 }
-function RepoHelperTest_AddRepoIssueTimeTracking_WrongTimeFormat
+function Test_AddRepoIssueTimeTracking_WrongTimeFormat
 {
     Reset-InvokeCommandMock
 
@@ -29,7 +29,7 @@ function RepoHelperTest_AddRepoIssueTimeTracking_WrongTimeFormat
     Assert-Contains -Expected "Wrong time format [$wrongTime]" -Presented $errorvar.Exception.Message
 }
 
-function RepoHelperTest_AddRepoIssueTimeTracking_SUCCESS_With_NoCheckBox
+function Test_AddRepoIssueTimeTracking_SUCCESS_With_NoCheckBox
 {
     Reset-InvokeCommandMock
 
@@ -43,7 +43,7 @@ function RepoHelperTest_AddRepoIssueTimeTracking_SUCCESS_With_NoCheckBox
     Assert-IsTrue -Condition ($result.StartsWith("https://github.com/$owner/$repo/issues/$issue#issuecomment-"))
 }
 
-function RepoHelperTest_AddRepoIssueTimeTracking_SUCCESS_NoOwnerRepo
+function Test_AddRepoIssueTimeTracking_SUCCESS_NoOwnerRepo
 {
     Reset-InvokeCommandMock
 
@@ -58,7 +58,7 @@ function RepoHelperTest_AddRepoIssueTimeTracking_SUCCESS_NoOwnerRepo
     Assert-IsTrue -Condition ($result.StartsWith("https://github.com/$owner/$repo/issues/$issue#issuecomment-"))
 }
 
-function RepoHelperTest_GetRepoIssueTimeTracking_SUCCESS
+function Test_GetRepoIssueTimeTracking_SUCCESS
 {
     Reset-InvokeCommandMock
 
@@ -79,7 +79,7 @@ function RepoHelperTest_GetRepoIssueTimeTracking_SUCCESS
     Assert-AreEqual -Expected "https://github.com/$owner/$repo/issues/$issue" -Presented $result.Url
 }
 
-function RepoHelperTest_GetRepoIssueTimeTracking_SUCCESS_SeveralTimesInSingleComment
+function Test_GetRepoIssueTimeTracking_SUCCESS_SeveralTimesInSingleComment
 {
     Reset-InvokeCommandMock
 
@@ -102,7 +102,7 @@ function RepoHelperTest_GetRepoIssueTimeTracking_SUCCESS_SeveralTimesInSingleCom
 
 }
 
-function RepoHelperTest_GetRepoIssueTimeTracking_WrongFormat
+function Test_GetRepoIssueTimeTracking_WrongFormat
 {
     Reset-InvokeCommandMock
 
@@ -123,7 +123,7 @@ function RepoHelperTest_GetRepoIssueTimeTracking_WrongFormat
     Assert-AreEqual -Expected $expectedJson -Presented $json
 }
 
-function RepoHelperTest_GetRepoIssueTimeTracking_Notfound
+function Test_GetRepoIssueTimeTracking_Notfound
 {
     Reset-InvokeCommandMock
 
@@ -139,7 +139,7 @@ function RepoHelperTest_GetRepoIssueTimeTracking_Notfound
 
 }
 
-function RepoHelperTest_GetRepoIssueTimeTracking_Pipe
+function Test_GetRepoIssueTimeTracking_Pipe
 {
     Reset-InvokeCommandMock
 
@@ -182,7 +182,7 @@ function RepoHelperTest_GetRepoIssueTimeTracking_Pipe
     Assert-AreEqual -Presented $issue.Total        -Expected  "10h 33m"
 }
 
-function RepoHelperTest_GetRepoIssueTimeTrackingRecords_Pipe
+function Test_GetRepoIssueTimeTrackingRecords_Pipe
 {
     Reset-InvokeCommandMock
 
@@ -276,7 +276,7 @@ function RepoHelperTest_GetRepoIssueTimeTrackingRecords_Pipe
     Assert-AreEqual -Expected $expectedJson -Presented ($issue | ConvertTo-Json)
 }
 
-function RepoHelperTest_GetRepoIssueTimeTrackingRecords_SUCCESS{
+function Test_GetRepoIssueTimeTrackingRecords_SUCCESS{
     Reset-InvokeCommandMock
 
     $owner = "rulasgorg" ; $repo = "repo1" ; $issue = 2 
@@ -304,7 +304,7 @@ function RepoHelperTest_GetRepoIssueTimeTrackingRecords_SUCCESS{
     Assert-Contains -Expected (Get-Date -Date "February 10, 2024 7:32:50 AM") -Presented $result.CreatedAt
 }
 
-function RepoHelperTest_GetRepoIssueTimeTrackingRecord_SUCCESS_SeveralTimesInSingleComment
+function Test_GetRepoIssueTimeTrackingRecord_SUCCESS_SeveralTimesInSingleComment
 {
     Reset-InvokeCommandMock
 
@@ -325,7 +325,7 @@ function RepoHelperTest_GetRepoIssueTimeTrackingRecord_SUCCESS_SeveralTimesInSin
     Assert-AreEqual -Expected $expectedText -Presented $resultText
 }
 
-function RepoHelperTest_TimeTracking_ConvertToMinutes{
+function Test_TimeTracking_ConvertToMinutes{
 
     # Wrong input
     Assert-WrongConvertToMinutes -Tag "1"

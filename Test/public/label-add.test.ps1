@@ -1,6 +1,6 @@
 # create a test to call Add-RepoLabel and check result
 
-function RepoHelperTest_RepoLabel_Add{
+function Test_RepoLabel_Add{
 
     # simple call 
     $result = Add-RepoLabel -Name 'testLabel' -whatif @InfoParameters
@@ -34,7 +34,7 @@ function RepoHelperTest_RepoLabel_Add{
 }
 
 # create a test to call Import-RepoLabels and check result
-function RepoHelperTest_RepoLabel_Import{
+function Test_RepoLabel_Import{
 
     # create a test file
     $testFile = New-TestingFile -Name 'testLabels.json' -PassThru -Content @'

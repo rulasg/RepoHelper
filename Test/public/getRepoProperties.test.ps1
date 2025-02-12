@@ -1,4 +1,4 @@
-function RepoHelperTest_GetRepoProperties_Success{
+function Test_GetRepoProperties_Success{
 
     $owner = 'solidifycustomers' ; $repo = 'bit21' ; $user = 'rulasg'
 
@@ -11,7 +11,7 @@ function RepoHelperTest_GetRepoProperties_Success{
     Assert-AreEqual -Expected $result.expiresAt.ToString('yyMMdd') -Presented '240831'
 }
 
-function RepoHelperTest_GetRepoProperties_NoProperties{
+function Test_GetRepoProperties_NoProperties{
     $owner = 'solidifycustomers' ; $repo = 'bit22'
 
     $mockFile = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getRepoInfoNoProperties.json'
@@ -22,7 +22,7 @@ function RepoHelperTest_GetRepoProperties_NoProperties{
     Assert-Count -Expected 0 -Presented $result
 }
 
-function RepoHelperTest_GetRepoProperties_NoRepo{
+function Test_GetRepoProperties_NoRepo{
     $owner = 'solidifycustomers' ; $repo = 'wrongRepo'
 
     $mockFile = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getRepoPropertiesNotFound.json'

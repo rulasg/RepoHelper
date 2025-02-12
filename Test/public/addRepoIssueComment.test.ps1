@@ -1,4 +1,4 @@
-function RepoHelperTest_AddRepoIssueComment_Success{
+function Test_AddRepoIssueComment_Success{
 
     Reset-InvokeCommandMock
 
@@ -14,7 +14,7 @@ function RepoHelperTest_AddRepoIssueComment_Success{
     Assert-AreEqual -Expected $mockUrl -Presented $result
 }
 
-function RepoHelperTest_AddRepoIssueComment_Success_minimalCommand{
+function Test_AddRepoIssueComment_Success_minimalCommand{
 
     Reset-InvokeCommandMock
 
@@ -31,7 +31,7 @@ function RepoHelperTest_AddRepoIssueComment_Success_minimalCommand{
     Assert-AreEqual -Expected $mockUrl -Presented $result
 }
 
-function RepoHelperTest_AddRepoIssueComment_WrongIssueNumber{
+function Test_AddRepoIssueComment_WrongIssueNumber{
 
     Reset-InvokeCommandMock
 
@@ -49,7 +49,7 @@ function RepoHelperTest_AddRepoIssueComment_WrongIssueNumber{
     Assert-Contains -Expected "Error adding comment to issue $number for $owner/$repo" -Presented $errorvar.exception.Message
 }
 
-function RepoHelperTest_GetRepoIssues_Success{
+function Test_GetRepoIssues_Success{
 
     Reset-InvokeCommandMock
 

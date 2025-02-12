@@ -1,4 +1,4 @@
-function RepoHelperTest_SyncRepoAccessAll_Success_Write{
+function Test_SyncRepoAccessAll_Success_Write{
     $owner = 'solidifycustomers' ; $repo = 'bit21'
 
     Reset-InvokeCommandMock
@@ -44,7 +44,7 @@ rulasg
 
 }
 
-function RepoHelperTest_SyncRepoAccessAll_Success_Admin{
+function Test_SyncRepoAccessAll_Success_Admin{
     $owner = 'solidifycustomers' ; $repo = 'bit21'
 
     Reset-InvokeCommandMock
@@ -91,7 +91,7 @@ rulasg
     
 }
 
-function RepoHelperTest_SyncRepoAccessAll_Success_Admin_WhatIf{
+function Test_SyncRepoAccessAll_Success_Admin_WhatIf{
     $owner = 'solidifycustomers' ; $repo = 'bit21'
 
     Reset-InvokeCommandMock
@@ -131,7 +131,7 @@ rulasg
 
 }
 
-function RepoHelperTest_SyncRepoAccess_EnvironmentParameters{
+function Test_SyncRepoAccess_EnvironmentParameters{
     $owner = 'solidifycustomers' ; $repo = 'bit21'
 
     Reset-InvokeCommandMock
@@ -161,7 +161,7 @@ function RepoHelperTest_SyncRepoAccess_EnvironmentParameters{
     Assert-AreEqual -Expected '-' -Presented $result.MagnusTim
 }
 
-function RepoHelperTest_SyncRepoAccess_NoParameters {
+function Test_SyncRepoAccess_NoParameters {
 
     Reset-InvokeCommandMock
 
@@ -179,7 +179,7 @@ function RepoHelperTest_SyncRepoAccess_NoParameters {
     Assert-Contains -Expected "[Sync-RepoAccess] Owner and Repo parameters are required" -Presented $errorvar.Exception.Message
 }
 
-function RepoHelperTest_SyncRepoAccess_NoUsersFile {
+function Test_SyncRepoAccess_NoUsersFile {
     $owner = 'solidifycustomers' ; $repo = 'bit21' ; $file = "contributors"
 
     Reset-InvokeCommandMock
@@ -192,7 +192,7 @@ function RepoHelperTest_SyncRepoAccess_NoUsersFile {
     Assert-Contains -Expected "Error reading user file $file" -Presented $errorvar.Exception.Message
 }
 
-function RepoHelperTest_SyncRepoAccess_Error_On_Invitations {
+function Test_SyncRepoAccess_Error_On_Invitations {
     $owner = 'solidifycustomers' ; $repo = 'bit21'
 
     Reset-InvokeCommandMock
