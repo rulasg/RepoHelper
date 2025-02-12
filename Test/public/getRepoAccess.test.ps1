@@ -1,5 +1,5 @@
 
-function RepoHelperTest_GetRepoAccessAll_SUCCESS{
+function Test_GetRepoAccessAll_SUCCESS{
 
     $owner = 'solidifycustomers' ; $repo = 'bit21' 
     
@@ -17,7 +17,7 @@ function RepoHelperTest_GetRepoAccessAll_SUCCESS{
     Assert-AreEqual -Expected $result.raulgeukk -Presented 'write'
 }
 
-function RepoHelperTest_GetRepoAccess_Success_FromAccess{
+function Test_GetRepoAccess_Success_FromAccess{
 
     $owner = 'solidifycustomers' ; $repo = 'bit21' ; $user = 'raulgeukk'
 
@@ -33,7 +33,7 @@ function RepoHelperTest_GetRepoAccess_Success_FromAccess{
     Assert-AreEqual -Expected 'write' -Presented $result.$user
 }
 
-function RepoHelperTest_GetRepoAccess_Success_FromInvites{
+function Test_GetRepoAccess_Success_FromInvites{
 
     $owner = 'solidifycustomers' ; $repo = 'bit21' ; $user = 'raulgeu'
 
@@ -51,7 +51,7 @@ function RepoHelperTest_GetRepoAccess_Success_FromInvites{
 
 
 
-function RepoHelperTest_TestRepoAccess_Success_True{
+function Test_TestRepoAccess_Success_True{
 
     $owner = 'solidifycustomers' ; $repo = 'bit21' ; $user = 'raulgeu'
 
@@ -62,7 +62,7 @@ function RepoHelperTest_TestRepoAccess_Success_True{
     Assert-IsTrue -Condition $result
 }
 
-function RepoHelperTest_TestRepoAccess_Success_False{
+function Test_TestRepoAccess_Success_False{
 
     $testnotfound = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'testRepoAccessNotFound.json'
     

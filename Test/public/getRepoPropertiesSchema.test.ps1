@@ -1,4 +1,4 @@
-function RepoHelperTest_GetRepoPropertiesSchema_Success{
+function Test_GetRepoPropertiesSchema_Success{
 
     $owner = 'solidifycustomers'
 
@@ -18,7 +18,7 @@ function RepoHelperTest_GetRepoPropertiesSchema_Success{
     Assert-AreEqual -Presented $resultOwner.values_editable_by -Expected "org_and_repo_actors"
 }
 
-function RepoHelperTest_GetRepoProperties_NotFound{
+function Test_GetRepoProperties_NotFound{
 
     $owner = 'solidifycustomers22'
 
@@ -31,7 +31,7 @@ function RepoHelperTest_GetRepoProperties_NotFound{
 }
 
 
-function RepoHelperTest_GetRepoProperties_OneResult{
+function Test_GetRepoProperties_OneResult{
 
     $owner = 'solidify-internal'
 

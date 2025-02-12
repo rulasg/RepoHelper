@@ -1,4 +1,4 @@
-function RepoHelperTest_SetRepoProperties_Success{
+function Test_SetRepoProperties_Success{
 
     $owner = 'solidifydemo' ; $repo = 'bit21' ; $property = 'kk' ; $value = 'someValuekk'
 
@@ -18,7 +18,7 @@ curl -L -s -H "Authorization: Bearer $env:GH_TOKEN" -X PATCH https://api.github.
     Assert-IsNull -Object $result -Comment "Set-RepoProperty should return null on success"
 }
 
-function RepoHelperTest_SetRepoProperties_NotFound{
+function Test_SetRepoProperties_NotFound{
 
     $owner = 'solidifydemo' ; $repo = 'bit21' ; $property = 'kk' ; $value = 'someValuekk'
 

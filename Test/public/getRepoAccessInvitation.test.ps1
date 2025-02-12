@@ -1,4 +1,4 @@
-function RepoHelperTest_GetRepoInvitations_SUCCESS{
+function Test_GetRepoInvitations_SUCCESS{
 
     $owner = 'solidifycustomers' ; $repo = 'bit21' ; $user = 'raulgeu' ; $role = 'write'
 
@@ -10,7 +10,7 @@ function RepoHelperTest_GetRepoInvitations_SUCCESS{
     Assert-AreEqual -Expected $result.$user -Presented $role
 }
 
-function RepoHelperTest_GetRepoInvitations_SUCCESS_Ids{
+function Test_GetRepoInvitations_SUCCESS_Ids{
 
     $owner = 'solidifycustomers' ; $repo = 'bit21' ; $id = 243067060 ; $user = 'raulgeu'
 
@@ -22,7 +22,7 @@ function RepoHelperTest_GetRepoInvitations_SUCCESS_Ids{
     Assert-AreEqual -Expected $result.$user -Presented $id
 }
 
-function RepoHelperTest_GetRepoInvitations_Empty{
+function Test_GetRepoInvitations_Empty{
 
     $owner = 'solidifycustomers' ; $repo = 'bit21'
     Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations --paginate" -Command 'echo "[]"'
@@ -37,7 +37,7 @@ function RepoHelperTest_GetRepoInvitations_Empty{
     Assert-Count -Expected 0 -Presented $result
 }
 
-function RepoHelperTest_RemoveRepoInvitations_SUCCESS{
+function Test_RemoveRepoInvitations_SUCCESS{
 
     $owner = 'solidifycustomers' ; $repo = 'bit21' ; $id = 243067060 ; $user = 'raulgeu'
 
@@ -53,7 +53,7 @@ function RepoHelperTest_RemoveRepoInvitations_SUCCESS{
     Assert-Count -Expected 0 -Presented $warningVar.messages
 }
 
-function RepoHelperTest_RemoveRepoInvitations_NoUser{
+function Test_RemoveRepoInvitations_NoUser{
 
     $owner = 'solidifycustomers' ; $repo = 'bit21' ; $id = 243067060 ; $user = 'raulgeu'
 

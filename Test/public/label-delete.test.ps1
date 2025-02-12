@@ -1,6 +1,6 @@
 # create a test function that calls Remove-RepoLabel and checks the result
 
-function RepoHelperTest_RepoLabel_Remove{
+function Test_RepoLabel_Remove{
 
     # simple call 
     $result = Remove-RepoLabel -Name 'testLabel' -whatif @InfoParameters

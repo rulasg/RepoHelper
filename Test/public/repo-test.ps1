@@ -1,4 +1,4 @@
-function RepoHelperTest_Repo_Test_Manual{
+function Test_Repo_Test_Manual{
 
     Assert-SkipTest
 

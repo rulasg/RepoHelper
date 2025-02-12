@@ -1,5 +1,5 @@
 function 
-RepoHelperTest_GetRepoAccessTeam_Success{
+Test_GetRepoAccessTeam_Success{
 
     Reset-InvokeCommandMock
 
@@ -36,7 +36,7 @@ RepoHelperTest_GetRepoAccessTeam_Success{
     Assert-IsTrue -Condition ($result[5] -like '*| write |*' )
 }
 
-function RepoHelperTest_GetRepoAccessTeam_Success_NoHead{
+function Test_GetRepoAccessTeam_Success_NoHead{
 
     Reset-InvokeCommandMock
 
