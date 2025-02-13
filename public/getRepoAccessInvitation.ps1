@@ -46,12 +46,35 @@ function Get-RepoAccessInvitations{
     foreach ($item in $result) {
 
         $ret += @{
-            $item.invitee.login = $Ids ? $result.id : $result.permissions
+            # return the id or the login of the permissions depending on Ids switch
+            $item.invitee.login = $Ids ? $result.id : $(Get-Permissions $result.permissions)
         }
     }
 
     return $ret
 } Export-ModuleMember -Function Get-RepoAccessInvitations
+
+function Get-Permissions{
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory,Position=0)][object]$Permissions
+    )
+
+    if($Permissions.Count -eq 0){
+        $ret = $null
+    }
+
+    if($Permissions.Count -eq 1){
+        $ret = $Permissions
+    }
+
+    $ret = $Permissions[0]
+
+    $ret = $ret + " (invitation Pending)"
+
+    return $ret
+
+}
 
 function Remove-RepoAccessInvitation{
     [CmdletBinding()]

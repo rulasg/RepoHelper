@@ -12,7 +12,8 @@ function Get-RepoAccessTeam{
     param(
         [Parameter()] [string]$Owner,
         [Parameter()] [string]$Repo,
-        [Parameter()] [switch]$NoHeaders
+        [Parameter()] [switch]$NoHeaders,
+        [Parameter()] [string]$Role
     )
 
     # Resolve repo name from parameters or environment
@@ -31,34 +32,75 @@ function Get-RepoAccessTeam{
         $ret += "|----------------------------|--------|----------|---------|--------|------------|" 
     }
     
-    $templateLine ="| {avatar} | {name} | {access} | {email} |  [@{login}](https://https://github.com/{login}) | {company}  |"
     # Get access Control
     $accessList = Get-RepoAccess -Owner $owner -Repo $repo
-
+    
+    if($Role){
+        "Filtering by role: $Role" | Write-Verbose
+        $accessList = $accessList.GetEnumerator() | Where-Object { $_.Value -like "$Role*" }
+    }
+    
     # Sort by access
     $accessList = $accessList.GetEnumerator() | Sort-Object -Property  Value
     
     # Create lines for each access
-    Foreach($access in $accessList){
-        $login = $access.Name
-        $value = $access.Value
+    # Foreach($access in $accessList){
+        #     $login = $access.Name
+        #     $value = $access.Value
         
+    #     $templateLine ="| {avatar} | {name} | {access} | {email} |  [@{login}](https://https://github.com/{login}) | {company}  |"
+    #     $user = Get-RepoUser -Login $login
+    #     $avatar =  '<img alt="" width="100" height="100" class="avatar width-full height-full avatar-before-user-status" src="https://avatars.githubusercontent.com/{login}">' -replace '{login}',$login
+
+    #     $userline = $templateLine
+    #     $userline = $userline -replace '{login}',   $user.login
+    #     $userline = $userline -replace '{avatar}',  $avatar
+    #     $userline = $userline -replace '{name}',    $user.name
+    #     $userline = $userline -replace '{access}',  $value
+    #     $userline = $userline -replace '{email}',   $user.email
+    #     $userline = $userline -replace '{company}', $user.company
+
+    #     $ret+= $userline
+    # }
+
+    $ret+= $accessList | ForEach-Object {New-UserAccessLine -Login $_.Name -Access $_.Value}
+
+    return $ret
+} Export-ModuleMember -Function Get-RepoAccessTeam
+
+function New-UserAccessLine{
+    [CmdletBinding()]
+    param(
+        [Parameter(Position=0,ValueFromPipeline)][string]$Login,
+        [Parameter(Position=1,ValueFromPipeline)][string]$Access
+    )
+
+    process{
+
         $user = Get-RepoUser -Login $login
+
+        if($null -eq $user){
+            "Error: $login not found" | Write-Error
+            return
+        }
+
+        $user | Write-Verbose
+
+        $templateLine ="| {avatar} | {name} | {access} | {email} |  [@{login}](https://github.com/{login}) | {company}  |"
+
         $avatar =  '<img alt="" width="100" height="100" class="avatar width-full height-full avatar-before-user-status" src="https://avatars.githubusercontent.com/{login}">' -replace '{login}',$login
 
         $userline = $templateLine
         $userline = $userline -replace '{login}',   $user.login
         $userline = $userline -replace '{avatar}',  $avatar
         $userline = $userline -replace '{name}',    $user.name
-        $userline = $userline -replace '{access}',  $value
+        $userline = $userline -replace '{access}',  $Access
         $userline = $userline -replace '{email}',   $user.email
         $userline = $userline -replace '{company}', $user.company
 
-        $ret+= $userline
+        return $userline
     }
-
-    return $ret
-} Export-ModuleMember -Function Get-RepoAccessTeam
+} Export-ModuleMember -Function New-UserAccessLine
 
 function Get-RepoUser{
     [CmdletBinding()]
