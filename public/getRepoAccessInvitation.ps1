@@ -60,15 +60,15 @@ function Get-Permissions{
         [Parameter(Mandatory,Position=0)][object]$Permissions
     )
 
-    if($Permissions.Count -eq 0){
-        $ret = $null
+    switch ($Permissions.Count) {
+        0 { $ret = $null }
+        1 { $ret = $Permissions }
+        { $_ -gt 1 } { $ret = $Permissions[0] }
+        
+        Default {
+            throw "This should not reach this issue"
+        }
     }
-
-    if($Permissions.Count -eq 1){
-        $ret = $Permissions
-    }
-
-    $ret = $Permissions[0]
 
     $ret = $ret + " (invitation Pending)"
 

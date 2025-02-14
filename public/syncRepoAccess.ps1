@@ -58,7 +58,7 @@ function Sync-RepoAccess{
         "Processing $user for role $role" | Write-Verbose
 
         # Already invited to this role
-        if($invitations.$user -eq $role){
+        if($invitations.$user -Like "$role *"){
             "User $user has an invitation pending" | Write-Verbose
             $ret.$user = "?"
             continue

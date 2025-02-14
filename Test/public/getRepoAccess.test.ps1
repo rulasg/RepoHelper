@@ -11,7 +11,7 @@ function Test_GetRepoAccessAll_SUCCESS{
 
     $result = Get-RepoAccess -owner $owner -repo $repo
 
-    Assert-AreEqual -Expected $result.raulgeu -Presented 'write'
+    Assert-AreEqual -Expected $result.raulgeu -Presented 'write (invitation Pending)'
     Assert-AreEqual -Expected $result.MagnusTim -Presented 'admin'
     Assert-AreEqual -Expected $result.rulasg -Presented 'admin'
     Assert-AreEqual -Expected $result.raulgeukk -Presented 'write'
@@ -46,7 +46,7 @@ function Test_GetRepoAccess_Success_FromInvites{
 
     $result = Get-RepoAccess -Owner $owner -Repo $repo
 
-    Assert-AreEqual -Expected 'write' -Presented $result.$user
+    Assert-AreEqual -Expected 'write (invitation Pending)' -Presented $result.$user
 }
 
 
