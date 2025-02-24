@@ -50,6 +50,10 @@ function Set-RepoProperty{
     return $null
 } Export-ModuleMember -Function Set-RepoProperty
 
+<#
+.SYNOPSIS
+    Gets the user token from the environment
+#>
 function Get-UserToken{
     $token = $env:GH_TOKEN
     if($null -eq $token){
