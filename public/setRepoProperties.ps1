@@ -9,6 +9,7 @@ curl -L -s -H "Authorization: Bearer {token}" -X PATCH https://api.github.com/re
 '@
 
 Set-MyInvokeCommandAlias -Alias SetRepoProperty -Command $cmd
+Set-MyInvokeCommandAlias -Alias getToken -Command "Get-UserToken"
 
 <#
 .SYNOPSIS
@@ -34,7 +35,7 @@ function Set-RepoProperty{
 
     "Setting property $Name to $Value for $Owner/$Repo" | Write-Verbose
 
-    $token = Get-UserToken
+    $token = Invoke-MyCommand -Command getToken
 
     $param = @{ owner = $Owner ; repo = $Repo ; name = $Name ; value = $Value ; token= $token}
 
@@ -56,5 +57,5 @@ function Get-UserToken{
         return $null
     }
     return $token
-}
+} Export-ModuleMember -Function Get-UserToken
 
