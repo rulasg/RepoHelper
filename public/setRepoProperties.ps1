@@ -5,10 +5,11 @@
 # This command works
 # curl -L -H "Authorization: Bearer $env:GH_TOKEN" -X PATCH https://api.github.com/repos/solidifydemo/bit21/properties/values -d '{"properties":[{"property_name":"kk","value":"kkvalue23"}]}'
 $cmd = @'
-curl -L -s -H "Authorization: Bearer $env:GH_TOKEN" -X PATCH https://api.github.com/repos/{owner}/{repo}/properties/values -d '{"properties":[{"property_name":"{name}","value":"{value}"}]}'
+curl -L -s -H "Authorization: Bearer {token}" -X PATCH https://api.github.com/repos/{owner}/{repo}/properties/values -d '{"properties":[{"property_name":"{name}","value":"{value}"}]}'
 '@
 
 Set-MyInvokeCommandAlias -Alias SetRepoProperty -Command $cmd
+Set-MyInvokeCommandAlias -Alias getToken -Command "Get-UserToken"
 
 <#
 .SYNOPSIS
@@ -34,7 +35,9 @@ function Set-RepoProperty{
 
     "Setting property $Name to $Value for $Owner/$Repo" | Write-Verbose
 
-    $param = @{ owner = $Owner ; repo = $Repo ; name = $Name ; value = $Value }
+    $token = Invoke-MyCommand -Command getToken
+
+    $param = @{ owner = $Owner ; repo = $Repo ; name = $Name ; value = $Value ; token= $token}
 
     if($PSCmdlet.ShouldProcess("$Owner/$Repo","Set property $Name to $Value")){
         $result = Invoke-MyCommandJson -Command SetRepoProperty -Parameters $param
@@ -46,4 +49,17 @@ function Set-RepoProperty{
     
     return $null
 } Export-ModuleMember -Function Set-RepoProperty
+
+<#
+.SYNOPSIS
+    Gets the user token from the environment
+#>
+function Get-UserToken{
+    $token = $env:GH_TOKEN
+    if($null -eq $token){
+        "GH_TOKEN environment variable is not set" | Write-Error
+        return $null
+    }
+    return $token
+} Export-ModuleMember -Function Get-UserToken
 
