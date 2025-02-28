@@ -66,16 +66,17 @@ function Get-RepoAccessUser{
 
     if($permissions.$user -eq $role){
         "Found user $user with access role $role" | Write-Verbose
-        return $permissions.$user
+        return $role
     }
 
     $invitations = Get-RepoAccessInvitations -Owner $owner -Repo $repo
 
     "Found $($invitations.Count) users with invitations" | Write-Verbose
 
-    if($invitations.$user -eq $role){
+    # Invitation start with Role. Allow Pending tag
+    if($invitations.$user -Like "$role *"){
         "Found user $user with invitation role $role" | Write-Verbose
-        return $invitations.$user
+        return $role
     }
 
     "User $user not found with access or invitation" | Write-Verbose

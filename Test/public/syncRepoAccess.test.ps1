@@ -85,7 +85,7 @@ rulasg
     
     Assert-AreEqual -Expected '=' -Presented $result.rulasg
 
-    Assert-AreEqual -Expected '+ (write)' -Presented $result.raulgeu
+    Assert-AreEqual -Expected '+ (write (invitation Pending))' -Presented $result.raulgeu
 
     Assert-AreEqual -Expected '-' -Presented $result.MagnusTim
     
@@ -125,7 +125,7 @@ rulasg
 
     Assert-AreEqual -Expected '=' -Presented $result.rulasg
 
-    Assert-AreEqual -Expected '+ (write)' -Presented $result.raulgeu
+    Assert-AreEqual -Expected '+ (write (invitation Pending))' -Presented $result.raulgeu
 
     Assert-AreEqual -Expected '-' -Presented $result.MagnusTim
 

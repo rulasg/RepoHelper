@@ -1,13 +1,13 @@
 function Test_GetRepoInvitations_SUCCESS{
 
-    $owner = 'solidifycustomers' ; $repo = 'bit21' ; $user = 'raulgeu' ; $role = 'write'
+    $owner = 'solidifycustomers' ; $repo = 'bit21' ; $user = 'raulgeu' ; $role = 'write' 
 
     $GetAccessAllSuccess = $PSScriptRoot | Join-Path -ChildPath 'testData' -AdditionalChildPath 'getAccessInvitationsSuccess.json'
     Set-InvokeCommandMock -Alias "gh api repos/$owner/$repo/invitations --paginate" -Command "Get-Content -Path $(($GetAccessAllSuccess | Get-Item).FullName)"
 
     $result = Get-RepoAccessInvitations -owner $owner -repo $repo
 
-    Assert-AreEqual -Expected $result.$user -Presented $role
+    Assert-AreEqual -Expected $result.$user -Presented "write (invitation Pending)"
 }
 
 function Test_GetRepoInvitations_SUCCESS_Ids{
