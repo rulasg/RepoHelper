@@ -10,7 +10,8 @@ function Get-RepoAccess{
     [OutputType([hashtable])]
     param(
         [Parameter()] [string]$Owner,
-        [Parameter()] [string]$Repo
+        [Parameter()] [string]$Repo,
+        [Parameter()] [string]$Role
     )
 
     # Resolve repo name from parameters or environment
@@ -32,6 +33,11 @@ function Get-RepoAccess{
 
     # no need to unique the list as github makes them exclusive
     $ret = $access + $invitations
+
+    if($Role){
+        "Filtering by role: $Role" | Write-Verbose
+        $ret = $ret.GetEnumerator() | Where-Object { $_.Value -like "$Role*" }
+    }
 
     "Found $($ret.Count) users with access or invitations" | Write-Verbose
 
