@@ -33,13 +33,9 @@ function Get-RepoAccessTeam{
     }
     
     # Get access Control
-    $accessList = Get-RepoAccess -Owner $owner -Repo $repo
+    $accessList = Get-RepoAccess -Owner $owner -Repo $repo -Role:$Role
     
-    if($Role){
-        "Filtering by role: $Role" | Write-Verbose
-        $accessList = $accessList.GetEnumerator() | Where-Object { $_.Value -like "$Role*" }
-    }
-    
+
     # Sort by access
     $accessList = $accessList.GetEnumerator() | Sort-Object -Property  Value
     
@@ -109,13 +105,13 @@ function Get-RepoUser{
     )
 
     process{
-        
-        $parameters = @{
-            login = $Login
+
+        $result = Get-UserInfo -Login $Login
+
+        if($null -eq $result){
+            "Error: $Login not found" | Write-Error
+            return
         }
-
-        $result = Invoke-MyCommandJson -Command GetUser -Parameters $parameters
-
         $ret = [PSCustomObject]@{
             login = $result.login
             name = $result.name
@@ -130,4 +126,23 @@ function Get-RepoUser{
         return $ret
     }
 } Export-ModuleMember -Function Get-RepoUser
+
+function Get-UserInfo{
+    [CmdletBinding()]
+    [OutputType([PSCustomObject])]
+    param(
+        [Parameter(Position=0,ValueFromPipeline)][string]$Login
+    )
+
+    process{
+        $user = Invoke-MyCommandJson -Command GetUser -Parameters @{login = $Login}
+
+        if($user.login -ne $Login){
+            "Error: $login not found" | Write-Error
+            return $null
+        }
+
+        return $user
+    }
+} Export-ModuleMember -Function Get-UserInfo
 
