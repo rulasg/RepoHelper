@@ -143,7 +143,7 @@ function Test_GetRepoIssueTimeTracking_Pipe
 {
     Reset-InvokeCommandMock
 
-    $owner = "rulasgorgkk" ; $repo = "repo1" ; $attributes = "title,comments,url" ; $attributes2 = "number,title,url"
+    $owner = "rulasgorgkk" ; $repo = "repo1" ; $attributes = "title,comments,url" ; $attributes2 = "number,title,state,url"
 
     MockCall -Command "gh issue list -R $owner/$repo --json $attributes2" -filename getIssueList.json
 
@@ -186,7 +186,7 @@ function Test_GetRepoIssueTimeTrackingRecords_Pipe
 {
     Reset-InvokeCommandMock
 
-    $owner = "rulasgorgkk" ; $repo = "repo1" ; $attributes = "title,comments,url" ; $attributes2 = "number,title,url"
+    $owner = "rulasgorgkk" ; $repo = "repo1" ; $attributes = "title,comments,url" ; $attributes2 = "number,title,state,url"
 
     MockCall -Command "gh issue list -R $owner/$repo --json $attributes2" -filename getIssueList.json
 
