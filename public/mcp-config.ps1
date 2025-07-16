@@ -168,16 +168,16 @@ function Start-MCPServers {
         $config = Get-MCPConfiguration -ConfigPath $ConfigPath
         
         if ($ServerName) {
-            $serversToStart = @{ $ServerName = $config.mcpServers.$ServerName }
+            $serversToStart = @($ServerName)
         } else {
-            $serversToStart = $config.mcpServers
+            $serversToStart = $config.mcpServers.PSObject.Properties.Name
         }
         
-        foreach ($server in $serversToStart.GetEnumerator()) {
-            if ($PSCmdlet.ShouldProcess($server.Key, "Start MCP Server")) {
-                Write-Information "Starting MCP server: $($server.Key)"
+        foreach ($serverName in $serversToStart) {
+            if ($PSCmdlet.ShouldProcess($serverName, "Start MCP Server")) {
+                Write-Information "Starting MCP server: $serverName"
                 
-                $serverConfig = $server.Value
+                $serverConfig = $config.mcpServers.$serverName
                 $command = $serverConfig.command
                 $args = $serverConfig.args
                 
