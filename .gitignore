@@ -1,0 +1,27 @@
+# MCP logs
+logs/
+*.log
+
+# Build artifacts
+bin/
+obj/
+dist/
+
+# Dependencies
+node_modules/
+*.nuget.props
+*.nuget.targets
+
+# IDE files
+.vscode/
+.vs/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
