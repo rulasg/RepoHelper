@@ -53,7 +53,7 @@ function Test_GetRepoIssues_Success{
 
     Reset-InvokeCommandMock
 
-    $owner = 'solidifycustomers' ; $repo = 'bit21' ; $attributes="number,title,url"
+    $owner = 'solidifycustomers' ; $repo = 'bit21' ; $attributes="number,title,state,url"
 
     MockCall -Command "gh issue list -R $owner/$repo --json $attributes" -filename getIssueList.json
 

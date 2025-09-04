@@ -118,8 +118,6 @@ function Test-RepoAccess{
 
     $result = Invoke-MyCommandJson -Command TestUserAccess -Parameters $param 2> $null
 
-    $ret = $null -eq $result
-
     if($null -eq $result){
         "User $User has access to $Owner/$Repo" | Write-Verbose
         $ret = $true

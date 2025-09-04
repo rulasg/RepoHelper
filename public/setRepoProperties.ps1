@@ -9,7 +9,7 @@ curl -L -s -H "Authorization: Bearer {token}" -X PATCH https://api.github.com/re
 '@
 
 Set-MyInvokeCommandAlias -Alias SetRepoProperty -Command $cmd
-Set-MyInvokeCommandAlias -Alias getToken -Command "Get-UserToken"
+Set-MyInvokeCommandAlias -Alias getToken -Command "gh auth token"
 
 <#
 .SYNOPSIS
