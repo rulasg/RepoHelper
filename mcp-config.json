@@ -1,0 +1,54 @@
+{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": [
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      },
+      "description": "GitHub API access via MCP server for repository management",
+      "capabilities": [
+        "tools",
+        "resources"
+      ]
+    },
+    "dotnet-mcp": {
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "--name",
+        "dotnet-mcp-server",
+        "-p",
+        "3001:3001",
+        "-e",
+        "DOTNET_ENVIRONMENT=Development",
+        "-e",
+        "MCP_PORT=3001",
+        "-e",
+        "GITHUB_PERSONAL_ACCESS_TOKEN=${GITHUB_PERSONAL_ACCESS_TOKEN}",
+        "mcr.microsoft.com/dotnet/aspnet:8.0",
+        "sh",
+        "-c",
+        "dotnet new webapi -n MCPServer --no-restore && cd MCPServer && echo 'using Microsoft.AspNetCore.Mvc; [ApiController] [Route(\"api/[controller]\")] public class MCPController : ControllerBase { [HttpGet(\"health\")] public IActionResult Health() => Ok(new { status = \"healthy\", timestamp = DateTime.UtcNow }); [HttpPost(\"process\")] public IActionResult Process([FromBody] object request) => Ok(new { result = \"processed\", request }); }' > Controllers/MCPController.cs && dotnet run --urls=http://0.0.0.0:3001"
+      ],
+      "description": ".NET MCP server running in Docker container for extended functionality",
+      "capabilities": [
+        "tools",
+        "resources",
+        "prompts"
+      ]
+    }
+  },
+  "defaults": {
+    "timeout": 30000,
+    "maxRetries": 3
+  },
+  "logging": {
+    "level": "info",
+    "file": "./logs/mcp.log"
+  }
+}
