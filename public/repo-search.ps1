@@ -46,3 +46,23 @@ function Find-RepoByName{
 
     return $ret
 } Export-ModuleMember -Function Find-RepoByName
+
+function Search-Repo{
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory,Position=0)][string]$SearchString
+    )
+    
+    $attributes = 'name,url'
+
+    $command = 'gh search repos {searchstring} --json {attributes}'
+    
+    $command = $command -replace "{searchstring}", "$($SearchString)"
+    $command = $command -replace "{attributes}", "$($attributes)"
+
+    $command | Write-Verbose
+
+    $ret  = Invoke-GhExpression -Command $command
+
+    return $ret
+} Export-ModuleMember -Function Search-Repo
