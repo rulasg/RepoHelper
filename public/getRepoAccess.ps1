@@ -11,7 +11,7 @@ function Get-RepoAccess{
     param(
         [Parameter()] [string]$Owner,
         [Parameter()] [string]$Repo,
-        [Parameter()] [string]$Role
+        [Parameter()] [ValidateSet("admin","maintain","write","triage","read")] [string]$Role
     )
 
     # Resolve repo name from parameters or environment
