@@ -19,35 +19,39 @@ function Set-RepoProperty{
     [CmdletBinding(SupportsShouldProcess)]
     param(
         [Parameter()] [string]$Owner,
-        [Parameter()] [string]$Repo,
+        [Parameter(ValueFromPipeline,ValueFromPipelineByPropertyName)] [string]$Repo,
         [Parameter(Mandatory)] [string]$Name,
         [Parameter(Mandatory)] [string]$Value
     )
 
-    # Resolve repor form parameters and environment
-    $Owner,$Repo = Get-Environment $Owner $Repo
+    process{
+        # Resolve repo form parameters and environment
+        $Owner,$Repo = Get-Environment $Owner $Repo
+    
+        # Error if parameters not set. No need to check repo too.
+        if([string]::IsNullOrEmpty($Owner) -or [string]::IsNullOrEmpty($Repo)){
+            "[Get-RepoProperties] Owner and Repo parameters are required" | Write-MyError
+            return $null
+        }
 
-    # Error if parameters not set. No need to check repo too.
-    if([string]::IsNullOrEmpty($Owner) -or [string]::IsNullOrEmpty($Repo)){
-        "[Get-RepoProperties] Owner and Repo parameters are required" | Write-Error
+        "Setting property $Name to $Value for $Owner/$Repo" | Write-MyDebug
+        
+        $token = Invoke-MyCommand -Command getToken
+        
+        $param = @{ owner = $Owner ; repo = $Repo ; name = $Name ; value = $Value ; token= $token}
+        
+        if($PSCmdlet.ShouldProcess("$Owner/$Repo","Set property $Name to $Value")){
+            $result = Invoke-MyCommandJson -Command SetRepoProperty -Parameters $param
+        }
+        
+        if($null -ne $result){
+            "Error setting property $Name to $Value for $Owner/$Repo" | Write-MyError
+        } else {
+            "Property $Name set to $Value for $Owner/$Repo" | Write-MyHost
+        }
+        
         return $null
     }
-
-    "Setting property $Name to $Value for $Owner/$Repo" | Write-Verbose
-
-    $token = Invoke-MyCommand -Command getToken
-
-    $param = @{ owner = $Owner ; repo = $Repo ; name = $Name ; value = $Value ; token= $token}
-
-    if($PSCmdlet.ShouldProcess("$Owner/$Repo","Set property $Name to $Value")){
-        $result = Invoke-MyCommandJson -Command SetRepoProperty -Parameters $param
-    }
-
-    if($null -ne $result){
-        "Error setting property $Name to $Value for $Owner/$Repo" | Write-Error
-    }
-    
-    return $null
 } Export-ModuleMember -Function Set-RepoProperty
 
 <#
