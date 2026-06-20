@@ -24,17 +24,22 @@ function Get-RepoProperties{
 
     $param = @{ owner = $Owner ; repo = $Repo }
 
-    $result = Invoke-MyCommandJson -Command GetRepoInformation -Parameters $param
+    $resultjson = Invoke-MyCommand -Command GetRepoInformation -Parameters $param
+
+    $result = $resultjson | ConvertFrom-Json -AsHashtable
 
     if($null -eq $result){
         "Error getting repo information" | Write-Error
         return $null
     }
     $IsEmpty = [string]::IsNullOrEmpty($result.custom_properties)
-    $ret = $IsEmpty ? $null : $result.custom_properties
+    $ret = $IsEmpty ? @{} : $result.custom_properties
+
+    $ret.Owner = $Owner
+    $ret.Repo = $Repo
 
     "Repo found custom_properties on [$owner/$repo] : " | Write-Verbose
     $ret | Format-List | Out-String | Write-Verbose
 
-    return $ret
+    return [PsCustomObject]$ret
 } Export-ModuleMember -Function Get-RepoProperties
