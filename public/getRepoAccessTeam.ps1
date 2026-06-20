@@ -1,5 +1,5 @@
 
-Set-MyInvokeCommandAlias -Alias "GetUser" -Command "gh api users/{login}"
+Set-MyInvokeCommandAlias -Alias "RepoHelper_GetUser" -Command "gh api users/{login}"
 
 <#
 .SYNOPSIS
@@ -135,7 +135,7 @@ function Get-UserInfo{
     )
 
     process{
-        $user = Invoke-MyCommandJson -Command GetUser -Parameters @{login = $Login}
+        $user = Invoke-MyCommandJson -Command RepoHelper_GetUser -Parameters @{login = $Login}
 
         if($user.login -ne $Login){
             "Error: $login not found" | Write-Error
