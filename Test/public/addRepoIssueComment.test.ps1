@@ -42,11 +42,13 @@ function Test_AddRepoIssueComment_WrongIssueNumber{
 
     MockCallToNull -Command "gh issue comment $number -b `"$comment`" -R $owner/$repo"
 
-    $result = Add-RepoIssueComment -Owner $owner -Repo $repo -Number $number -Comment $comment @ErrorParameters
+    # Act
+    $result = Add-RepoIssueComment -Owner $owner -Repo $repo -Number $number -Comment $comment
 
+    #Assert
     Assert-IsNull -Object $result
-    Assert-Count -Expected 1 -Presented $errorvar
-    Assert-Contains -Expected "Error adding comment to issue $number for $owner/$repo" -Presented $errorvar.exception.Message
+    $lastError = Get-RepoHelperLastError
+    Assert-Contains -Expected "Error adding comment to issue $number for $owner/$repo" -Presented $lastError
 }
 
 function Test_GetRepoIssues_Success{

@@ -40,8 +40,8 @@ curl -L -s -H "Authorization: Bearer {token}" -X PATCH https://api.github.com/re
     Set-InvokeCommandMock -Alias $cmd -Command "Get-Content -Path $(($mockfile | Get-Item).FullName)"
     Set-InvokeCommandMock -Alias getToken -Command "echo $token"
 
-    $result = Set-RepoProperty -owner $owner -repo $repo -name $property -value $value @ErrorParameters
+    $result = Set-RepoProperty -owner $owner -repo $repo -name $property -value $value
 
     Assert-IsNull -Object $result -Comment "Set-RepoProperty should return null on success"
-    Assert-Contains -Expected  "Error setting property $property to $value for $owner/$repo" -Presented $errorVar.Exception.Message
+    Assert-Contains -Expected  "Error setting property $property to $value for $owner/$repo" -Presented $(Get-RepoHelperLastError)
 }

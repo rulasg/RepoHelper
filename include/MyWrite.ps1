@@ -19,9 +19,18 @@ function Write-MyError {
     param(
         [Parameter(Mandatory, ValueFromPipeline)][string]$Message
     )
+    $script:LastError= $Message
     # Write-Host "Error: $message" -ForegroundColor $ERROR_COLOR
     Write-ToConsole "Error: $message" -Color $ERROR_COLOR
 }
+
+function Get-ModuleLastError {
+    [CmdletBinding()]
+    param()
+
+    return $script:LastError
+}Copy-Item -path Function:Get-ModuleLastError -Destination Function:"Get-$($MODULE_NAME)LastError"
+Export-ModuleMember -Function "Get-$($MODULE_NAME)LastError"
 
 function Write-MyWarning {
     [CmdletBinding()]

@@ -1,5 +1,6 @@
 
 Set-MyInvokeCommandAlias -Alias "RepoHelper_GetUser" -Command "gh api users/{login}"
+Set-MyInvokeCommandAlias -Alias "RepoUserMe" -Command "gh api user"
 
 <#
 .SYNOPSIS
@@ -106,7 +107,7 @@ function Get-RepoUser{
 
     process{
 
-        $result = Get-UserInfo -Login $Login
+        $result = Get-RepoUserInfo -Login $Login
 
         if($null -eq $result){
             "Error: $Login not found" | Write-Error
@@ -127,7 +128,7 @@ function Get-RepoUser{
     }
 } Export-ModuleMember -Function Get-RepoUser
 
-function Get-UserInfo{
+function Get-RepoUserInfo{
     [CmdletBinding()]
     [OutputType([PSCustomObject])]
     param(
@@ -144,5 +145,20 @@ function Get-UserInfo{
 
         return $user
     }
-} Export-ModuleMember -Function Get-UserInfo
+} Export-ModuleMember -Function Get-RepoUserInfo
+
+function Get-RepoMe(){
+    [cmdletbinding()]
+    param()
+    
+    $response = Invoke-MyCommandJson -Command RepoUserMe
+
+    if(-not $response.login){
+        throw "Failed to retrieve GitHub user information."
+    }
+    
+    $user = $response
+
+    return $user
+} Export-ModuleMember -Function Get-RepoMe
 

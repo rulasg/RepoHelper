@@ -173,10 +173,10 @@ function Test_SyncRepoAccess_NoParameters {
 "@
     New-TestingFile -Name "contributors" -Content $userList
 
-    $result = Sync-RepoAccess -FilePath "contributors" -role 'write' -WhatIf @ErrorParameters
+    $result = Sync-RepoAccess -FilePath "contributors" -role 'write' -WhatIf
 
     Assert-IsNull -Object $result
-    Assert-Contains -Expected "[Sync-RepoAccess] Owner and Repo parameters are required" -Presented $errorvar.Exception.Message
+    Assert-Contains -Expected "[Sync-RepoAccess] Owner and Repo parameters are required" -Presented $(Get-RepoHelperLastError)
 }
 
 function Test_SyncRepoAccess_NoUsersFile {
@@ -186,10 +186,10 @@ function Test_SyncRepoAccess_NoUsersFile {
 
     Set-InvokeCommandMock -Alias 'git remote get-url origin 2>$null' -Command "echo https://github.com/$owner/$repo.git"
 
-    $result = Sync-RepoAccess admin $file -WhatIf  @ErrorParameters
+    $result = Sync-RepoAccess admin $file -WhatIf
 
     Assert-IsNull -Object $result
-    Assert-Contains -Expected "Error reading user file $file" -Presented $errorvar.Exception.Message
+    Assert-Contains -Expected "Error reading user file $file" -Presented $(Get-RepoHelperLastError)
 }
 
 function Test_SyncRepoAccess_Error_On_Invitations {

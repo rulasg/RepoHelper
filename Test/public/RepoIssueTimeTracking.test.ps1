@@ -22,11 +22,11 @@ function Test_AddRepoIssueTimeTracking_WrongTimeFormat
 
     MockCallToString -Command "gh issue comment $issue -b `"- [ ] <TT>$wrongTime</TT> $comment`" -R $owner/$repo" -OutString "https://github.com/$owner/$repo/issues/1#issuecomment-1936046674"
 
-    $result = Add-RepoIssueTimeTracking $issue $wrongTime $comment -Owner $owner -Repo $repo @ErrorParameters
+    $result = Add-RepoIssueTimeTracking $issue $wrongTime $comment -Owner $owner -Repo $repo
 
     Assert-IsNull -Object $result
-    Assert-Count -Expected 1 -Presented $errorvar.Exception.Message
-    Assert-Contains -Expected "Wrong time format [$wrongTime]" -Presented $errorvar.Exception.Message
+    $lastError = Get-RepoHelperLastError
+    Assert-Contains -Expected "Wrong time format [$wrongTime]" -Presented $lastError
 }
 
 function Test_AddRepoIssueTimeTracking_SUCCESS_With_NoCheckBox
@@ -131,11 +131,11 @@ function Test_GetRepoIssueTimeTracking_Notfound
 
     MockCallToString -Command "gh issue view $issue -R $owner/$repo --json title,comments,url" -OutString "null"
 
-    $result = Get-RepoIssueTimeTracking $issue -Owner $owner -Repo $repo @ErrorParameters
+    $result = Get-RepoIssueTimeTracking $issue -Owner $owner -Repo $repo
 
     Assert-IsNull -Object $result
-    Assert-Count -Expected 1 -Presented $errorvar.exception.Message
-    Assert-Contains -Presented $errorvar.exception.Message -Expected "Error getting comments for issue $issue for $owner/$repo"
+    $lastError = Get-RepoHelperLastError
+    Assert-Contains -Presented $lastError -Expected "Error getting comments for issue $issue for $owner/$repo"
 
 }
 
